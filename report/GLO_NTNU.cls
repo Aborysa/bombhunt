@@ -74,6 +74,8 @@
 \def\theProjectTitle{Default Project Title}
 \def\ReportTitle#1{\def\theReportTitle{#1}}
 \def\theReportTitle{Default Document Title}
+\def\COTS#1{\def\theCOTS{#1}}
+\def\theCOTS{Commercial off-the-shell}
 \def\PQA#1{\def\thePQA{#1}}
 \def\thePQA{Primary Quality Attribute}
 \def\SQA#1{\def\theSQA{#1}}
@@ -190,7 +192,8 @@
 				\vspace{5mm}
 				\textbf{
 					\LARGE{\theProjectTitle} \\
-					\Large{\theReportTitle}}
+					\Large{\theReportTitle} \\
+					\Large{\theCOTS}}
 				\vspace{5mm}
 				\hrule
 			\end{minipage}
