@@ -291,8 +291,20 @@
 %Full Ref for unnumbered chapters
 \newcommand{\fullref}[1]{\hyperref[#1]{\autoref*{#1}\nameref*{#1}}}
 
-%Add unnumbered chapter to toc
+%Add unnumbered chapter to toc (create label opt)
 \newcommand{\unnumberedChapter}[2][nolabel]{
 	\chapter*{#2}
 	\addcontentsline{toc}{chapter}{#2}
 	\label{chap:#1}}
+
+%Add unnumbered section to toc (create label opt)
+\newcommand{\unnumberedSection}[2][nolabel]{
+	\section*{#2}
+	\addcontentsline{toc}{section}{#2}
+	\label{sec:#1}}
+
+%Add unnumbered subsection to toc (create label opt)
+\newcommand{\unnumberedSubsection}[2][nolabel]{
+	\subsection*{#2}
+	\addcontentsline{toc}{subsection}{#2}
+	\label{subsec:#1}}
