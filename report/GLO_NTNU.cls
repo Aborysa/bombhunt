@@ -34,6 +34,20 @@
 \RequirePackage{array}
 \RequirePackage{multicol}
 
+\RequirePackage{nomencl}
+\makenomenclature
+%\renewcommand{\nomname}{Liste des symboles et abréviations}
+% to be used with: makeindex main.nlo -s nomencl.ist -o main.nls
+% numberedsection: add this option to make the section numbered (useful if moved in appendix)
+\RequirePackage[nonumberlist,acronym,toc,style=long]{glossaries}
+\setlength\LTleft{0pt}
+\setlength\LTright{0pt}
+\setlength\glsdescwidth{0.8\hsize}
+\renewcommand{\glsnamefont}[1]{\textbf{#1}}
+\makeglossaries
+\loadglsentries{gls/glossary}
+\glsaddall
+
 \RequirePackage{enumitem}
 \RequirePackage{changepage}
 \RequirePackage{etoolbox}
