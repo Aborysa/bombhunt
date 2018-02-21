@@ -290,3 +290,9 @@
 
 %Full Ref for unnumbered chapters
 \newcommand{\fullref}[1]{\hyperref[#1]{\autoref*{#1}\nameref*{#1}}}
+
+%Add unnumbered chapter to toc
+\newcommand{\unnumberedChapter}[2][nolabel]{
+	\chapter*{#2}
+	\addcontentsline{toc}{chapter}{#2}
+	\label{chap:#1}}
