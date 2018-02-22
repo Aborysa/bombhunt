@@ -1,8 +1,4 @@
-- use case model
-    - (learn how to play) tutorial
-    - consults achievements
-
-- domain model
-    - player has achievement(s)
-
-- create Final State Machine (FSM) models for the global interactions
+- write introduction
+- write use case scenario text
+- list requirements (create latex command to format it correctly)
+- quality attribute table (create latex command to format it correctly)
