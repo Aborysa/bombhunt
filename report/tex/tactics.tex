@@ -1,0 +1,36 @@
+\section{Architectural Tactics}
+This section outlines the architectural tactics applied in this project to meet the quality requirements.
+
+	\subsection{Modifiability tactics}
+	The goal of modifiability tactics is to lower the cost of making a change to the system. In general we define this cost as the time spent on making a change.
+	
+	In general, the tactics here discussed try to
+	Localize modifications
+	Prevent ripple effects
+	Defer binding time
+	
+	Encapsulation
+	Encapsulating an implementation behind an interface allows for easy modification of the implementation without having to change the components that depend on it.
+	
+	Generalizing
+	Making a more general version of a component that takes in arguments for example allows to create different instances without having to modify code.
+	
+	Preferences
+	Coding certain aspects of the game as preferences allows to make the game experience modifiable by the developers and even the user.
+	
+	Anticipate expected changes
+	We apply this tactic by asking ourselves the questions: "What changes are most likely?" and "For each change, does the proposed decomposition limit the set of modules that need to be modified to accomplish it?"
+	
+	Maintain semantic coherence
+	Semantic coherence refers to the relationships among responsibilities in a module. The goal is to ensure that all of these responsibilities work together without excessive reliance on other modules. 
+	
+	Hide information
+	Only make the necessary parts of a module public. The methods that can be made private should be private so that no unanticipated interdependecies between modules can occur.
+	
+	Use an intermediary.
+	When applicable use an intermediary to convert the output of one module to the expected input of another module
+
+	http://www.ece.ubc.ca/~matei/EECE417/BASS/ch05lev1sec3.html
+	
+		
+	\subsection{Quality requirement 2...}

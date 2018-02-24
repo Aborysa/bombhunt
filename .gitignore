@@ -31,3 +31,6 @@ report/architecture/architecture.synctex.gz
 report/requirements.acn
 report/requirements.glo
 report/requirements.nlo
+*.aux
+report/architecture.synctex.gz
+report/architecture.pdf
