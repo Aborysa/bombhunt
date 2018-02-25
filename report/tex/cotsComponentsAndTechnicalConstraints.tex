@@ -2,16 +2,14 @@
 
 %Describe the constraints on the architecture due to your choice of COTS. This part should specify the interfaces to COTS you must use and how the choice of COTS (e.g. Android or iOS platform) will restrict/constrain your architecture.
 % State any other constraints (on the architecture) relevant for your project.
-\subsection{LibGDX}
+\unnumberedSection[libgdx]{LibGDX}
 During early assignments in this course, we got to know the way libgdx can have a stack of screens, and only render and display the top one. This will constrain how we develop the way we change screens, and how we should handle dumping all entities once we drop a screen. This is important to get right as the performance might vary if this is done poorly.
-\subsection{artemis-odb}
+
+\unnumberedSection[artemis]{artemis-odb}
 Since we want to develop our game using the Entity Component Pattern, we looked at different frameworks to make this easier. Frameworks such as artemis-odb will constrain our architecture so we have to make components for our entities, instead of inheriting from other classes.
-\subsection{Android}
-One of the mayor challenges for developing a game for Android, is that the version of Android and Java might vary a lot based on what device is playing the game. We imagine we will probably just restrict the game to not work on older devices, to save ourselves some headache with trying to understand why something might not work on older devices.
-Another thing that will constraint how we make our game, is the difference in resolutions and hardware performance on each device. This means we will have to come up with a way to scale our UI and on-screen elements, instead of just rendering based on a set resolution. This also means we will have to follow strict rules on how to clear unused elements in the game world, so the memory of the device doesn't get filled up.
-\subsection{Google play game services or other solutions}
-Since we want to have some service that can set up P2P connections for us, we realise our game architecture needs to include some form of manager or handler that will communicate with this service.
-Assuming we use some COTS like Google Play Game Services, we will most likely have to follow some very strict rules that allow P2P setups via this service.
 
+\unnumberedSection[android]{Android}
+One of the mayor challenges for developing a game for Android, is that the version of Android and Java might vary a lot based on what device is playing the game. We imagine we will probably just restrict the game to not work on older devices, to save ourselves some headache with trying to understand why something might not work on older devices. Another thing that will constraint how we make our game, is the difference in resolutions and hardware performance on each device. This means we will have to come up with a way to scale our UI and on-screen elements, instead of just rendering based on a set resolution. This also means we will have to follow strict rules on how to clear unused elements in the game world, so the memory of the device doesn't get filled up.
 
-
+\unnumberedSection[googlePlayServices]{Google play game services or other solutions}
+Since we want to have some service that can set up P2P connections for us, we realise our game architecture needs to include some form of manager or handler that will communicate with this service. Assuming we use some COTS like Google Play Game Services, we will most likely have to follow some very strict rules that allow P2P setups via this service.
