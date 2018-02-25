@@ -308,3 +308,33 @@
 	\subsection*{#2}
 	\addcontentsline{toc}{subsection}{#2}
 	\label{subsec:#1}}
+
+%Specific command
+\newcommand{\QAReq}[9]{
+	% #1 ID
+	% #2 Caption
+	% #3 Label
+	% #4 Source
+	% #5 Stimulus
+	% #6 Artifacts
+	% #7 Environment
+	% #8 Response
+	% #9 Response measure
+	\begin{table}[ht]
+		\centering
+		\begin{tabularx}{\textwidth}{>{\bfseries}p{5cm}X}
+			\toprule
+				ID & \textbf{#1} \\
+			\midrule
+				Source & #4 \\
+				Stimulus & #5 \\
+				Artifacts & #6 \\
+				Environment & #7 \\
+				Response & #8 \\
+				Response measure & #9 \\
+			\bottomrule
+		\end{tabularx}
+		\caption{#2}
+		\label{tab:#1}
+	\end{table}
+}
