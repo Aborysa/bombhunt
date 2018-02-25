@@ -16,8 +16,6 @@ Those categories will be used to raffines and group together related functional 
   \begin{longtable}[c]{cp{12cm}c}
     \toprule
       \thead{UID} & \thead{Description} & \thead{Priority} \\
-    \toprule
-      \multicolumn{3}{c}{Deployment} \\
     \midrule
       FR.D.1.1 & User should be able to install the application & M \\
       FR.D.1.2 & User should be able to uninstall the application & M \\
@@ -27,9 +25,14 @@ Those categories will be used to raffines and group together related functional 
 
       FR.D.3.1 & Installation of the application should not require the intervention of the user & M \\
       FR.D.3.2 & Uninstallation of the application should not require the intervention of the user & M \\
-    \newpage
-    \midrule
-      \multicolumn{3}{c}{Gameplay} \\
+    \bottomrule
+    \caption{Functional requirements - Deployment}
+    \label{tab:funcReqDeployment}
+  \end{longtable}
+
+  \begin{longtable}[c]{cp{12cm}c}
+    \toprule
+      \thead{UID} & \thead{Description} & \thead{Priority} \\
     \midrule
       FR.P.1.1 & The user should be able to control game with touch gestures & M \\
       FR.P.1.2 & The user should be able to control its character with virtual joystick and virtual buttons & M \\
@@ -65,9 +68,14 @@ Those categories will be used to raffines and group together related functional 
       FR.P.9.2 & If a rematch is asked by the players, a single match should be created for all the players having voted for the rematch & S \\
       FR.P.9.3 & When a match as found all the players, a countdown should be initiated before the launch of the match & S \\
       FR.P.9.4 & Two incomplete matches should be combined to create a single and complete one & S \\
+    \bottomrule
+    \caption{Functional requirements - Gameplay}
+    \label{tab:funcReqGameplay}
+  \end{longtable}
 
-    \midrule
-      \multicolumn{3}{c}{Statistics Tracking} \\
+  \begin{longtable}[c]{cp{12cm}c}
+    \toprule
+      \thead{UID} & \thead{Description} & \thead{Priority} \\
     \midrule
       FR.T.1.1 & The user should be to link its Google Play account & S \\
 
@@ -84,23 +92,33 @@ Those categories will be used to raffines and group together related functional 
       FR.T.5.1 & The user should be aware of how to enhance its score & C \\
       FR.T.5.2 & The score should favored active users & S \\
       FR.T.5.3 & The score should be able to make the difference between skilled and unskilled users & H \\
+    \bottomrule
+    \caption{Functional requirements - Statistics Tracking}
+    \label{tab:funcReqStatisticsTracking}
+  \end{longtable}
 
-    \midrule
-      \multicolumn{3}{c}{Game Setting} \\
+  \begin{longtable}[c]{cp{12cm}c}
+    \toprule
+      \thead{UID} & \thead{Description} & \thead{Priority} \\
     \midrule
       FR.S.1.1 & The user should be able to turn off sound FX & H \\
       FR.S.1.2 & The user should be able to turn off music & H \\
       FR.S.2.1 & The settings should be saved in configuration files in order to avoid the user to constantly modify them & H \\
+    \bottomrule
+    \caption{Functional requirements - Game Setting}
+    \label{tab:funcReqSetting}
+  \end{longtable}
 
-    \midrule
-      \multicolumn{3}{c}{Licensing and Attribution} \\
+  \begin{longtable}[c]{cp{12cm}c}
+    \toprule
+      \thead{UID} & \thead{Description} & \thead{Priority} \\
     \midrule
       FR.L.1.1 & The user should be aware of the license & M \\
       FR.L.2.1 & The user should be able to consult the attributions of the external features & M \\
       FR.L.3.1 & The user should have access to these credits from the main menu & M \\
     \bottomrule
-    \caption{Functional requirements of the \textit{Bomb Hunt} game}
-    \label{tab:funcReq}
+    \caption{Functional requirements - Licensing and Attribution}
+    \label{tab:funcReqLicensingAttribution}
   \end{longtable}
 \end{center}
 
