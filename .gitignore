@@ -25,12 +25,4 @@ hs_err_pid*
 # Project Specific
 references/assetsPool
 
-report/architecture/architecture.pdf
-report/architecture/architecture.aux
-report/architecture/architecture.synctex.gz
-report/requirements.acn
-report/requirements.glo
-report/requirements.nlo
-*.aux
-report/architecture.synctex.gz
-report/architecture.pdf
+*.aux, *.bbl, *.blg, *.idx, *.ind, *.lof, *.lot, *.out, *.toc, *.acn, *.acr, *.alg, *.glg, *.glo, *.gls, *.nlg, *.nlo, *.nls, *.ist, *.fls, *.log, *.fdb_latexmk, *.snm, *.nav, *.synctex.gz, *.run.xml, *.bcf, *.pyg, *.vrb, *.dvi, *.ilg, *.lol, *.py.err, *.py, *.pytxcode
