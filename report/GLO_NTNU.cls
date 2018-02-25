@@ -320,7 +320,7 @@
 	% #7 Environment
 	% #8 Response
 	% #9 Response measure
-	\begin{table}[ht]
+	\begin{table}[h]
 		\centering
 		\begin{tabularx}{\textwidth}{>{\bfseries}p{5cm}X}
 			\toprule

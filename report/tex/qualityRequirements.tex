@@ -1,7 +1,5 @@
 \unnumberedChapter[QAReq]{Quality Requirements}
 
-%Write scenarios for the most relevant quality attributes (modifiability, usability, availability, performance and interoperability)
-
 Quality attributes usually have an important impact on the overall architecture because their realization often imply the modification of many part of the application whereas functional requirements are usually more located. Moreover, quality attributes are often more difficult to assert due to their subjective meaning. Per example, some people may have different conceptions of what is defined as a secure application. The purpose of this chapter is to determine some thresholds that will uncover this subjectivity. \\
 
 To specify the different quality attributes, a scenario approach will be used as the one presented in \cite[Chapter 4, p.68-69]{bass2013}. According to this method, a quality attribute can be made unambiguous and testable by specifying the following 6 characteristics:
@@ -136,10 +134,39 @@ a short and simple textual tutorial.}
 {Wants to modify a setting of the game}
 {System}
 {Runtime}
-{User finds the setting and successfully modifies it.}
+{User finds the setting and successfully modifies it. New settings are saved for later next booting of the application.}
 {Setting is found without any navigation-errors in 15 seconds or less.}
 
-
-\unnumberedSection[availability]{Availability}
 \unnumberedSection[performancey]{Performance}
+
+\QAReq{P1}
+{Quality Requirement Scenario - Client receives data from server}
+{perfServerUpdate}
+{Player-client}
+{Server sends data of other players}
+{Player-client}
+{Normal Operation}
+{Data is used to update the relevant player locally.}
+{Latency below 30 ms for the update of local state.}
+
+\QAReq{P2}
+{Quality Requirement Scenario - Periodic client update}
+{perfClientUpdate}
+{Player-client}
+{Periodic update}
+{Player-client}
+{Normal Operation}
+{All local data is used to construct the update message.}
+{Throughput of 30 successful updates per second for steady frame rate.}
+
 \unnumberedSection[interoperability]{Interoperability}
+
+\QAReq{I1}
+{Quality Requirement Scenario - Player wants to initiate a multiplayer room}
+{interMulti}
+{Player-client}
+{A request to set up a new multiplayer room}
+{Player-client and the Google Play services servers}
+{Runtime}
+{The request is accepted and a room specified by parameters is set up}
+{100\% of the sent requests that are in the correct format and order are accepted}
