@@ -4,7 +4,7 @@ This section outlines the architectural tactics applied in this project to meet 
 	\subsection{Modifiability tactics}
 	The goal of modifiability tactics is to lower the cost of making a change to the system. In general we define this cost as the time spent on making a change.
 	
-	In general, the tactics here discussed try to
+	The tactics here discussed have three main goals:
 	\begin{itemize}  
 		\item Localize modifications / increase cohesion
 		\item Prevent ripple effects / decrease coupling
@@ -14,7 +14,7 @@ This section outlines the architectural tactics applied in this project to meet 
 
 	\begin{description}
 		\item [Encapsulation]
-			Placing a module behind an interface increases the coupling between the module and those that depend on it. The implementation of the interface can be modified without having to change the modules that depend on it.
+			Placing a module behind an interface decreases the coupling between the module and those that depend on it. The implementation of the interface can be modified without having to change the modules that depend on it.
 		\item [Generalizing]
 			Making a more general version of a component allows to create different instances without having to modify code. For example a generalization of a method with parameters can be used in different situations to perform different tasks without needing different methods.
 		\item [Preferences]
@@ -29,18 +29,18 @@ This section outlines the architectural tactics applied in this project to meet 
 		When applicable we use an intermediary to convert the output of one module to the expected input of another module.
 	\end{description}
 	
-	http://www.ece.ubc.ca/~matei/EECE417/BASS/ch05lev1sec3.html
-	
 		
 	\subsection{Usability tactics}
+	Usability tactics attempt to make the system easy to learn and use while offering all the required functionality. 
+	
 		\begin{description}
 			\item[Simplicity]
-			We adhere to the concept known as Occam's Razor which can be summarized as "less is more". By limiting the number of unnecessary elements and instead focusing on a simple and intuitive gameplay, we make the game easier to learn and more enjoyable for the user.
+			We adhere to the concept known as Occam's Razor which can be summarized as "less is more". By limiting the number of unnecessary elements and instead focusing on a simple and intuitive gameplay, we make the game easier to learn and more enjoyable for the user. Extra functionality is added in a way that adds minimal complexity.
 			
 			\item[Prototyping]
-			An interface that makes sense for us is not necessarily the most intuitive for all users. Thus we try to make early prototypes and get feedback from real users.
+			A \gls{ui} that makes sense for us is not necessarily the most intuitive for all users. Thus we try to make early prototypes and get feedback from other users.
 			
 			\item[Using accepted standards]
-			There are widely known accepted standards. Designing our interface to conform these standards, will make new users instantly familiar with our interface. Examples of this are Google's Material Design, standard controller layout, pause menu in top right, ...
+			There are widely known accepted standards. Designing our \gls{ui} to conform these standards, will make new users instantly familiar with our interface. Examples of this are Google's Material Design, standard controller layout, pause menu in top right, ...
 			
 		\end{description}
