@@ -1,42 +1,66 @@
 \documentclass[12pt]{GLO_NTNU}
 
 \bool_Team
-\TeamName{TEAM NAME [TO CHANGE]}
+\TeamName{Grumpy Old Git Club}
 \TeamNumber{16}
 \Course{TDT4240 Software Architecture}
-\ProjectTitle{GAME NAME [TO CHANGE]}
+\ProjectTitle{Bomb Hunt}
 \ReportTitle{Architecture}
 \COTS{Android}
 \Author{Cabral Cruz, Samuel  (\(496704\))\\
 	Claessens, Bart (\(486346\))\\
 	Ihlen, Erling H{\ae}rnes (\(765137\))\\
 	Trolleb{\o}, Jarle (\(766901\))}
-\PQA{Modifiability and Usability}
-\SQA{Availability, Performance and Interoperability}
+\PQA{Modifiability}
+\SQA{Usability, Performance and Interoperability}
 \Teacher{Alf Inge Wang}
 \Department{of Computer and Information Science}
 \UniversityLocation{Trondheim}
 \TrimesterYear{Spring 2018}
 
 \begin{document}
-	\modifyItemize{}
-	\maketitle
-	
-	\tableofcontents
-%	\listoffigures
-%	\listoftables
-	%\listoflistings
+\modifyItemize{}
+\maketitle
 
+\tableofcontents
+\listoffigures
+\listoftables
+%\listoflistings
 
 \input{tex/vision}
 \input{tex/asr}
 \input{tex/stakeholders}
 \input{tex/views_table}
 \input{tex/tactics}
-\input{tex/architectural_patterns}
-\input{tex/design_patterns}
+\input{tex/patterns}
 \input{tex/views}
+\input{tex/consistency}
 \input{tex/rationale}
 \input{tex/issues}
+\input{tex/versionTrackingArchitecture}
+
+\printglossaries
+
+\bibliographystyle{plainnat}
+\bibliography{bib/references}
+
+% \appendix
+% \pretocmd{\chapter}{%
+%  \clearpage
+%  \pagenumbering{arabic}%
+%  \renewcommand{\thepage}{\thechapter-\arabic{page}}%
+%  }{}{}
+% \begin{appendices}
+% 	\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+% 	\makeatletter
+% 	\addtocontents{toc}{%
+% 	  \begingroup
+% 	  \let\protect\l@chapter\protect\l@section
+% 	  \let\protect\l@section\protect\l@subsection}
+% 	\makeatother
+% 	%\input{tex/<file_name>}
+% 	\cleardoublepage
+% 	\addtocontents{toc}{\endgroup}
+% \end{appendices}
 
 \end{document}
