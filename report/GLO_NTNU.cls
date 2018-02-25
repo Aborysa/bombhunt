@@ -191,7 +191,7 @@
 			\includegraphics[width=0.25\textwidth, height=0.25\textheight,keepaspectratio]{NTNU_logo_abbrev}\\
 			\ifbTeam
 				\vspace{-30pt}
-				\raggedleft \theTeamName \\
+				\raggedleft \textbf{\theTeamName} \\
 				\raggedleft Team Number: \theTeamNumber
 			\fi
 		\end{flushleft}
