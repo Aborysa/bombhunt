@@ -1,4 +1,0 @@
-- write introduction
-- write use case scenario text
-- list requirements (create latex command to format it correctly)
-- quality attribute table (create latex command to format it correctly)
