@@ -1,9 +1,34 @@
-\documentclass[12pt]{article}
-\usepackage{todo}
+\documentclass[12pt]{GLO_NTNU}
+
+\bool_Team
+\TeamName{TEAM NAME [TO CHANGE]}
+\TeamNumber{16}
+\Course{TDT4240 Software Architecture}
+\ProjectTitle{GAME NAME [TO CHANGE]}
+\ReportTitle{Architecture}
+\COTS{Android}
+\Author{Cabral Cruz, Samuel  (\(496704\))\\
+	Claessens, Bart (\(486346\))\\
+	Ihlen, Erling H{\ae}rnes (\(765137\))\\
+	Trolleb{\o}, Jarle (\(766901\))}
+\PQA{Modifiability and Usability}
+\SQA{Availability, Performance and Interoperability}
+\Teacher{Alf Inge Wang}
+\Department{of Computer and Information Science}
+\UniversityLocation{Trondheim}
+\TrimesterYear{Spring 2018}
 
 \begin{document}
+	\modifyItemize{}
+	\maketitle
 	
-%\input{tex/introduction}
+	\tableofcontents
+%	\listoffigures
+%	\listoftables
+	%\listoflistings
+
+
+\input{tex/vision}
 \input{tex/asr}
 \input{tex/stakeholders}
 \input{tex/views_table}
@@ -12,6 +37,6 @@
 \input{tex/design_patterns}
 \input{tex/views}
 \input{tex/rationale}
-%\input{tex/issues}
+\input{tex/issues}
 
 \end{document}
