@@ -8,7 +8,19 @@
 	\unnumberedSubsection[funcReq:classes-and-powerups]{Different Player Classes and Powerups}
 	The player should be able to select a character from a set of characters all with differing abilities. The abilities can be altered during gameplay by acquiring powerups. It is therefore very important that components are made in such a way that it is easy to create modify abilities in the middle of the game.
 
+	The most important functional requirement is the ability to play mulitplayer online with other 
+	players, all our requirements follow after this core requirement. It is critical that the data and the logic is
+	structured in such a way that it is easy to synchronize the data, state and events in such a way that we minimize the room for error
+	and in the cases errors occure due to networking issues are able to recover. The most sensible way to achive this would be to mark all entities
+	that should be synchronized with one or multiple components containing the network state of an entity like what client created the entity and
+
+	Different player classes and powerups
+	The player should be able to select a character from a set of characters all with differing abilities and the possibility to be altered during gameplay
+	by aquiering powerups, it is therefor very important that components are made in such a way that it is easy to create new abilities and modifiy
+	what abilities a player has in the middle of the game. new abilities to a character during runtime and that in practice 
+
 	\unnumberedSection[qaReq]{Quality Requirements}
+
 	\unnumberedSubsection[qaReq:modifiability]{Modifiability}
 	Modifiability is our primary QR. It is very important that we structure our game in good. For instance it should be possible to implement new game modes and have them work without having to modify the core engine. Ideally it should be as simple as implementing a predefined interface that defines a set of rules for the game mode and is able to perform meaningful actions with as little knowledge of the other modules of the system. Modifiability is also important to let us rapidly prototype new features that might be interesting without too much overhead for it to be feasible.
 
@@ -20,6 +32,7 @@
 
 	\unnumberedSubsection[qaReq:interoperability]{Interoperability}
 	Interoperability is important to achieve good and reliable mulitplayer experience across android clients made by different hardware manufacturers and across different local area networks that might be configured differently. Normally p2p applications have to do a hole punchthrough using a broker server in order to establish a reliable p2p connection. By using Google Play Game Services we avoid having to deal with initiating connections between players ourselves, because the google services handles it for us.
+
 
 	\unnumberedSection[businessReq]{Business Requirements}
 	We want to create an overall engaging experience with interesting and fun gameplay elements. The game should have competetive aspects	like highscores, leaderboards and achivements.
