@@ -2,3 +2,16 @@
 A list of the views (viewpoints) that you will use in the architectural
 documentation, their purpose, target audience (which stakeholder you are
 addressing), and what notation will be used for each view (use a table for this purpose).
+
+\begin{table}[]
+	\centering
+	\caption{Architectural Views}
+	\label{view_selection}
+	\begin{tabularx}{\textwidth}{p{2cm}XXp{2cm}}
+		View             & Purpose                                                                                                                                            & Target Audience                                     & Notation                           \\
+		Logical View     & Describe functionality that the system will provide to end users.                                                                                  & Developers, course staff, ATAM evaulators, end user & Class Diagram, State Diagram       \\
+		Process View     & Describe dynamic aspects of the system, explains the system processes and how they communicate, and focuses on the runtime behavior of the system. & Developers, course staff, ATAM evaulators           & Activity Diagram, Sequence Diagram \\
+		Development View & Describe the system components from a programmer's perspective.                                                                                    & Developers, course staff, ATAM evaulators           & Component Diagram                  \\
+		Physical View    & Describe the topology of software components on the physical layer as well as the physical connections between these components                    & Developers, course staff, ATAM evaulators           & Deployment Diagram
+	\end{tabularx}
+\end{table}
