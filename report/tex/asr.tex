@@ -2,7 +2,39 @@
 	This section outlines the main drivers that most affect the system architecture.
 
 	\unnumberedSection[funcReq]{Functional Requirements}
+	\unnumberedSubsection[funcReq:multiplayer]{Online Mulitplayer}
+	The most important functional requirement is the ability to play mulitplayer online with other 
+	players, all our requirements follow after this core requirement. It is critical that the data and the logic is
+	structured in such a way that it is easy to synchronize the data, state and events in such a way that we minimize the room for error
+	and in the cases errors occure due to networking issues are able to recover. The most sensible way to achive this would be to mark all entities
+	that should be synchronized with one or multiple components containing the network state of an entity like what client created the entity and
+
+	\unnumberedSubsection[funcReq:classes-and-powerups]{Different player classes and powerups}
+	The player should be able to select a character from a set of characters all with differing abilities and the possibility to be altered during gameplay
+	by aquiering powerups, it is therefor very important that components are made in such a way that it is easy to create new abilities and modifiy
+	what abilities a player has in the middle of the game. new abilities to a character during runtime and that in practice 
 
 	\unnumberedSection[qaReq]{Quality Requirements}
+	\unnumberedSubsection[qaReq:modifiability]{Modifiability}
+	Modifiability is our primary QR and it is very important that we structure our game in such a way that it is easy to for instance implement new game modes and have them works without
+	having to modify the core engine. Idealy it should be as simple as implementing a predefined interface that defines a set of rules for the game mode and is able to performe meaningful actions with as little
+	knowlegde of ECS and netwroking. Modifiability is also important to let us rapidly prototype new features that might be interesting without too much overhead for it to be feasible.
+	
+	\unnumberedSubsection[qaReq:usability]{Usability}
+	Our game should be easy to use, we want a user to be able to just jump straight into the action with as little introduction as possible. The user should always be aware of what state
+	the game is in and the controls and menus should be as little bloated as possible.
+	
+	\unnumberedSubsection[qaReq:performance]{Performance}
+	It is very important that the game is preformant for the stability of the multiplayer. If one client isn't able to perform the required ticks per second to be able to simulate
+	and keep the state synchronized between the clients then there is going to be a hugh issue, it is therefor important that the game loops are used wisely and the game is able to detect 
+	whether or not it is able to keep up and automatically able to disable unimportant features like particle effects.
+	
+	\unnumberedSubsection[qaReq:interoperability]{Interoperability}
+	Interoperability is important to achive good and reliable mulitplayer experience across android clients made by
+	different hardware manufacturers and across different local area networks that might be configured differently. Normally p2p applications
+	have to do a hole punchthrough using a broker server in order to establish a reliable p2p connection. By using Google Play Game Services we avoid having to deal
+	with initiating connections between players ourselves, because the google services handles it for us. 
 
 	\unnumberedSection[businessReq]{Business Requirements}
+	Create an overall engaging experience having an interesting and fun gameplay elements and competetive aspects
+	like high score leaderboards and achivements.
