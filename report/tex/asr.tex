@@ -3,17 +3,15 @@
 
 	\unnumberedSection[funcReq]{Functional Requirements}
 	\unnumberedSubsection[funcReq:multiplayer]{Online Mulitplayer}
-	The most important functional requirement is the ability to play mulitplayer online with other	players. All our requirements follow after this core requirement. It is critical that the data and logic is structured in such a way that it is easy to synchronize data, state and events in such a way that we minimize the possibility for errors. In case of errors due to networking issues, we should be able to recover. The most sensible way to achieve this would be to mark all entities 	that should be synchronized with one or multiple components containing the network state of an entity, like what client created the entity and what simulation frame the entity is supposed to be at a given time.
+	The most important functional requirement is the ability to play mulitplayer online with other	
+	players. All our requirements follow after this core requirement. It is critical that the data and logic is 
+	structured in such a way that it is easy to synchronize data, state and events so we minimize the possibility for errors. 
+	In the cases were errors due to networking issues the system shall find out what went wrong and performe the required tasks to recover the game. 
+	The most sensible way to achieve this would be to mark all entities 	
+	that should be synchronized with one or multiple components containing the network state of an entity, like what client created the entity and what simulation frame the entity is supposed to be at a given time.
 
 	\unnumberedSubsection[funcReq:classes-and-powerups]{Different Player Classes and Powerups}
 	The player should be able to select a character from a set of characters all with differing abilities. The abilities can be altered during gameplay by acquiring powerups. It is therefore very important that components are made in such a way that it is easy to create modify abilities in the middle of the game.
-
-	The most important functional requirement is the ability to play mulitplayer online with other 
-	players, all our requirements follow after this core requirement. It is critical that the data and the logic is
-	structured in such a way that it is easy to synchronize the data, state and events in such a way that we minimize the room for error
-	and in the cases errors occure due to networking issues are able to recover. The most sensible way to achive this would be to mark all entities
-	that should be synchronized with one or multiple components containing the network state of an entity like what client created the entity and
-
 	Different player classes and powerups
 	The player should be able to select a character from a set of characters all with differing abilities and the possibility to be altered during gameplay
 	by aquiering powerups, it is therefor very important that components are made in such a way that it is easy to create new abilities and modifiy
