@@ -24,9 +24,13 @@ Since we decided to develop the core part of our game using \gls{ecs} we looked 
 We chose this \gls{cots} because of the well documented performance the framework has when used properly, as well as how well the functionality and interfaces are documented.
 
 \unnumberedSection[android]{Android}
-One of the mayor challenges for developing a game for Android, is that the version of Android and Java might vary a lot based on what device is playing the game. We imagine we will probably just restrict the game to not work on older devices, to save ourselves some headache with trying to understand why something might not work on older devices. Another thing that will constraint how we make our game, is the difference in resolutions and hardware performance on each device. This means we will have to come up with a way to scale our \gls{ui} and on-screen elements, instead of just rendering based on a set resolution. This also means we will have to follow strict rules on how to clear unused elements in the game world, so the memory of the device doesn't get filled up.
-Everyone in the group are used to having android devices, or are able to emulate it on their computer. Since this was common ground for everyone in the group, as well how free we are to develope for android compared to ios, we decided to stay with it for this project as well.
+One of the mayor challenges for developing a game for Android, is that the version of Android and Java might vary a lot based on what device is playing the game. We imagine we will probably just restrict the game to not work on older devices, to save ourselves some headache with trying to understand why something might not work on older devices. For the moment, we are planning to support \texttt{KitKat 4.4} and later. As we can see from the \autoref{fig:androidVersions}, we can see that we will still reach more than 94\% of the market. \cite{android_2018} \\
 
-\unnumberedSection[googlePlayGameServices]{Google Play Game Services or other solutions}
+Another thing that will constraint how we make our game, is the difference in resolutions and hardware performance on each device. This means we will have to come up with a way to scale our \gls{ui} and on-screen elements, instead of just rendering based on a set resolution. This also means we will have to follow strict rules on how to clear unused elements in the game world, so the memory of the device doesn't get filled up. \\
+
+Everyone in the group are used to having android devices, or are able to emulate it on their computer. Since this was common ground for everyone in the group, as well how free we are to develop for android compared to ios, we decided to stay with it for this project as well.
+
+\AddPicture[androidVersions]{1}{0.5}{androidPlateformVersion}{Current Distribution of the Android Plateform Versions}
+
+\unnumberedSection[googlePlayGameServices]{Google Play Game Services or Other Solutions}
 Since we want to have some service that can set up \gls{p2p} connections for us, we realize our game architecture needs to include some form of manager or handler that will communicate with this service. Assuming we use some \gls{cots} like \gls{gpgs} \citep{gpgs}, we will most likely have to follow some very strict rules that allow \gls{p2p} setups via this service. These sort of interactions will happen when a user sets up a room, when a user want to join that room and when users are restricted to join certain rooms.
-
