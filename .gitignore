@@ -25,4 +25,40 @@ hs_err_pid*
 # Project Specific
 references/assetsPool
 
-*.aux, *.bbl, *.blg, *.idx, *.ind, *.lof, *.lot, *.out, *.toc, *.acn, *.acr, *.alg, *.glg, *.glo, *.gls, *.nlg, *.nlo, *.nls, *.ist, *.fls, *.log, *.fdb_latexmk, *.snm, *.nav, *.synctex.gz, *.run.xml, *.bcf, *.pyg, *.vrb, *.dvi, *.ilg, *.lol, *.py.err, *.py, *.pytxcode
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.idx
+*.ind
+*.lof
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.nlg
+*.nlo
+*.nls
+*.ist
+*.fls
+*.log
+*.fdb_latexmk
+*.snm
+*.nav
+*.synctex.gz
+*.run.xml
+*.bcf
+*.pyg
+*.vrb
+*.dvi
+*.ilg
+*.lol
+*.py.err
+*.py
+*.pytxcode
+
