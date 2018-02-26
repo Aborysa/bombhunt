@@ -1,7 +1,7 @@
 \unnumberedChapter[tactics]{Architectural Tactics}
 This section outlines the architectural tactics applied in this project to meet the quality requirements.
 
-	\unnumberedSection[modifiability]{Modifiability tactics}
+	\unnumberedSection[modifiabilityTactics]{Modifiability Tactics}
 	The goal of modifiability tactics is to lower the cost of making a change to the system. In general we define this cost as the time spent on making a change.
 
 	The tactics here discussed have three main goals:
@@ -10,7 +10,6 @@ This section outlines the architectural tactics applied in this project to meet 
 		\item Prevent ripple effects / decrease coupling
 		\item Defer binding time
 	\end{itemize}
-
 
 	\begin{description}
 		\item [Encapsulation]
@@ -30,7 +29,7 @@ This section outlines the architectural tactics applied in this project to meet 
 	\end{description}
 
 
-	\unnumberedSection[usability]{Usability tactics}
+	\unnumberedSection[usability]{Usability Tactics}
 	Usability tactics attempt to make the system easy to learn and use while offering all the required functionality.
 
 		\begin{description}
@@ -41,6 +40,5 @@ This section outlines the architectural tactics applied in this project to meet 
 			A \gls{ui} that makes sense for us is not necessarily the most intuitive for all users. Thus we try to make early prototypes and get feedback from other users.
 
 			\item[Using accepted standards]
-			There are widely known accepted standards. Designing our \gls{ui} to conform these standards, will make new users instantly familiar with our interface. Examples of this are Google's Material Design, standard controller layout, pause menu in top right, ...
-
+			There are widely known accepted standards. Designing our \gls{ui} to conform to these standards, will make new users instantly familiar with our interface. Examples of this are Google's Material Design, standard controller layout, pause menu in top right, etc.
 		\end{description}
