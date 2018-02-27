@@ -1,1 +1,58 @@
 \unnumberedChapter[intro]{Introduction}
+In the context of the development of a multiplayer game for the course \textsc{TDT4240 - Software Architecture}, we have been asked to proceed to the \gls{atam} evaluation of another team's architecture. We have been assigned to the \textit{Group 15} and the name of their game is \textit{Castle Crush}. Their team is composed of the following members:
+\begin{itemize}
+  \item Elgaaen, Truls
+  \item Johansson, Ludvig Lilleby
+  \item Kjernlie, Erik
+  \item Mortensen, J{\o}rgen Bergum
+  \item Wahl, Nina Marie
+\end{itemize}
+For their game, the development team decided to focus on the \textbf{Modifiability} as their primary quality attribute. The team also considered the \textbf{Usability} and \textbf{Availability} quality attributes during the \textit{Requirements} and \textit{Architecture Design} phases of the \gls{sdlc}.
+
+\unnumberedSection[gameConcept]{Game Concept}
+Briefly speaking, the concept of the game \textit{Castle Crush} can be described as a turn-based game into which the players have to destroy the castle of their opponent using projectiles fired using a cannon placed next to their castle. The game is supposed to allow for different game mode but the main focus will be put on the multiplayer mode. This game is planned to be ported on Android Platforms and their application will relate on \gls{gpgs}. \\
+
+\newpage
+To reach their goals, the team agreed on the selection of the following tactics and patterns: \\
+
+\begin{minipage}[t]{0.475\linewidth}
+  \textbf{Tactics}
+  \begin{itemize}
+    \item Modifiability
+    \begin{itemize}
+      \item Module Splitting
+      \item Increase Semantic Cohesion
+      \item Refactor
+      \item Encapsulate
+      \item Restrict Dependencies
+      \item Use an Intermediary
+    \end{itemize}
+    \item Usability
+    \begin{itemize}
+      \item Support User Initiative
+      \item Support System Initiative
+    \end{itemize}
+    \item Availability
+    \begin{itemize}
+      \item Ping/Echo
+      \item State resynchronisation, \newline Passive Redundancy
+    \end{itemize}
+  \end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.475\linewidth}
+  \textbf{Patterns}
+  \begin{itemize}
+    \item \gls{mvc}
+    \item Singleton
+    \item Template Method
+    \item Observer
+    \item \gls{p2p}
+  \end{itemize}
+\end{minipage}
+
+\unnumberedSection[atam]{ATAM Description}
+The \gls{atam} evaluation method has been developed around the concept of prioritized quality attributes. As one of the only input needed by the \gls{atam} process, the quality attribute scenarios will be used to create a list of issues and concerns about the correctness of the architecture evaluated. One of the main advantages of the \gls{atam} method is its flexibility. This flexibility can be seen across different aspects. Among them, we can find that the evaluation team does not need to be familiar with the architecture or the business goals and that the considered system does not have to be implemented.  \cite[Chapter 21, Section 2]{bass2013}
+
+\unnumberedSection[document]{Document Structure}
+In this document, the details of the \gls{atam} process for the game \textit{Castle Crush} will be presented. By following the different steps of the process, we will start by introducing the \nameref{chap:attributeUtilityTree}. Then, an \nameref{chap:analysisArchitecturalApproaches} will be provided. From this analysis, a set of \nameref{chap:sensitivityPoints}, \nameref{chap:tradeoffPoints}, \nameref{chap:risksAndNonRisks} will be extracted. Finally, we will end this document with a short discussion on \nameref{chap:ownExperienceAtam}. As usual, a list of \nameref{chap:issues} and a log of the \nameref{chap:changes} will be available at the end of the document.
