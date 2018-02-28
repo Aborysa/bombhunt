@@ -1,1 +1,53 @@
 \unnumberedChapter[analysisArchitecturalApproaches]{Analysis of Architectural Approaches}
+
+\unnumberedSection[availability]{Availability}
+Availability will be about detecting and preventing faults, as well as be able to recover from them.
+
+\unnumberedSection[scenarioOne]{Scenario one}
+Scenario: Detect and recover from player losing connection.\
+Attribute: Availability\
+Environment: Normal operations\
+Stimulus: One player loses connection\
+Response: Return to main menu with an error message that the opponent is disconnected\
+
+Architectual decisions: (1) ping echo, (2) peer-to-peer connection
+
+Sensitivity:\
+(1): s1\
+
+tradeoff:\
+(2): t1
+
+risk:\
+(1): r1
+
+
+Reasoning:\
+Ping echo ensure that the game participants will know when a user is no longer connecter to the game
+
+peer-to-peer will ensure that the only connected players can do the ping directly at participants, reducing the need for a server to notify it for you.
+
+
+\unnumberedSection[scenarioTwo]{Scenario two}
+Scenario: Detecting players' game state out of sync, and recovery.\
+Attribute: Availability\
+Environment: Normal operations\
+Stimulus: One player's game state update isn't notified to other participants.\
+Response: Use game state that was last accepted by both devices.\
+
+Architectual decisions: (1) peer-to-peer connection, (2) State resynchronisation
+
+Sensitivity:\
+(1): s2\
+
+tradeoff:\
+(1) t1\
+(2) t2\
+
+risk:\
+(2): r2\
+
+reasoning:\
+peer-to-peer connection will create a channel for where the clients can share their latest accepted game state.
+
+State resynchronisation will assure the clients that the state they're using, is the latest agreed game state, so that nobody will play on a different game state than their oponent.
