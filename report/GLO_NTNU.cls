@@ -33,6 +33,7 @@
 \RequirePackage{mathtools}
 \RequirePackage{array}
 \RequirePackage{multicol}
+\RequirePackage{multirow}
 
 \RequirePackage{nomencl}
 \makenomenclature
@@ -275,6 +276,7 @@
 
 %Defining new column type for table environments
 \newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \renewcommand\theadfont{\bfseries}
 
@@ -336,5 +338,37 @@
 		\end{tabularx}
 		\caption{#2}
 		\label{tab:#1}
+	\end{table}}
+
+\newcommand{\ATAM}[9]{
+	% #1 ID
+	% #2 Caption
+	% #3 Attribute(s)
+	% #4 Stimulus
+	% #5 Response/Response measure
+	% #6 Analysis Table
+	% #7 Reasoning
+	% #8 Architectural Diagram
+	% Label = ATAM || ID
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{p{4cm}p{2.5cm}p{2.5cm}p{2.5cm}p{2.5cm}}
+			\toprule
+				\textbf{ID:} #1 & \multicolumn{4}{l}{\textbf{Scenario:} #2} \\
+			\midrule
+				\textbf{Attribute(s):} & \multicolumn{4}{l}{#3} \\
+				\textbf{Stimulus:} & \multicolumn{4}{l}{#4} \\
+				\textbf{Response:} & \multicolumn{4}{L{12cm}}{#5} \\
+			\midrule
+			\textbf{Architectural \newline Decisions} & \textbf{Sensitivity} & \textbf{Tradeoff} & \textbf{Risk} & \textbf{Non-risk} \\
+			\midrule
+			#6
+			\midrule
+			\multicolumn{5}{L{15cm}}{\textbf{Reasoning:} \newline #7} \\
+			\multicolumn{5}{L{15cm}}{\textbf{Architectural \newline Diagram:} #8} \\
+			\bottomrule
+		\end{tabular}
+		\caption{#2}
+		\label{tab:ATAM#1}
 	\end{table}
 }

@@ -3,51 +3,28 @@
 \unnumberedSection[availability]{Availability}
 Availability will be about detecting and preventing faults, as well as be able to recover from them.
 
-\unnumberedSection[scenarioOne]{Scenario one}
-Scenario: Detect and recover from player losing connection.\
-Attribute: Availability\
-Environment: Normal operations\
-Stimulus: One player loses connection\
-Response: Return to main menu with an error message that the opponent is disconnected\
+\ATAM{A1}{Detecting and recovering from player losing connection}
+{Availability}
+{Normal operations}
+{One player looses connection. Return to main menu with an error message that the opponent is disconnected.}
+{\textbf{Ping/Echo} & \nameref{s1} & & \nameref{r1} & \\
+\textbf{\gls{p2p} Connection} & & \nameref{t1} & & \\}
+{\begin{itemize}
+  \item Ping/Echo ensure that the game participants will know when a user is no longer connected to the game.
+  \item \gls{p2p} will ensure that the only connected players can do the ping directly at participants, reducing the need for a server to notify it for you.
+\end{itemize}}
+{}
 
-Architectual decisions: (1) ping echo, (2) peer-to-peer connection
+\ATAM{A2}{Detecting players' game state out of sync and recovery}
+{Availability}
+{Normal operations}
+{One player's game state update is not notified to other participants. Use game state that was last accepted by both devices.}
+{\textbf{\gls{p2p} Connection} & \nameref{s2} & \nameref{t1} & & \\
+\textbf{State \newline Resynchronisation} & & \nameref{t2} & \nameref{r2} & \\}
+{\begin{itemize}
+  \item \gls{p2p} connection will create a channel for where the clients can share their latest accepted game state
+  \item State resynchronisation will assure the clients that the state they are using, is the latest agreed game state, so that nobody will play on a different game state than their opponent
+\end{itemize}}
+{}
 
-Sensitivity:\
-(1): s1\
-
-tradeoff:\
-(2): t1
-
-risk:\
-(1): r1
-
-
-Reasoning:\
-Ping echo ensure that the game participants will know when a user is no longer connecter to the game
-
-peer-to-peer will ensure that the only connected players can do the ping directly at participants, reducing the need for a server to notify it for you.
-
-
-\unnumberedSection[scenarioTwo]{Scenario two}
-Scenario: Detecting players' game state out of sync, and recovery.\
-Attribute: Availability\
-Environment: Normal operations\
-Stimulus: One player's game state update isn't notified to other participants.\
-Response: Use game state that was last accepted by both devices.\
-
-Architectual decisions: (1) peer-to-peer connection, (2) State resynchronisation
-
-Sensitivity:\
-(1): s2\
-
-tradeoff:\
-(1) t1\
-(2) t2\
-
-risk:\
-(2): r2\
-
-reasoning:\
-peer-to-peer connection will create a channel for where the clients can share their latest accepted game state.
-
-State resynchronisation will assure the clients that the state they're using, is the latest agreed game state, so that nobody will play on a different game state than their oponent.
+% DO NOT REMOVE WEIRD END OF FILE ERROR SPAWNING...
