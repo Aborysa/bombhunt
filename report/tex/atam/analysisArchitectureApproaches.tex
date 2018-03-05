@@ -1,5 +1,18 @@
 \unnumberedChapter[analysisArchitecturalApproaches]{Analysis of Architectural Approaches}
 
+\unnumberedSection[modifiability]{Modifiability}
+
+\ATAM{M1}{Add different game levels/designs}
+{Modifiability}
+{Wish to add different level designs}
+{Make changes, unit testing, possibly user testing. In 3 hours, levels will be integrated in the system without
+adapting other modules}
+{\textbf{Observer} & \nameref{s4} & & \nameref{r3}, \nameref{r4} & \\
+\textbf{Template Method} & & \nameref{t2} & \nameref{r5} & \\}
+{Observer p}
+{}
+
+
 \unnumberedSection[availability]{Availability}
 Availability will be about detecting and preventing faults, as well as be able to recover from them.
 
@@ -8,7 +21,7 @@ Availability will be about detecting and preventing faults, as well as be able t
 {Normal operations}
 {One player looses connection. Return to main menu with an error message that the opponent is disconnected.}
 {\textbf{Ping/Echo} & \nameref{s1} & & \nameref{r1} & \\
-\textbf{\gls{p2p} Connection} & & \nameref{t1} & & \nameref{n1} \\}
+\textbf{\gls{p2p} Connection} & \nameref{s2}, \nameref{s3} & & & \nameref{n1} \\}
 {\begin{itemize}
   \item Ping/Echo ensure that the game participants will know when a user is no longer connected to the game.
   \item \gls{p2p} will ensure that the only connected players can do the ping directly at participants, reducing the need for a server to notify it for you.
@@ -34,16 +47,5 @@ Availability will be about detecting and preventing faults, as well as be able t
   \hspace{5em}
   \includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{p2pATAM}
 \end{center}}
-
-\unnumberedSection[modifiability]{Modifiability}
-\ATAM{M1}{Add different game levels/designs}
-{Modifiability}
-{Wish to add different level designs}
-{Make changes, unit testing, possibly user testing. In 3 hours, levels will be integrated in the system without
-adapting other modules}
-{\textbf{Observer} & \nameref{s4} & & \nameref{r3} & \\
-\textbf{Template Method} & & \nameref{t2} & \nameref{r4} & \\}
-{}
-{}
 
 % DO NOT REMOVE WEIRD END OF FILE ERROR SPAWNING...

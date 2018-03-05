@@ -1,7 +1,18 @@
-\unnumberedChapter[tradeoffPoints]{Tradeoff Points}
-
+\unnumberedSection[tradeoffPoints]{Tradeoff Points}
 
 \begin{description}[style=nextline]
   \item[T1\label{t1}] State resynchronisation will have a negative effect on performance, but positive effect on availability
-  \item[T2\label{t2}] Template Method Pattern will maybe restrict what are the functionalities and behavior of the different game objects, but still helps achieve modifiability requirement 
+    \vspace{\baselineskip}
+    \newline
+    Having a state resynchronisation will be beneficial for the availability since it will provide a protocol to recover in case of fault if one of the players do not receive one or many messages and get out of sync. Recovering from this situation may however be processing expensive since a negotiation between all players must be performed in order to determine on which to agreed on and to perform the transfert of the necessary information to all the unsynchronized nodes.
+
+  \item[T2\label{t2}] Template Method Pattern will have negative effect on modifiability, but positive effect on modifiability
+    \vspace{\baselineskip}
+    \newline
+    As surprising as it can be, the evaluation team decided to classify the usage of the Template Method pattern as a tradeoff since we do not consider the this will help achieve the kind of modifiability required by the game dynamic.
+
+    Discussion about template method + wiki ref
+    maybe restrict what are the functionalities and behavior of the different game objects, but still helps achieve modifiability requirement
+
+    discussion about composite pattern + wiki ref exemple with castle structure
 \end{description}

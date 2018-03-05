@@ -1,8 +1,23 @@
-\unnumberedChapter[sensitivityPoints]{Sensitivity Points}
+\unnumberedSection[sensitivityPoints]{Sensitivity Points}
 
 \begin{description}[style=nextline]
   \item[S1\label{s1}] Ping/Echo will have a positive effect on availability
+  \vspace{\baselineskip}
+  \newline
+  Ping/Echo improve the availability by minimizing the down-time caused by any failure. The Ping/Echo will normally be at the head of the recovery protocol since this tactic cannot prevent a failure by itself.
+
   \item[S2\label{s2}] \gls{p2p} connection will have a positive effect on availability
+  \vspace{\baselineskip}
+  \newline
+  The availability is enhanced in a \gls{p2p} connection because the devices concerned and having an interest in the connection will be their own provider of the processing power needed. In a traditional client-server connection, the burden would normally be completely delegated to the hosting servers which would normally necessitate a lot more processing power, a complex hardware architecture and a bigger overhead for the sharing of the ressource among the different requests received by the server.
+
   \item[S3\label{s3}] \gls{p2p} connection will have a positive effect on performance
-  \item[S4\label{s4}] Observer pattern will help creating different types of castle and achieve modifiability requirement
+  \vspace{\baselineskip}
+  \newline
+  By using a \gls{p2p} connection, the data package can be transfered directly from one player to the other without relying on the server has a communication intermediate. Hence, the number of data package transfered is roughly diminished by a factor 2.
+
+  \item[S4\label{s4}] Observer pattern will have a positive effect on the modifiability
+  \vspace{\baselineskip}
+  \newline
+  The use of the observer pattern will reduce the coupling between distant and unrelated classes and increase the semantic cohesion at the same time. One could argue that the observer pattern actually introduce more coupling, but this is done through the implementation of a \texttt{Listener} interface which we do not consider as a binding architectural decision. The observer pattern would definitely have a positive impact on the architecture by simplifying the communication flow between the different game objects.
 \end{description}

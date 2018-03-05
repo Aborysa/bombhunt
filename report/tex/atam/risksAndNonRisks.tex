@@ -1,11 +1,46 @@
-\unnumberedChapter[risksAndNonRisks]{Risks and Non-Risks}
+\unnumberedSection[risksAndNonRisks]{Risks and Non-Risks}
 
 \begin{description}[style=nextline]
   \item[R1\label{r1}] Ping/Echo can introduce unnecessary complexity
-  \item[N1\label{n1}] The \gls{p2p} connection can be handled by the Google Play Games Services.
+    \vspace{\baselineskip}
+    \newline
+    No real value will be added to the implementation of a Ping/Echo protocol because the connection between players will still be lost and the game will have to stop. The only advantage we could see here would be the redirection of the connected players to the main menu windows whereas the player having lost the connection would face a freezing window in the worst case. By looking at the \gls{gpgs} real-time multiplayer documentation, we can see that an event notification service is already provided by the framework. The documentation also mentions that the resulting connection set will be a set of fully connected players and that if any connection is loss between one player and another, the connection set will result in the remaining fully connected players network. \cite[Connected Set]{realTimeMultiplayerGPGS}
+    \vspace{\baselineskip}
+    \newline
+    Finally, an analysis and a lot of testing could be required to determine the value to which the timer must be set to actually consider a player has lost its connection. In fact, having a small buffer can sometimes be useful for temporary disconnection.
+
   \item[R2\label{r2}] State resynchronisation will be hard to implement
-  \item[R3\label{r3}] Have to be careful on deletion of the blocks to avoid observer to alert deleted bricks
-  \item[R4\label{r4}] May restrict the flexibility in the gameplay
+    \vspace{\baselineskip}
+    \newline
+    Considering the low amount of data to be exchanged the need for unreliable and risk for asynchronism is not worth. Due to the turn-based aspect of the game, the reliable messaging option offered by the real-time multiplayer gaming session would be a better alternative than trying to implement a state synchronisation procedure.
+    \begin{quote}
+      With reliable messaging, data delivery, integrity, and ordering are guaranteed. \cite[Sending Game Data, Reliable Messaging]{realTimeMultiplayerGPGS}
+    \end{quote}
+    Furthermore, more investigation could be done through the documentation of the turn-based multiplayer gaming session. However, at the read of the description of their definition of a pure turn based game, the evaluation team was unsure that this will fit all the needs of your game concept. \cite{turnBasedMultiplayerGPGS}
+
+  \item[R3\label{r3}] Observer pattern may lead to memory leaks if not correctly implemented
+    \vspace{\baselineskip}
+    \newline
+    Due to the observer and observed dynamic that you implementation
+
+    Have to be careful on deletion of the bricks to avoid observer to alert deleted bricks
+
+  \item[R4\label{r4}] Observer pattern may be hard to implement over the \texttt{LibGDX}'s physics engine
+    \vspace{\baselineskip}
+    \newline
+    Observer pattern usually come in pair with ECS pattern
+
+  \item[R5\label{r5}] Template method may barely suffice to introduce enough class hierarchy flexibility
+    \vspace{\baselineskip}
+    \newline
+    Considering the repetitiveness of the gameplay, it will be important for the architecture to be flexible enough to include as many different variations of the basic game as possible. As demonstrated here, template method may not be sufficient to achieve this requirement.
+
 \end{description}
 
-We chose this scenario because we think that the proposed solution to the problem can be to much work to implement for an infrequent scenario. If the connectivity between clients is handled by Google, we can would suggest to make connectivity measures low priority and trust Google with the network availability.
+\begin{description}[style=nextline]
+  \item[N1\label{n1}] Establishment of the \gls{p2p} connection can be handled by the Google Play Games Services
+  \vspace{\baselineskip}
+  \newline
+  Considering the small amount of time at our disposition for the development of the game, it is actually a plus-value to relate on such a generic, well-documented and standardized interface to establish the \gls{p2p} connection between the players and the room creation.
+
+\end{description}
