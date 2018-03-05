@@ -8,7 +8,7 @@ Availability will be about detecting and preventing faults, as well as be able t
 {Normal operations}
 {One player looses connection. Return to main menu with an error message that the opponent is disconnected.}
 {\textbf{Ping/Echo} & \nameref{s1} & & \nameref{r1} & \\
-\textbf{\gls{p2p} Connection} & & \nameref{t1} & & \\}
+\textbf{\gls{p2p} Connection} & & \nameref{t1} & & \nameref{n1} \\}
 {\begin{itemize}
   \item Ping/Echo ensure that the game participants will know when a user is no longer connected to the game.
   \item \gls{p2p} will ensure that the only connected players can do the ping directly at participants, reducing the need for a server to notify it for you.
@@ -19,11 +19,13 @@ Availability will be about detecting and preventing faults, as well as be able t
 {Availability}
 {Normal operations}
 {One player's game state update is not notified to other participants. Use game state that was last accepted by both devices.}
-{\textbf{\gls{p2p} Connection} & \nameref{s2} & \nameref{t1} & & \\
-\textbf{State \newline Resynchronisation} & & \nameref{t2} & \nameref{r2} & \\}
+{\textbf{\gls{p2p} Connection} & \nameref{s2}, \nameref{s3} & & & \nameref{n1} \\
+\textbf{State \newline Resynchronisation} & & \nameref{t1} & \nameref{r2} & \\}
 {\begin{itemize}
   \item \gls{p2p} connection will create a channel for where the clients can share their latest accepted game state
   \item State resynchronisation will assure the clients that the state they are using, is the latest agreed game state, so that nobody will play on a different game state than their opponent
+  
+  We chose this scenario because we think that the proposed solution to the problem can be to much work to implement for an infrequent scenario. If the connectivity between clients is handled by Google, we can would suggest to make connectivity measures low priority and trust Google with the network availability.
 \end{itemize}}
 {}
 
