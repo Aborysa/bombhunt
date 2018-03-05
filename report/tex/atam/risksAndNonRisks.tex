@@ -22,11 +22,11 @@
     \vspace{\baselineskip}
     \newline
     One of the downside of the observer pattern is that it can easily lead to memory leaks and especially when the publishers can be subscribers and vice-versa conjointly. This is why great care should be used when it will come the time to delete (destroy) blocks if you decide to use this pattern in the final design. \cite{wiki:observer}
-    
+
   \item[R4\label{r4}] Observer pattern may be hard to implement over the \texttt{LibGDX}'s physics engine
     \vspace{\baselineskip}
     \newline
-    Observer pattern usually come in pair with ECS pattern
+    Observer pattern usually comes in pair with \gls{ecs} pattern. So if one decide to use to create its own observer pattern for the development of a game, he is merely forced to implement the \gls{ecs} pattern along because it is usually the role of the physics engine to notify the objects that has to be notified. On the other hand, an alternative would be to register to the actual physics engine collision publisher to induce the change desired in the gameplay, but again it would results in duplication of work and processing. The best solution would be to use \texttt{LibGDX.Box2DPlot} instances for the bricks of the castle and to rely on the implemented physics engine or to go ahead and implement your own \gls{ecs} and the observer pattern at the same time. 
 
   \item[R5\label{r5}] Template method may barely suffice to introduce enough class hierarchy flexibility
     \vspace{\baselineskip}
