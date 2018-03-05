@@ -21,10 +21,8 @@
   \item[R3\label{r3}] Observer pattern may lead to memory leaks if not correctly implemented
     \vspace{\baselineskip}
     \newline
-    Due to the observer and observed dynamic that you implementation
-
-    Have to be careful on deletion of the bricks to avoid observer to alert deleted bricks
-
+    One of the downside of the observer pattern is that it can easily lead to memory leaks and especially when the publishers can be subscribers and vice-versa conjointly. This is why great care should be used when it will come the time to delete (destroy) blocks if you decide to use this pattern in the final design. \cite{wiki:observer}
+    
   \item[R4\label{r4}] Observer pattern may be hard to implement over the \texttt{LibGDX}'s physics engine
     \vspace{\baselineskip}
     \newline
