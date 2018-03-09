@@ -13,7 +13,7 @@ public class SpriteHelper {
   
   //Offsets the TextureRegion's uv-coords by 0.5f
   //fixes the opengl subpixel alignment
-  private static void offsetRegion(TextureRegion texregion){
+  private static TextureRegion offsetRegion(TextureRegion texregion){
     texregion.setRegion(
             texregion.getU() + 0.5f,
             texregion.getV() + 0.5f,
@@ -30,12 +30,12 @@ public class SpriteHelper {
     return texregions;
   }
 
-  public static Sprite createSprite(TextureAtlast texatlas, String name){
-    return texatlas.createSprite(offsetRegion(texregion), name);
+  public static Sprite createSprite(TextureAtlas texatlas, String name){
+    return (Sprite)offsetRegion(texatlas.createSprite(name));
   }
 
-  public static Array<Sprite> createSprites(TextureAtlas texatlas, Spring name){
-    return offsetRegions(texatlas.createSprites(texatlas, name));
+  public static Array<Sprite> createSprites(TextureAtlas texatlas, String name){
+    return (Array<Sprite>) offsetRegions(texatlas.createSprites(name));
   }
 
   public static Animation<Sprite> createAnimation(TextureAtlas texatlas, String name, float fps){
