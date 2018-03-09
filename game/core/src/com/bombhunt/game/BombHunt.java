@@ -11,35 +11,35 @@ import com.bombhunt.game.view.IView;
 
 public class BombHunt extends ApplicationAdapter {
 
-	IView currentView;
+  IView currentView;
 
-	public void setCurrentView(IView view){
-		// May want to despose old view
-		Gdx.input.setInputProcessor(view.getInputProcessor());
-		currentView = view;
-	}
+  public void setCurrentView(IView view){
+    // May want to despose old view
+    Gdx.input.setInputProcessor(view.getInputProcessor());
+    currentView = view;
+  }
 
-	@Override
-	public void create () {
-		setCurrentView(new GameScreen());
+  @Override
+  public void create () {
+    setCurrentView(new GameScreen());
 
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-	}
+    Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+  }
 
-	@Override
-	public void render () {
-		float dtime = Gdx.graphics.getDeltaTime();
+  @Override
+  public void render () {
+    float dtime = Gdx.graphics.getDeltaTime();
 
-		currentView.update(dtime);
+    currentView.update(dtime);
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+    Gdx.gl.glClearColor(0, 0, 0, 1);
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		currentView.render();
+    currentView.render();
 
-	}
-	
-	@Override
-	public void dispose () {
-	}
+  }
+  
+  @Override
+  public void dispose () {
+  }
 }

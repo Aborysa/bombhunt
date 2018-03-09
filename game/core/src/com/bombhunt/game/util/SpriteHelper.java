@@ -20,16 +20,26 @@ public class SpriteHelper {
             texregion.getU2() - 0.5f,
             texregion.getV2() - 0.5f
     );
+    return texregion;
   }
 
-  private static void offsetRegions(Array<? extends TextureRegion> texregions){
+  private static Array<? extends TextureRegion> offsetRegions(Array<? extends TextureRegion> texregions){
     for(TextureRegion region : texregions) {
       offsetRegion(region);
     }
+    return texregions;
   }
 
-  public Animation<Sprite> createAnimation(TextureAtlas texregion, String name, float fps){
-    Array<Sprite> sprites = texregion.createSprites(name);
+  public static Sprite createSprite(TextureAtlast texatlas, String name){
+    return texatlas.createSprite(offsetRegion(texregion), name);
+  }
+
+  public static Array<Sprite> createSprites(TextureAtlas texatlas, Spring name){
+    return offsetRegions(texatlas.createSprites(texatlas, name));
+  }
+
+  public static Animation<Sprite> createAnimation(TextureAtlas texatlas, String name, float fps){
+    Array<Sprite> sprites = texatlas.createSprites(name);
     offsetRegions(sprites);
     return new Animation<Sprite>(1f/fps, sprites);
   }
