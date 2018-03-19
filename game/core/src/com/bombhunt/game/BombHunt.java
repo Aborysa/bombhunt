@@ -6,12 +6,16 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.bombhunt.game.util.Assets;
 import com.bombhunt.game.view.GameScreen;
 import com.bombhunt.game.view.IView;
 
 public class BombHunt extends ApplicationAdapter {
 
   IView currentView;
+
+  boolean assetsLoaded = false;
 
   public void setCurrentView(IView view){
     // May want to despose old view
@@ -21,18 +25,33 @@ public class BombHunt extends ApplicationAdapter {
 
   @Override
   public void create () {
-    setCurrentView(new GameScreen());
 
     Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+
+    // Set assets to load, might want to do this via a preload file
+    Assets assets = Assets.getInstance();
+    assets.preLoad("badlogic.jpg", Texture.class);
+    assets.preLoad("tilemap1.atlas", TextureAtlas.class);
   }
 
   @Override
   public void render () {
+    // Temp setup for loading assets
+    if(!assetsLoaded){
+      assetsLoaded = Assets.getInstance().update();
+      if(assetsLoaded) {
+        // Once loaded set the current view to the game screen
+        setCurrentView(new GameScreen());
+      }
+      return;
+    }
+
+
     float dtime = Gdx.graphics.getDeltaTime();
 
     currentView.update(dtime);
 
-    Gdx.gl.glClearColor(0, 0, 0, 1);
+    Gdx.gl.glClearColor(0.2f, 0, 0, 1);
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
     currentView.render();

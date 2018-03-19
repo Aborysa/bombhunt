@@ -1,15 +1,13 @@
 
 tilemap1.png
-size: 512,512
+size: 256,512
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-bomb
+bomb_party_v4
   rotate: false
   xy: 2, 2
   size: 240, 304
-  split: 64, 80, 288, 0
-  pad: 64, 80, 288, 0
   orig: 240, 304
   offset: 0, 0
   index: -1

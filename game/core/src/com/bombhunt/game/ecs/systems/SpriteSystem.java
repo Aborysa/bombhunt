@@ -32,7 +32,10 @@ public class SpriteSystem extends IteratingSystem{
         Sprite sprite = null;
         if(animationComponent != null){
             animationComponent.time += world.getDelta();
-            sprite = animationComponent.animation.getKeyFrame(animationComponent.time, true);
+            System.out.println(animationComponent.animation);
+            System.out.println(animationComponent.time);
+            sprite = animationComponent.animation
+                    .getKeyFrame(animationComponent.time, true);
             if(spriteComponent != null){
                 spriteComponent.sprite = sprite;
             }
@@ -44,7 +47,6 @@ public class SpriteSystem extends IteratingSystem{
         sprite.setPosition(transformComponent.position.x, transformComponent.position.y);
         sprite.setScale(transformComponent.scale.x, transformComponent.scale.y);
         sprite.setRotation(transformComponent.rotation);
-
 
     }
 
