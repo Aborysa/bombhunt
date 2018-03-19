@@ -1,4 +1,4 @@
-package com.bombhunt.game.util;
+package com.bombhunt.game.utils;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;

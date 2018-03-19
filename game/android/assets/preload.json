@@ -1,0 +1,4 @@
+[
+  {"file": "tilemap1.atlas", "type": "com.badlogic.gdx.graphics.g2d.TextureAtlas"},
+  {"file": "badlogic.jpg", "type": "com.badlogic.gdx.graphics.Texture"}
+]
