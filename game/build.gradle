@@ -49,6 +49,8 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        // Support for artemis-odb
+        compile "net.onedaybeard.artemis:artemis-odb:2.1.0"
         
     }
 }
@@ -78,6 +80,8 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+        // Support for artemis-odb
+        compile "net.onedaybeard.artemis:artemis-odb:2.1.0"
         
     }
 }
@@ -90,8 +94,10 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "net.onedaybeard.artemis:artemis-odb:2.2.0-SNAPSHOT"
+
         compile "io.reactivex.rxjava2:rxjava:2.1.10"
+        // Support for artemis-odb
+        compile "net.onedaybeard.artemis:artemis-odb:2.1.0"
     }
 }
 
