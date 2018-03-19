@@ -1,8 +1,7 @@
-package com.bombhunt.game.components;
+package com.bombhunt.game.ecs.components;
 
 import com.artemis.Component;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
 public class SpriteComponent extends Component {

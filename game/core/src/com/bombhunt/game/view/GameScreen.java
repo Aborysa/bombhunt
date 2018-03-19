@@ -3,28 +3,25 @@ package com.bombhunt.game.view;
 import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.Aspect;
-import com.artemis.ComponentManager;
 import com.artemis.ComponentMapper;
 import com.artemis.EntitySubscription;
 import com.artemis.World;
 import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
-import com.artemis.utils.Bag;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.bombhunt.game.components.SpriteComponent;
-import com.bombhunt.game.components.TransformComponent;
-import com.bombhunt.game.components.VelocityComponent;
-import com.bombhunt.game.systems.SpriteSystem;
-import com.bombhunt.game.systems.VelocitySystem;
+import com.bombhunt.game.ecs.components.SpriteComponent;
+import com.bombhunt.game.ecs.components.TransformComponent;
+import com.bombhunt.game.ecs.components.VelocityComponent;
+import com.bombhunt.game.ecs.systems.SpriteSystem;
+import com.bombhunt.game.ecs.systems.VelocitySystem;
 
 
 

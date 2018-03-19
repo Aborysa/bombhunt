@@ -1,12 +1,12 @@
-package com.bombhunt.game.systems;
+package com.bombhunt.game.ecs.systems;
 
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector3;
-import com.bombhunt.game.components.TransformComponent;
-import com.bombhunt.game.components.VelocityComponent;
+import com.bombhunt.game.ecs.components.TransformComponent;
+import com.bombhunt.game.ecs.components.VelocityComponent;
 
 public class VelocitySystem extends IteratingSystem {
 

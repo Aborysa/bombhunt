@@ -1,14 +1,12 @@
-package com.bombhunt.game.systems;
+package com.bombhunt.game.ecs.systems;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.artemis.utils.Bag;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bombhunt.game.components.AnimationComponent;
-import com.bombhunt.game.components.SpriteComponent;
-import com.bombhunt.game.components.TransformComponent;
+import com.bombhunt.game.ecs.components.AnimationComponent;
+import com.bombhunt.game.ecs.components.SpriteComponent;
+import com.bombhunt.game.ecs.components.TransformComponent;
 
 
 // System for moving sprites into place and dealing with animations for animated sprites
