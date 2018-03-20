@@ -24,7 +24,7 @@ public class Assets{
 
         // Setup custom loaders here
         //assetManager.setLoader(Type.class, new Loader(resolver), param);
-        assetManager.setLoader(TiledMap.class, ".tmx", new TmxMapLoader(resolver));
+        assetManager.setLoader(TiledMap.class, new TmxMapLoader(resolver));
         assetManager.setLoader(JsonValue.class, new JsonLoader(resolver));
 
         assetManager.load("preload.json", JsonValue.class);

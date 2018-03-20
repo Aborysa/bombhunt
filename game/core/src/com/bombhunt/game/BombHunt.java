@@ -2,12 +2,10 @@ package com.bombhunt.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.bombhunt.game.util.Assets;
+import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.view.GameScreen;
 import com.bombhunt.game.view.IView;
 
@@ -28,10 +26,6 @@ public class BombHunt extends ApplicationAdapter {
 
     Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
-    // Set assets to load, might want to do this via a preload file
-    Assets assets = Assets.getInstance();
-    assets.preLoad("badlogic.jpg", Texture.class);
-    assets.preLoad("tilemap1.atlas", TextureAtlas.class);
   }
 
   @Override
