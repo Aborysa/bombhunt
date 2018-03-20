@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.bombhunt.game.util.Assets;
+import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.view.GameScreen;
 import com.bombhunt.game.view.IView;
 

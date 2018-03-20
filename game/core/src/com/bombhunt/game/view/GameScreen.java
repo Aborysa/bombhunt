@@ -25,8 +25,8 @@ import com.bombhunt.game.ecs.components.TransformComponent;
 import com.bombhunt.game.ecs.components.VelocityComponent;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
 import com.bombhunt.game.ecs.systems.VelocitySystem;
-import com.bombhunt.game.util.Assets;
-import com.bombhunt.game.util.SpriteHelper;
+import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.utils.SpriteHelper;
 
 
 public class GameScreen extends InputAdapter implements IView{
