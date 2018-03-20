@@ -53,6 +53,7 @@ project(":desktop") {
         compile "net.onedaybeard.artemis:artemis-odb:2.1.0"
         // gpgs
         compile "com.google.android.gms:play-services-games:11.8.0"
+        compile "com.google.android.gms:play-services-auth:11.8.0"
         
     }
 }
@@ -86,6 +87,7 @@ project(":android") {
         compile "net.onedaybeard.artemis:artemis-odb:2.1.0"
         // gpgs
         compile "com.google.android.gms:play-services-games:11.8.0"
+        compile "com.google.android.gms:play-services-auth:11.8.0"
         
     }
 }
@@ -104,6 +106,7 @@ project(":core") {
         compile "net.onedaybeard.artemis:artemis-odb:2.1.0"
         // gpgs
         compile "com.google.android.gms:play-services-games:11.8.0"
+        compile "com.google.android.gms:play-services-auth:11.8.0"
     }
 }
 
