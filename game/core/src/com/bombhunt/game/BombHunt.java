@@ -32,6 +32,9 @@ public class BombHunt extends ApplicationAdapter {
   public void create () {
 
     Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+    Gdx.gl.glDepthMask(true);
+    Gdx.gl.glDisable(GL20.GL_BLEND);
+    Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
 
   }
 

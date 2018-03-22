@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Collection;
@@ -73,6 +74,14 @@ public class SpriteHelper {
 
     public static Animation<Sprite> createAnimation(Array<Sprite> sprites, float fps){
         return new Animation<Sprite>(1f/fps, sprites);
+    }
+
+    public static Animation<Decal> createDecalAnimation(Array<Sprite> sprites, float fps){
+        Array<Decal> decals = new Array<Decal>(sprites.size);
+        for(Sprite sprite : sprites){
+            decals.add(Decal.newDecal(sprite, true));
+        }
+        return new Animation<Decal>(1f/fps, decals);
     }
 
 

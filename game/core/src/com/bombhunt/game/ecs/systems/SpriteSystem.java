@@ -4,6 +4,7 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
@@ -29,7 +30,7 @@ public class SpriteSystem extends IteratingSystem{
         AnimationComponent animationComponent = mapAnimation.get(entity);
         SpriteComponent spriteComponent = mapSprite.get(entity);
 
-        Sprite sprite = null;
+        Decal sprite = null;
         if(animationComponent != null){
             animationComponent.time += world.getDelta();
             System.out.println(animationComponent.animation);
@@ -44,9 +45,9 @@ public class SpriteSystem extends IteratingSystem{
         if(spriteComponent != null){
             sprite = spriteComponent.sprite;
         }
-        sprite.setPosition(transformComponent.position.x, transformComponent.position.y);
+        sprite.setPosition(transformComponent.position);
         sprite.setScale(transformComponent.scale.x, transformComponent.scale.y);
-        sprite.setRotation(transformComponent.rotation);
+        sprite.setRotationZ(transformComponent.rotation);
 
     }
 

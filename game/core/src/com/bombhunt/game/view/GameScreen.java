@@ -20,6 +20,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.graphics.g3d.decals.SimpleOrthoGroupStrategy;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -34,6 +38,7 @@ import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.utils.SpriteHelper;
 
 import java.util.HashMap;
+import java.util.Vector;
 
 
 public class GameScreen extends InputAdapter implements IView{
@@ -45,7 +50,7 @@ public class GameScreen extends InputAdapter implements IView{
     private float accTime = 0;
     EntitySubscription subscription;
 
-    private SpriteBatch batch;
+    private DecalBatch batch;
     private ComponentMapper<SpriteComponent> mapSprite;
 
     private OrthogonalTiledMapRenderer mapRenderer;
@@ -62,9 +67,8 @@ public class GameScreen extends InputAdapter implements IView{
     public GameScreen(){
         System.out.println("Creating gamescreen");
         currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        currentCamera.near = -10000;
-        currentCamera.far = 10000;
-        batch = new SpriteBatch();
+        currentCamera.position.set(new Vector3(0,0,0));
+        batch = new DecalBatch(new CameraGroupStrategy(currentCamera));
 
 
         WorldConfiguration config = new WorldConfigurationBuilder()
@@ -79,14 +83,14 @@ public class GameScreen extends InputAdapter implements IView{
         subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class, TransformComponent.class));
 
         //Sprite test = new Sprite(Assets.getInstance().get("tilemap1.png", Texture.class));
-        Animation<Sprite> test = SpriteHelper.createAnimation(
+        Animation<Decal> test = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(
                         Assets.getInstance().get("tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4"),
                         16, 4, 18, 6
                 ),
                 2);
 
-        Animation<Sprite> test2 = SpriteHelper.createAnimation(
+        Animation<Decal> test2 = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(
                         Assets.getInstance().get("tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4"),
                         16, 4, 18, 6
@@ -102,13 +106,13 @@ public class GameScreen extends InputAdapter implements IView{
         int entityTest = world.create(testType);
         int entityTest2 = world.create(testType);
         mapAnimation.get(entityTest).animation = test;
-        mapVelocity.get(entityTest).velocity = new Vector2(20f,0f);
-        mapTransform.get(entityTest).position = new Vector3(0f, 150f, 1f);
+        mapVelocity.get(entityTest).velocity = new Vector2(-20f,0f);
+        mapTransform.get(entityTest).position = new Vector3(100, 0f, -20f);
         mapTransform.get(entityTest).scale = new Vector2(10f, 10f);
 
         mapAnimation.get(entityTest2).animation = test2;
-        mapVelocity.get(entityTest2).velocity = new Vector2(-20f,0f);
-        mapTransform.get(entityTest2).position = new Vector3(300f, 150f, 100f);
+        mapVelocity.get(entityTest2).velocity = new Vector2(20f,0f);
+        mapTransform.get(entityTest2).position = new Vector3(-100f, 0f, -100f);
         mapTransform.get(entityTest2).scale = new Vector2(10f, 10f);
 
 
@@ -161,7 +165,8 @@ public class GameScreen extends InputAdapter implements IView{
     public void render(){
         //mapRenderer.setView(batch.getProjectionMatrix(),0,0,600,600);
         //mapRenderer.render();
-        batch.setProjectionMatrix(currentCamera.combined);
+        IntBag entities = subscription.getEntities();
+        /*batch.setProjectionMatrix(currentCamera.combined);
         batch.begin();
         IntBag entities = subscription.getEntities();
 
@@ -171,7 +176,14 @@ public class GameScreen extends InputAdapter implements IView{
             SpriteComponent spriteComponent = mapSprite.get(e);
             spriteComponent.sprite.draw(batch);
         }
-        batch.end();
+        batch.end();*/
+        for(int e : entities.getData()){
+            SpriteComponent spriteComponent = mapSprite.get(e);
+            batch.add(spriteComponent.sprite);
+            //spriteComponent.sprite.draw(batch);
+        }
+        
+        batch.flush();
 
     }
 
