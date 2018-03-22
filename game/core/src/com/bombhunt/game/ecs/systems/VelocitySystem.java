@@ -16,9 +16,7 @@ public class VelocitySystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<VelocityComponent> mapVelocity;
 
-    @Wire
-    private CrateFactory crateFactory;
-    
+
     public VelocitySystem(){
         super(Aspect.all(TransformComponent.class, VelocityComponent.class));
     }
@@ -31,6 +29,5 @@ public class VelocitySystem extends IteratingSystem {
 
         float delta = world.getDelta();
         transformComponent.position.add(new Vector3(velocityComponent.velocity, 0).scl(delta));
-        System.out.println(crateFactory);
     }
 }

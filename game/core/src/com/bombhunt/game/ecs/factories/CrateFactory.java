@@ -10,7 +10,10 @@ import com.artemis.annotations.Wire;
 import com.artemis.injection.FieldResolver;
 import com.artemis.injection.WiredFieldResolver;
 import com.artemis.utils.reflect.Field;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector3;
 import com.bombhunt.game.ecs.components.AnimationComponent;
@@ -32,8 +35,21 @@ public class CrateFactory implements IEntityFactory {
   private ComponentMapper<DestroyableComponent> mapDestroyable;
 
  
-  public int createFromTile(Cell cell){
-    return 0;
+  public int createFromTile(Cell cell, TiledMapTileLayer layer, int x, int y, int depth){
+    TiledMapTile tile = cell.getTile();
+    TextureRegion tex = tile.getTextureRegion();
+    float rotation = 90*cell.getRotation();
+
+    //
+    Decal decal = Decal.newDecal(tex, true);
+
+
+    Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y, depth);
+    int e = createCrate(pos, decal, 1);
+
+    mapTransform.get(e).rotation = rotation;
+
+    return e;
   }
 
 

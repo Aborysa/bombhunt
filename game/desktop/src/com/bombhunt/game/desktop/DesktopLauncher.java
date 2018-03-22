@@ -11,6 +11,8 @@ public class DesktopLauncher {
     config.vSyncEnabled = false;
     config.foregroundFPS = 0;
     config.backgroundFPS = 1;
+    config.height = 800;
+    config.width = 800;
     new LwjglApplication(new BombHunt(new PlayAdapter()), config);
   }
 }

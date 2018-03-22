@@ -33,6 +33,7 @@ import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
 import com.bombhunt.game.ecs.components.VelocityComponent;
 import com.bombhunt.game.ecs.factories.CrateFactory;
+import com.bombhunt.game.ecs.factories.IEntityFactory;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
 import com.bombhunt.game.ecs.systems.VelocitySystem;
 import com.bombhunt.game.utils.Assets;
@@ -45,150 +46,186 @@ import java.util.Vector;
 
 public class GameScreen extends InputAdapter implements IView{
 
-    private World world;
+  private World world;
 
-    public static int TPS = 128;
+  public static int TPS = 128;
 
-    private float accTime = 0;
-    EntitySubscription subscription;
+  private float accTime = 0;
+  EntitySubscription subscription;
 
-    private DecalBatch batch;
-    private ComponentMapper<SpriteComponent> mapSprite;
+  private DecalBatch batch;
+  private ComponentMapper<SpriteComponent> mapSprite;
 
-    private OrthogonalTiledMapRenderer mapRenderer;
-    private ComponentMapper<AnimationComponent> mapAnimation;
-    private Camera currentCamera;
-    ComponentMapper<TransformComponent> mapTransform;
+  private OrthogonalTiledMapRenderer mapRenderer;
+  private ComponentMapper<AnimationComponent> mapAnimation;
+  private Camera currentCamera;
+  ComponentMapper<TransformComponent> mapTransform;
 
-    private TiledMap testMap;
-
-
-    private HashMap<Integer, Boolean> keysDown = new HashMap<Integer, Boolean>(20);
+  private TiledMap testMap;
 
 
-    public GameScreen(){
-        System.out.println("Creating gamescreen");
-        
-        // Set up batch
-        batch = new DecalBatch(100000, new CameraGroupStrategy(currentCamera));
-        
-        // Create a camera
-        currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        currentCamera.position.set(new Vector3(0,0,0f));
-        
+  private HashMap<Integer, Boolean> keysDown = new HashMap<Integer, Boolean>(20);
 
-        // Set the camera's max depth
-        currentCamera.far = 1000000f;
-        
 
-        // Set up ECS world
-        CrateFactory crateFactory = new CrateFactory();
-        WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(new SpriteSystem(), new VelocitySystem())
-                .build();
-        world = new World(config);
+  private Vector3 camRot = new Vector3(0, 0,0 );
 
-        crateFactory.setWorld(world);
-        //world.(CrateFactory.class).setWorld(world);
-        //new WorldConfigurationBuilder().
+  // Temporary map for factories, may want to use injection in the future with @Wire
+  private HashMap<String, IEntityFactory> factoryMap;
+  private Level level;
+  public GameScreen(){
+    System.out.println("Creating gamescreen");
 
-        // Give the factory class a ref to the world
-        
-        ComponentMapper<VelocityComponent> mapVelocity = world.getMapper(VelocityComponent.class);
-        // Set up aspect subscription for rendering
-        subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class));
-       
-        //Level level = new Level(Assets.getInstance().get("maps/map1.tmx", TiledMap.class));
-        int e = world.create();
-        mapTransform.create(e);
-        mapVelocity.create(e);
-        // Initial update of camera
-        currentCamera.update();
-        System.out.println("Done");
+    // Create a camera
+    currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    currentCamera.position.set(new Vector3(0,0,0f));
+
+    // Set up batch
+    batch = new DecalBatch(100000, new CameraGroupStrategy(currentCamera));
+
+
+
+
+    // Set the camera's max depth
+    currentCamera.far = 1000000f;
+
+    factoryMap = new HashMap<String, IEntityFactory>(){{
+      put(CrateFactory.class.getSimpleName(), new CrateFactory());
+    }};
+    // Set up ECS world
+    WorldConfiguration config = new WorldConfigurationBuilder()
+        .with(new SpriteSystem(), new VelocitySystem())
+        .build();
+
+    world = new World(config);
+
+    for(IEntityFactory factory : factoryMap.values()){
+      factory.setWorld(world);
     }
 
-    @Override
-    public void update(float dtime){
+    //Set up component mappers
 
-        // Accumelate time
-        accTime += dtime;
+    mapSprite = world.getMapper(SpriteComponent.class);
+    mapTransform = world.getMapper(TransformComponent.class);
 
-        // Set delta to match tps
-        world.setDelta(1f/TPS);
+    // Set up aspect subscription for rendering
+    subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class));
 
-        // While we got ticks to process, process ticks
-        while(accTime >= 1f/TPS){
-            world.process();
-            // Subtrack the tick delta from accumelated time
-            accTime -= 1f/TPS;
-        }
+    level = new Level(Assets.getInstance().get("maps/map1.tmx", TiledMap.class), world, factoryMap);
 
-        // Temp code for moving camera
-        Vector3 camVec = new Vector3(0, 0 ,0);
+    level.create();
+    // Initial update of camera
 
-        if(keysDown.containsKey(Input.Keys.RIGHT) && keysDown.get(Input.Keys.RIGHT)){
-            camVec.x += 1;
-        }
-        if(keysDown.containsKey(Input.Keys.LEFT) && keysDown.get(Input.Keys.LEFT)){
-            camVec.x -= 1;
-        }
-        if(keysDown.containsKey(Input.Keys.UP) && keysDown.get(Input.Keys.UP)){
-            camVec.y += 1;
-        }
-        if(keysDown.containsKey(Input.Keys.DOWN) && keysDown.get(Input.Keys.DOWN)){
-            camVec.y -= 1;
-        }
+    currentCamera.position.set(level.getDim().scl(0.5f), 0f);
 
-        // Get the normal vec from the movement input
-        camVec.nor();
+    currentCamera.update();
+  }
 
-        // Move camera 
-        currentCamera.translate(camVec.scl(100*dtime));
-        currentCamera.update();
 
-        
+  @Override
+  public void update(float dtime){
+
+    // Accumelate time
+    accTime += dtime;
+
+    // Set delta to match tps
+    world.setDelta(1f/TPS);
+
+    // While we got ticks to process, process ticks
+    while(accTime >= 1f/TPS){
+      world.process();
+      // Subtrack the tick delta from accumelated time
+      accTime -= 1f/TPS;
     }
 
-    @Override
-    public void render(){
-        // Grab entities with sprites
-        IntBag entities = subscription.getEntities();
-        
-        // Iterate over entities to be rendered
-        for(int i = 0; i < entities.size(); i++){
-            int e = entities.get(i);
-            // Grab the sprite and add it to the decal batch
-            SpriteComponent spriteComponent = mapSprite.get(e);
-            batch.add(spriteComponent.sprite);
-        }
-        // Flush all sprites
-        if(entities.size() > 0) {
-            batch.flush();
-        }
+    // Temp code for moving camera
+    Vector3 camVec = new Vector3(0, 0 ,0);
+    Vector3 rot = new Vector3(0, 0, 0);
+    if(keysDown.containsKey(Input.Keys.RIGHT) && keysDown.get(Input.Keys.RIGHT)){
+      camVec.x += 1;
+    }
+    if(keysDown.containsKey(Input.Keys.LEFT) && keysDown.get(Input.Keys.LEFT)){
+      camVec.x -= 1;
+    }
+    if(keysDown.containsKey(Input.Keys.UP) && keysDown.get(Input.Keys.UP)){
+      camVec.y += 1;
+    }
+    if(keysDown.containsKey(Input.Keys.DOWN) && keysDown.get(Input.Keys.DOWN)){
+      camVec.y -= 1;
     }
 
-    @Override
-    public void dispose(){
-        world.dispose();
-        batch.dispose();
+    if(keysDown.containsKey(Input.Keys.W) && keysDown.get(Input.Keys.W)){
+      camVec.z += 1;
     }
+    if(keysDown.containsKey(Input.Keys.S) && keysDown.get(Input.Keys.S)){
+      camVec.z -= 1;
+    }
+  /*  if(keysDown.containsKey(Input.Keys.A) && keysDown.get(Input.Keys.A)){
+      rot.z += 1;
+    }
+    if(keysDown.containsKey(Input.Keys.D) && keysDown.get(Input.Keys.D)){
+      rot.z -= 1;
+    }
+*/
+    // Get the normal vec from the movement input
+    camVec.nor();
 
-    @Override
-    public InputProcessor getInputProcessor() {
-        return this;
-    }
+    rot.nor();
+    //camRot.add(rot.scl(dtime));
 
-    @Override
-    public boolean keyDown(int key){
-        keysDown.put(key, true);
-        return true;
-    }
+    // Move camera
+    currentCamera.translate(camVec.scl(300*dtime));
 
-    @Override
-    public boolean keyUp(int key){
-        keysDown.put(key, false);
-        return true;
+    //currentCamera.rotate(rot, 1*dtime);
+    Vector2 dim = level.getDim();
+    Vector3 lookat = new Vector3(dim.x/2, dim.y/2, -200);
+
+    currentCamera.lookAt(lookat);
+
+    currentCamera.update();
+
+
+  }
+
+  @Override
+  public void render(){
+    // Grab entities with sprites
+    IntBag entities = subscription.getEntities();
+
+    // Iterate over entities to be rendered
+    for(int i = 0; i < entities.size(); i++){
+      int e = entities.get(i);
+      // Grab the sprite and add it to the decal batch
+      SpriteComponent spriteComponent = mapSprite.get(e);
+      batch.add(spriteComponent.sprite);
     }
+    // Flush all sprites
+    //if(entities.size() > 0) {
+      batch.flush();
+    //}
+  }
+
+  @Override
+  public void dispose(){
+    world.dispose();
+    batch.dispose();
+  }
+
+  @Override
+  public InputProcessor getInputProcessor() {
+      return this;
+  }
+
+  @Override
+  public boolean keyDown(int key){
+    keysDown.put(key, true);
+    return true;
+  }
+
+  @Override
+  public boolean keyUp(int key){
+    keysDown.put(key, false);
+    return true;
+  }
 
 
 }
