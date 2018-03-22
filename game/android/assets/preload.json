@@ -1,5 +1,5 @@
 [
-  {"file": "tilemap1.atlas", "type": "com.badlogic.gdx.graphics.g2d.TextureAtlas"},
-  {"file": "badlogic.jpg", "type": "com.badlogic.gdx.graphics.Texture"},
-  {"file": "map1.tmx", "type": "com.badlogic.gdx.maps.tiled.TiledMap"}
+  {"file": "textures/tilemap1.atlas", "type": "com.badlogic.gdx.graphics.g2d.TextureAtlas"},
+  {"file": "textures/badlogic.jpg", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "maps/map1.tmx", "type": "com.badlogic.gdx.maps.tiled.TiledMap"}
 ]

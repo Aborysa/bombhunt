@@ -117,7 +117,6 @@ public class AndroidLauncher extends AndroidApplication implements PlayServices{
         googleSignInAccount = result.getSignInAccount();
         new AlertDialog.Builder(this).setMessage("successfull login")
                 .setNeutralButton(android.R.string.ok, null).show();
-
         // signed up, set the realtimemultiplayerclient
         realTimeMultiplayerClient = Games.getRealTimeMultiplayerClient(this, googleSignInAccount);
 

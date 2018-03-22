@@ -32,6 +32,7 @@ import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
 import com.bombhunt.game.ecs.components.VelocityComponent;
+import com.bombhunt.game.ecs.factories.CrateFactory;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
 import com.bombhunt.game.ecs.systems.VelocitySystem;
 import com.bombhunt.game.utils.Assets;
@@ -45,7 +46,7 @@ public class GameScreen extends InputAdapter implements IView{
 
     private World world;
 
-    public static int TPS = 120;
+    public static int TPS = 128;
 
     private float accTime = 0;
     EntitySubscription subscription;
@@ -66,79 +67,56 @@ public class GameScreen extends InputAdapter implements IView{
 
     public GameScreen(){
         System.out.println("Creating gamescreen");
+        
+        // Set up batch
+        batch = new DecalBatch(100000, new CameraGroupStrategy(currentCamera));
+        
+        // Create a camera
         currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        currentCamera.position.set(new Vector3(0,0,0));
-        batch = new DecalBatch(new CameraGroupStrategy(currentCamera));
+        currentCamera.position.set(new Vector3(0,0,0f));
+        
 
+        // Set the camera's max depth
+        currentCamera.far = 1000000f;
+        
 
+        // Set up ECS world
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(new SpriteSystem(), new VelocitySystem())
                 .build();
         world = new World(config);
-        world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class));
-        mapSprite = world.getMapper(SpriteComponent.class);
-        mapTransform = world.getMapper(TransformComponent.class);
-        ComponentMapper<VelocityComponent> mapVelocity = world.getMapper(VelocityComponent.class);
-        mapAnimation = world.getMapper(AnimationComponent.class);
-        subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class, TransformComponent.class));
-
-        //Sprite test = new Sprite(Assets.getInstance().get("tilemap1.png", Texture.class));
-        Animation<Decal> test = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(
-                        Assets.getInstance().get("tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4"),
-                        16, 4, 18, 6
-                ),
-                2);
-
-        Animation<Decal> test2 = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(
-                        Assets.getInstance().get("tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4"),
-                        16, 4, 18, 6
-                ),
-                2);
-        Archetype testType = new ArchetypeBuilder()
-                .add(TransformComponent.class)
-                .add(SpriteComponent.class)
-                .add(AnimationComponent.class)
-                .add(VelocityComponent.class)
-                .build(world);
-
-        int entityTest = world.create(testType);
-        int entityTest2 = world.create(testType);
-        mapAnimation.get(entityTest).animation = test;
-        mapVelocity.get(entityTest).velocity = new Vector2(-20f,0f);
-        mapTransform.get(entityTest).position = new Vector3(100, 0f, -20f);
-        mapTransform.get(entityTest).scale = new Vector2(10f, 10f);
-
-        mapAnimation.get(entityTest2).animation = test2;
-        mapVelocity.get(entityTest2).velocity = new Vector2(20f,0f);
-        mapTransform.get(entityTest2).position = new Vector3(-100f, 0f, -100f);
-        mapTransform.get(entityTest2).scale = new Vector2(10f, 10f);
 
 
-
-        testMap = Assets.getInstance().get("map1.tmx", TiledMap.class);
-        mapRenderer = new OrthogonalTiledMapRenderer(testMap, 1);
-        //batch.getTransformMatrix().setToOrtho(0, 300,0,300,0,100);
+        // Give the factory class a ref to the world
+        CrateFactory.setup(world);
 
 
-        //currentCamera.lookAt(new Vector3(0f,5f,2f));
+        // Set up aspect subscription for rendering
+        subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class));
+       
+       
+        // Initial update of camera
         currentCamera.update();
     }
 
     @Override
     public void update(float dtime){
+
+        // Accumelate time
         accTime += dtime;
+
+        // Set delta to match tps
         world.setDelta(1f/TPS);
+
+        // While we got ticks to process, process ticks
         while(accTime >= 1f/TPS){
             world.process();
+            // Subtrack the tick delta from accumelated time
             accTime -= 1f/TPS;
         }
-        System.out.println(Gdx.graphics.getFramesPerSecond());
-        //world.setDelta(dtime);
-        //world.process();
-        Vector3 camVec = new Vector3(0, 0 ,0);
 
+        // Temp code for moving camera
+        Vector3 camVec = new Vector3(0, 0 ,0);
 
         if(keysDown.containsKey(Input.Keys.RIGHT) && keysDown.get(Input.Keys.RIGHT)){
             camVec.x += 1;
@@ -153,8 +131,10 @@ public class GameScreen extends InputAdapter implements IView{
             camVec.y -= 1;
         }
 
+        // Get the normal vec from the movement input
         camVec.nor();
 
+        // Move camera 
         currentCamera.translate(camVec.scl(100*dtime));
         currentCamera.update();
 
@@ -163,33 +143,26 @@ public class GameScreen extends InputAdapter implements IView{
 
     @Override
     public void render(){
-        //mapRenderer.setView(batch.getProjectionMatrix(),0,0,600,600);
-        //mapRenderer.render();
+        // Grab entities with sprites
         IntBag entities = subscription.getEntities();
-        /*batch.setProjectionMatrix(currentCamera.combined);
-        batch.begin();
-        IntBag entities = subscription.getEntities();
-
-
-
-        for(int e : entities.getData()){
-            SpriteComponent spriteComponent = mapSprite.get(e);
-            spriteComponent.sprite.draw(batch);
-        }
-        batch.end();*/
-        for(int e : entities.getData()){
+        
+        // Iterate over entities to be rendered
+        for(int i = 0; i < entities.size(); i++){
+            int e = entities.get(i);
+            // Grab the sprite and add it to the decal batch
             SpriteComponent spriteComponent = mapSprite.get(e);
             batch.add(spriteComponent.sprite);
-            //spriteComponent.sprite.draw(batch);
         }
-        
-        batch.flush();
-
+        // Flush all sprites
+        if(entities.size() > 0) {
+            batch.flush();
+        }
     }
 
     @Override
     public void dispose(){
         world.dispose();
+        batch.dispose();
     }
 
     @Override

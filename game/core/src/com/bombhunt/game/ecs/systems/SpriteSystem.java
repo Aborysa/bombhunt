@@ -30,6 +30,8 @@ public class SpriteSystem extends IteratingSystem{
         AnimationComponent animationComponent = mapAnimation.get(entity);
         SpriteComponent spriteComponent = mapSprite.get(entity);
 
+        transformComponent.rotation += 20*world.getDelta();
+
         Decal sprite = null;
         if(animationComponent != null){
             animationComponent.time += world.getDelta();
