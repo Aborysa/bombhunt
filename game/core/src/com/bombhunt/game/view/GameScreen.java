@@ -36,6 +36,7 @@ import com.bombhunt.game.ecs.factories.CrateFactory;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
 import com.bombhunt.game.ecs.systems.VelocitySystem;
 import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.utils.level.*;
 import com.bombhunt.game.utils.SpriteHelper;
 
 import java.util.HashMap;
@@ -81,22 +82,29 @@ public class GameScreen extends InputAdapter implements IView{
         
 
         // Set up ECS world
+        CrateFactory crateFactory = new CrateFactory();
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(new SpriteSystem(), new VelocitySystem())
                 .build();
         world = new World(config);
 
+        crateFactory.setWorld(world);
+        //world.(CrateFactory.class).setWorld(world);
+        //new WorldConfigurationBuilder().
 
         // Give the factory class a ref to the world
-        CrateFactory.setup(world);
-
-
+        
+        ComponentMapper<VelocityComponent> mapVelocity = world.getMapper(VelocityComponent.class);
         // Set up aspect subscription for rendering
         subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class));
        
-       
+        //Level level = new Level(Assets.getInstance().get("maps/map1.tmx", TiledMap.class));
+        int e = world.create();
+        mapTransform.create(e);
+        mapVelocity.create(e);
         // Initial update of camera
         currentCamera.update();
+        System.out.println("Done");
     }
 
     @Override
@@ -138,7 +146,7 @@ public class GameScreen extends InputAdapter implements IView{
         currentCamera.translate(camVec.scl(100*dtime));
         currentCamera.update();
 
-
+        
     }
 
     @Override

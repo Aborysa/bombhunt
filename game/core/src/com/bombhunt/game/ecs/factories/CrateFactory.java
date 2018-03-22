@@ -7,42 +7,51 @@ import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.artemis.WorldConfigurationBuilder;
 import com.artemis.annotations.Wire;
+import com.artemis.injection.FieldResolver;
+import com.artemis.injection.WiredFieldResolver;
+import com.artemis.utils.reflect.Field;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector3;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.DestroyableComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
 import com.bombhunt.game.ecs.components.VelocityComponent;
+import com.bombhunt.game.ecs.systems.SpriteSystem;
 
-public class CrateFactory{
+public class CrateFactory implements IEntityFactory {
   
 
-  private static World world;
-  public static Archetype crateArchtype; 
-  private static ComponentMapper<TransformComponent> mapTransform; 
-  private static ComponentMapper<SpriteComponent> mapSprite;
-  private static ComponentMapper<DestroyableComponent> mapDestroyable;
+  private World world;
+  public Archetype crateArchtype; 
+  
 
-  public CrateFactory(){}
+  private ComponentMapper<TransformComponent> mapTransform; 
+  private ComponentMapper<SpriteComponent> mapSprite;
+  private ComponentMapper<DestroyableComponent> mapDestroyable;
 
-  public static void setup(World world) {
-    CrateFactory.world = world;
+ 
+  public int createFromTile(Cell cell){
+    return 0;
+  }
+
+
+  public void setWorld(World world){
+    this.world = world;
+    mapTransform = world.getMapper(TransformComponent.class);
+    mapSprite = world.getMapper(SpriteComponent.class);
+    mapDestroyable = world.getMapper(DestroyableComponent.class);
     crateArchtype = new ArchetypeBuilder()
       .add(TransformComponent.class)
       .add(SpriteComponent.class)
       .add(DestroyableComponent.class)
       .build(world);
-
-    mapTransform = world.getMapper(TransformComponent.class);
-    mapSprite = world.getMapper(SpriteComponent.class);
-    mapDestroyable = world.getMapper(DestroyableComponent.class);
+    
+    
   }
 
-  
-
-
-  public static int createCrate(Vector3 position, Decal sprite, int health){
+  public int createCrate(Vector3 position, Decal sprite, int health){
     int e = world.create(crateArchtype);
 
     mapSprite.get(e).sprite = sprite;
