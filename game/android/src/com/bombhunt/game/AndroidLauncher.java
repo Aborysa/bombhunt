@@ -138,7 +138,7 @@ public class AndroidLauncher extends AndroidApplication {
       } else {
         String message = result.getStatus().getStatusMessage();
         if (message == null || message.isEmpty()) {
-          message = "error displaying signin";
+          message = "error displaying signin " + String.valueOf(GooglePlayServicesUtil.isGooglePlayServicesAvailable(getContext()));
         }
         new AlertDialog.Builder(this).setMessage(message)
                 .setNeutralButton(android.R.string.ok, null).show();
@@ -213,6 +213,7 @@ public class AndroidLauncher extends AndroidApplication {
       // Update UI and internal state based on room updates.
       if (code == GamesCallbackStatusCodes.OK && room != null) {
         System.out.println("Room " + room.getRoomId() + " created.");
+        mRoom = room;
         showWaitingRoom(room, 4);
       } else {
         System.out.println("Error creating room: " + code);
@@ -227,6 +228,7 @@ public class AndroidLauncher extends AndroidApplication {
       // Update UI and internal state based on room updates.
       if (code == GamesCallbackStatusCodes.OK && room != null) {
         System.out.println("Room " + room.getRoomId() + " joined.");
+        mRoom = room;
         showWaitingRoom(room, 4);
       } else {
         System.out.println("Error joining room: " + code);
