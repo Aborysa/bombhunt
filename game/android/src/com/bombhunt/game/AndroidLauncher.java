@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.bombhunt.game.BombHunt;
+import com.bombhunt.game.networking.PlayServices;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -43,7 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public class AndroidLauncher extends AndroidApplication {
+public class AndroidLauncher extends AndroidApplication implements PlayServices{
 
   private GoogleSignInClient googleSignInClient;
   private GoogleSignInAccount googleSignInAccount;
@@ -62,11 +63,9 @@ public class AndroidLauncher extends AndroidApplication {
     // create client to sign in.
     googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
 
-    // start signing in before starting game
-    startSignInIntent();
 
     AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-    initialize(new BombHunt(), config);
+    initialize(new BombHunt(this), config);
 
 
   }
@@ -105,18 +104,6 @@ public class AndroidLauncher extends AndroidApplication {
             });
   }
 
-  public void signOut() {
-    GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
-            GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
-    signInClient.signOut().addOnCompleteListener(this,
-            new OnCompleteListener<Void>() {
-              @Override
-              public void onComplete(@NonNull Task<Void> task) {
-                // at this point, the user is signed out.
-              }
-            });
-  }
-
 
   // result from intents
   @Override
@@ -130,7 +117,6 @@ public class AndroidLauncher extends AndroidApplication {
         googleSignInAccount = result.getSignInAccount();
         new AlertDialog.Builder(this).setMessage("successfull login")
                 .setNeutralButton(android.R.string.ok, null).show();
-        startQuickGame(ROLE_ANY);
 
         // signed up, set the realtimemultiplayerclient
         realTimeMultiplayerClient = Games.getRealTimeMultiplayerClient(this, googleSignInAccount);
@@ -428,4 +414,34 @@ public class AndroidLauncher extends AndroidApplication {
               // process message contents...
             }
           };
+
+  @Override
+  public void signIn() {
+
+    // start signing in before starting game
+    startSignInIntent();
+  }
+
+  @Override
+  public void signOut() {
+    GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
+            GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+    signInClient.signOut().addOnCompleteListener(this,
+            new OnCompleteListener<Void>() {
+              @Override
+              public void onComplete(@NonNull Task<Void> task) {
+                // at this point, the user is signed out.
+              }
+            });
+  }
+
+  @Override
+  public void startMatchMaking() {
+    startQuickGame(ROLE_ANY);
+  }
+
+  @Override
+  public boolean isSignedIn() {
+    return GoogleSignIn.getLastSignedInAccount(this) != null;
+  }
 }

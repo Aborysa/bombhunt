@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.bombhunt.game.networking.PlayServices;
 import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.view.GameScreen;
 import com.bombhunt.game.view.IView;
@@ -14,6 +15,12 @@ public class BombHunt extends ApplicationAdapter {
   IView currentView;
 
   boolean assetsLoaded = false;
+
+  PlayServices playServices;
+  public BombHunt(PlayServices playServices){
+    this.playServices = playServices;
+    playServices.signIn();
+  }
 
   public void setCurrentView(IView view){
     // May want to despose old view
