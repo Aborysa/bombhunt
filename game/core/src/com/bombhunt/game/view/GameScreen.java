@@ -10,8 +10,12 @@ import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,6 +33,8 @@ import com.bombhunt.game.ecs.systems.VelocitySystem;
 import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.utils.SpriteHelper;
 
+import java.util.HashMap;
+
 
 public class GameScreen extends InputAdapter implements IView{
 
@@ -44,11 +50,23 @@ public class GameScreen extends InputAdapter implements IView{
 
     private OrthogonalTiledMapRenderer mapRenderer;
     private ComponentMapper<AnimationComponent> mapAnimation;
+    private Camera currentCamera;
     ComponentMapper<TransformComponent> mapTransform;
 
     private TiledMap testMap;
+
+
+    private HashMap<Integer, Boolean> keysDown = new HashMap<Integer, Boolean>(20);
+
+
     public GameScreen(){
         System.out.println("Creating gamescreen");
+        currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        currentCamera.near = -10000;
+        currentCamera.far = 10000;
+        batch = new SpriteBatch();
+
+
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(new SpriteSystem(), new VelocitySystem())
                 .build();
@@ -59,7 +77,6 @@ public class GameScreen extends InputAdapter implements IView{
         ComponentMapper<VelocityComponent> mapVelocity = world.getMapper(VelocityComponent.class);
         mapAnimation = world.getMapper(AnimationComponent.class);
         subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class, TransformComponent.class));
-        batch = new SpriteBatch();
 
         //Sprite test = new Sprite(Assets.getInstance().get("tilemap1.png", Texture.class));
         Animation<Sprite> test = SpriteHelper.createAnimation(
@@ -86,19 +103,23 @@ public class GameScreen extends InputAdapter implements IView{
         int entityTest2 = world.create(testType);
         mapAnimation.get(entityTest).animation = test;
         mapVelocity.get(entityTest).velocity = new Vector2(20f,0f);
-        mapTransform.get(entityTest).position = new Vector3(0f, 150f, 2f);
+        mapTransform.get(entityTest).position = new Vector3(0f, 150f, 1f);
         mapTransform.get(entityTest).scale = new Vector2(10f, 10f);
 
         mapAnimation.get(entityTest2).animation = test2;
         mapVelocity.get(entityTest2).velocity = new Vector2(-20f,0f);
-        mapTransform.get(entityTest2).position = new Vector3(300f, 150f, 1f);
+        mapTransform.get(entityTest2).position = new Vector3(300f, 150f, 100f);
         mapTransform.get(entityTest2).scale = new Vector2(10f, 10f);
 
 
 
         testMap = Assets.getInstance().get("map1.tmx", TiledMap.class);
         mapRenderer = new OrthogonalTiledMapRenderer(testMap, 1);
-       //batch.getTransformMatrix().setToOrtho(0, 300,0,300,0,100);
+        //batch.getTransformMatrix().setToOrtho(0, 300,0,300,0,100);
+
+
+        //currentCamera.lookAt(new Vector3(0f,5f,2f));
+        currentCamera.update();
     }
 
     @Override
@@ -112,23 +133,43 @@ public class GameScreen extends InputAdapter implements IView{
         System.out.println(Gdx.graphics.getFramesPerSecond());
         //world.setDelta(dtime);
         //world.process();
+        Vector3 camVec = new Vector3(0, 0 ,0);
+
+
+        if(keysDown.containsKey(Input.Keys.RIGHT) && keysDown.get(Input.Keys.RIGHT)){
+            camVec.x += 1;
+        }
+        if(keysDown.containsKey(Input.Keys.LEFT) && keysDown.get(Input.Keys.LEFT)){
+            camVec.x -= 1;
+        }
+        if(keysDown.containsKey(Input.Keys.UP) && keysDown.get(Input.Keys.UP)){
+            camVec.y += 1;
+        }
+        if(keysDown.containsKey(Input.Keys.DOWN) && keysDown.get(Input.Keys.DOWN)){
+            camVec.y -= 1;
+        }
+
+        camVec.nor();
+
+        currentCamera.translate(camVec.scl(100*dtime));
+        currentCamera.update();
+
+
     }
 
     @Override
     public void render(){
-        mapRenderer.setView(batch.getProjectionMatrix(),0,0,600,600);
-        mapRenderer.render();
+        //mapRenderer.setView(batch.getProjectionMatrix(),0,0,600,600);
+        //mapRenderer.render();
+        batch.setProjectionMatrix(currentCamera.combined);
         batch.begin();
         IntBag entities = subscription.getEntities();
+
+
+
         for(int e : entities.getData()){
             SpriteComponent spriteComponent = mapSprite.get(e);
-            TransformComponent transformComponent = mapTransform.get(e);
-            Vector3 translation = new Vector3(0,0,0);
-            batch.getProjectionMatrix().getTranslation(translation);
-            batch.getProjectionMatrix().setTranslation(translation.x, translation.y, transformComponent.position.z);
             spriteComponent.sprite.draw(batch);
-            batch.getProjectionMatrix().setTranslation(translation);
-
         }
         batch.end();
 
@@ -142,6 +183,18 @@ public class GameScreen extends InputAdapter implements IView{
     @Override
     public InputProcessor getInputProcessor() {
         return this;
+    }
+
+    @Override
+    public boolean keyDown(int key){
+        keysDown.put(key, true);
+        return true;
+    }
+
+    @Override
+    public boolean keyUp(int key){
+        keysDown.put(key, false);
+        return true;
     }
 
 
