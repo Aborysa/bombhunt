@@ -111,13 +111,12 @@ public class GameScreen extends InputAdapter implements IView{
 
     // Set up aspect subscription for rendering
     subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class));
+    
+    level = Assets.getInstance().get("maps/map1.tmx", Level.class);
+    level.createEntities(factoryMap);
 
-    level = new Level(Assets.getInstance().get("maps/map1.tmx", TiledMap.class), world, factoryMap);
-
-    level.create();
     // Initial update of camera
-    mapRenderer = new OrthogonalTiledMapRenderer(level.getMap());
-
+    
     currentCamera.position.set(level.getDim().scl(0.5f), 0f);
 
     currentCamera.update();
@@ -185,9 +184,7 @@ public class GameScreen extends InputAdapter implements IView{
     currentCamera.lookAt(lookat);
 
     currentCamera.update();
-    //mapRenderer.setView(currentCamera.combined.cpy().translate(0, 0, -100f),16,16,16*32,16*32);
-    mapRenderer.setView(currentCamera);
-
+    
 
   }
 
@@ -199,11 +196,11 @@ public class GameScreen extends InputAdapter implements IView{
     // Iterate over entities to be rendered
     for(int i = 0; i < entities.size(); i++){
       int e = entities.get(i);
+
       // Grab the sprite and add it to the decal batch
       SpriteComponent spriteComponent = mapSprite.get(e);
       batch.add(spriteComponent.sprite);
     }
-    //mapRenderer.render();
     // Flush all sprites
     batch.flush();
   }
