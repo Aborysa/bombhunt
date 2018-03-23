@@ -9,4 +9,5 @@ public interface PlayServices {
     public void signOut();
     public void startMatchMaking();
     public boolean isSignedIn();
+    public void sendToAllReliably(byte[] message);
 }
