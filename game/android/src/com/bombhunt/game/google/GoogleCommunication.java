@@ -310,7 +310,8 @@ public class GoogleCommunication implements PlayServices {
 
 
     // sending data
-    void sendToAllReliably(byte[] message) {
+    @Override
+    public void sendToAllReliably(byte[] message) {
         for (String participantId : mRoom.getParticipantIds()) {
             if (!participantId.equals(mMyParticipantId)) {
                 Task<Integer> task = Games.
@@ -383,4 +384,5 @@ public class GoogleCommunication implements PlayServices {
     public boolean isSignedIn() {
         return GoogleSignIn.getLastSignedInAccount(androidLauncher) != null;
     }
+
 }
