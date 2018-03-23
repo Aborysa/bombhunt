@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.decals.SimpleOrthoGroupStrategy;
+import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -54,11 +55,13 @@ public class GameScreen extends InputAdapter implements IView{
   EntitySubscription subscription;
 
   private DecalBatch batch;
+  private OrthogonalTiledMapRenderer mapRenderer;
+
+
   private ComponentMapper<SpriteComponent> mapSprite;
 
-  private OrthogonalTiledMapRenderer mapRenderer;
   private ComponentMapper<AnimationComponent> mapAnimation;
-  private Camera currentCamera;
+  private OrthographicCamera currentCamera;
   ComponentMapper<TransformComponent> mapTransform;
 
   private TiledMap testMap;
@@ -81,7 +84,6 @@ public class GameScreen extends InputAdapter implements IView{
 
     // Set up batch
     batch = new DecalBatch(100000, new CameraGroupStrategy(currentCamera));
-
 
 
 
@@ -114,6 +116,7 @@ public class GameScreen extends InputAdapter implements IView{
 
     level.create();
     // Initial update of camera
+    mapRenderer = new OrthogonalTiledMapRenderer(level.getMap());
 
     currentCamera.position.set(level.getDim().scl(0.5f), 0f);
 
@@ -182,6 +185,8 @@ public class GameScreen extends InputAdapter implements IView{
     currentCamera.lookAt(lookat);
 
     currentCamera.update();
+    //mapRenderer.setView(currentCamera.combined.cpy().translate(0, 0, -100f),16,16,16*32,16*32);
+    mapRenderer.setView(currentCamera);
 
 
   }
@@ -198,10 +203,9 @@ public class GameScreen extends InputAdapter implements IView{
       SpriteComponent spriteComponent = mapSprite.get(e);
       batch.add(spriteComponent.sprite);
     }
+    //mapRenderer.render();
     // Flush all sprites
-    //if(entities.size() > 0) {
-      batch.flush();
-    //}
+    batch.flush();
   }
 
   @Override

@@ -98,5 +98,9 @@ public class Level{
     return new Vector2(width, height);
   }
 
+  public TiledMap getMap(){
+    return map;
+  }
+
 
 }
