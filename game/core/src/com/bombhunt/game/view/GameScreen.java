@@ -75,6 +75,9 @@ public class GameScreen extends InputAdapter implements IView{
   // Temporary map for factories, may want to use injection in the future with @Wire
   private HashMap<String, IEntityFactory> factoryMap;
   private Level level;
+
+  private int tick = 0;
+
   public GameScreen(){
     System.out.println("Creating gamescreen");
 
@@ -137,6 +140,7 @@ public class GameScreen extends InputAdapter implements IView{
       world.process();
       // Subtrack the tick delta from accumelated time
       accTime -= 1f/TPS;
+      tick++;
     }
 
     // Temp code for moving camera
@@ -161,13 +165,7 @@ public class GameScreen extends InputAdapter implements IView{
     if(keysDown.containsKey(Input.Keys.S) && keysDown.get(Input.Keys.S)){
       camVec.z -= 1;
     }
-  /*  if(keysDown.containsKey(Input.Keys.A) && keysDown.get(Input.Keys.A)){
-      rot.z += 1;
-    }
-    if(keysDown.containsKey(Input.Keys.D) && keysDown.get(Input.Keys.D)){
-      rot.z -= 1;
-    }
-*/
+
     // Get the normal vec from the movement input
     camVec.nor();
 
