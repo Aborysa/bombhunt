@@ -8,6 +8,7 @@ import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
@@ -37,7 +38,7 @@ public class GameScreen extends InputAdapter implements IView{
 
   private World world;
   private com.badlogic.gdx.physics.box2d.World box2d;
-  public static int TPS = 128;
+  public static int TPS = 64;
 
   private float accTime = 0;
   EntitySubscription subscription;
@@ -65,7 +66,7 @@ public class GameScreen extends InputAdapter implements IView{
   private Level level;
 
   private int tick = 0;
-
+  private float gameTime = 0;
 
 
   public GameScreen(){
@@ -133,39 +134,43 @@ public class GameScreen extends InputAdapter implements IView{
 
     // Accumelate time
     accTime += dtime;
-
+    accTime = Math.min(accTime, 1);
     // Set delta to match tps
     world.setDelta((1f/TPS));
     // While we got ticks to process, process ticks
-
+    gameTime += dtime;
     while(accTime >= 1f/TPS){
-      box2d.step(1f/TPS, 12, 8);
+      box2d.step(1f/TPS, 6, 4);
       world.process();
       // Subtrack the tick delta from accumelated time
       accTime -= 1f/TPS;
       tick++;
+      if(tick % TPS == 0){
+        System.out.println(Gdx.graphics.getFramesPerSecond() + " : " + tick + " : " + tick/gameTime);
+      }
+
     }
 
     // Temp code for moving camera
     Vector3 camVec = new Vector3(0, 0 ,0);
     Vector3 rot = new Vector3(0, 0, 0);
-    if(keysDown.containsKey(Input.Keys.RIGHT) && keysDown.get(Input.Keys.RIGHT)){
+    if(keysDown.getOrDefault(Input.Keys.RIGHT, false)){
       camVec.x += 1;
     }
-    if(keysDown.containsKey(Input.Keys.LEFT) && keysDown.get(Input.Keys.LEFT)){
+    if(keysDown.getOrDefault(Input.Keys.LEFT, false)){
       camVec.x -= 1;
     }
-    if(keysDown.containsKey(Input.Keys.UP) && keysDown.get(Input.Keys.UP)){
+    if(keysDown.getOrDefault(Input.Keys.UP, false)){
       camVec.y += 1;
     }
-    if(keysDown.containsKey(Input.Keys.DOWN) && keysDown.get(Input.Keys.DOWN)){
+    if(keysDown.getOrDefault(Input.Keys.DOWN, false)){
       camVec.y -= 1;
     }
 
-    if(keysDown.containsKey(Input.Keys.W) && keysDown.get(Input.Keys.W)){
+    if(keysDown.getOrDefault(Input.Keys.W, false)){
       zoom -= dtime;
     }
-    if(keysDown.containsKey(Input.Keys.S) && keysDown.get(Input.Keys.S)){
+    if(keysDown.getOrDefault(Input.Keys.S, false)){
       zoom += dtime;
     }
 
@@ -181,7 +186,7 @@ public class GameScreen extends InputAdapter implements IView{
     //currentCamera.rotate(rot, 1*dtime);
 
     currentCamera.update();
-    
+
 
   }
 

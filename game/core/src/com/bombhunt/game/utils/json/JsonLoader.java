@@ -27,7 +27,7 @@ public class JsonLoader extends SynchronousAssetLoader<JsonValue, JsonLoader.Jso
 
     @Override
     public  Array<AssetDescriptor> getDependencies(String filename, FileHandle file, JsonLoader.JsonLoaderParameters params){
-        return new Array(+0);
+        return new Array<>(+0);
     }
 
     static public class JsonLoaderParameters extends AssetLoaderParameters<JsonValue> {

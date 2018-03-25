@@ -51,7 +51,7 @@ public class Collision {
     filter.categoryBits = Category.PLAYER;
     filter.maskBits = Category.WALL | Category.PLAYER;
     filter.groupIndex = 0;
-    restitution = 1f;
+    restitution = 0f;
     friction = 0f;
   }};
 
@@ -71,7 +71,6 @@ public class Collision {
   public static Body createBody(World world, BodyDef bodyDef, FixtureDef ...fixtureDefs){
     Body body = world.createBody(bodyDef);
     CircleShape circle = new CircleShape();
-    circle.
     for(FixtureDef fixtureDef : fixtureDefs){
       body.createFixture(fixtureDef);
     }

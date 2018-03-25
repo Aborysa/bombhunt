@@ -99,7 +99,7 @@ public class CrateFactory implements IEntityFactory {
 
     Body body = Collision.createBody(Collision.dynamicDef, Collision.wallFixture);
     PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
-    shape.setAsBox((sprite.getWidth()/2f -0.3f) * Collision.worldTobox2d, (sprite.getHeight()/2f -0.3f) * Collision.worldTobox2d);
+    shape.setAsBox((sprite.getWidth()/2f -0.2f) * Collision.worldTobox2d, (sprite.getHeight()/2f -0.2f) * Collision.worldTobox2d);
     body.setTransform(new Vector2(position.x, position.y).scl(Collision.worldTobox2d), 0);
 
     //Vector2 rveloc = new Vector2((float)Math.random() -0.5f , (float)Math.random() -0.5f).nor().scl((float)Math.random()*100f + 40f);
