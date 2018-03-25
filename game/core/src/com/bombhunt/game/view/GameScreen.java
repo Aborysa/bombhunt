@@ -1,7 +1,5 @@
 package com.bombhunt.game.view;
 
-import com.artemis.Archetype;
-import com.artemis.ArchetypeBuilder;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.EntitySubscription;
@@ -10,45 +8,35 @@ import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
-import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
-import com.badlogic.gdx.graphics.g3d.decals.SimpleOrthoGroupStrategy;
-import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
-import com.bombhunt.game.ecs.components.VelocityComponent;
 import com.bombhunt.game.ecs.factories.CrateFactory;
 import com.bombhunt.game.ecs.factories.IEntityFactory;
+import com.bombhunt.game.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
-import com.bombhunt.game.ecs.systems.VelocitySystem;
 import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.utils.level.*;
-import com.bombhunt.game.utils.SpriteHelper;
 
 import java.util.HashMap;
-import java.util.Vector;
 
 
 public class GameScreen extends InputAdapter implements IView{
 
   private World world;
-
+  private com.badlogic.gdx.physics.box2d.World box2d;
   public static int TPS = 128;
 
   private float accTime = 0;
@@ -56,6 +44,7 @@ public class GameScreen extends InputAdapter implements IView{
 
   private DecalBatch batch;
   private OrthogonalTiledMapRenderer mapRenderer;
+  private Box2DDebugRenderer box2DDebugRenderer;
 
 
   private ComponentMapper<SpriteComponent> mapSprite;
@@ -70,13 +59,14 @@ public class GameScreen extends InputAdapter implements IView{
   private HashMap<Integer, Boolean> keysDown = new HashMap<Integer, Boolean>(20);
 
 
-  private Vector3 camRot = new Vector3(0, 0,0 );
-
+  private float zoom = 1;
   // Temporary map for factories, may want to use injection in the future with @Wire
   private HashMap<String, IEntityFactory> factoryMap;
   private Level level;
 
   private int tick = 0;
+
+
 
   public GameScreen(){
     System.out.println("Creating gamescreen");
@@ -85,9 +75,11 @@ public class GameScreen extends InputAdapter implements IView{
     currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     currentCamera.position.set(new Vector3(0,0,0f));
 
+    level = Assets.getInstance().get("maps/map1.tmx", Level.class);
+
     // Set up batch
     batch = new DecalBatch(100000, new CameraGroupStrategy(currentCamera));
-
+    box2DDebugRenderer = new Box2DDebugRenderer(true, false, false, false, false, true);
 
 
     // Set the camera's max depth
@@ -96,12 +88,22 @@ public class GameScreen extends InputAdapter implements IView{
     factoryMap = new HashMap<String, IEntityFactory>(){{
       put(CrateFactory.class.getSimpleName(), new CrateFactory());
     }};
+
+
+
+    box2d = new com.badlogic.gdx.physics.box2d.World(level.getDim(), true);
+
+    box2d.setGravity(new Vector2(0, 0));
+    Collision.world = box2d;
     // Set up ECS world
     WorldConfiguration config = new WorldConfigurationBuilder()
-        .with(new SpriteSystem(), new VelocitySystem())
+        .with(new SpriteSystem(), new PhysicsSystem(box2d))
         .build();
 
     world = new World(config);
+
+
+
 
     for(IEntityFactory factory : factoryMap.values()){
       factory.setWorld(world);
@@ -114,9 +116,9 @@ public class GameScreen extends InputAdapter implements IView{
 
     // Set up aspect subscription for rendering
     subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class));
-    
-    level = Assets.getInstance().get("maps/map1.tmx", Level.class);
+
     level.createEntities(factoryMap);
+    level.createCollisionBodies(box2d);
 
     // Initial update of camera
     
@@ -133,10 +135,11 @@ public class GameScreen extends InputAdapter implements IView{
     accTime += dtime;
 
     // Set delta to match tps
-    world.setDelta(1f/TPS);
-
+    world.setDelta((1f/TPS));
     // While we got ticks to process, process ticks
+
     while(accTime >= 1f/TPS){
+      box2d.step(1f/TPS, 12, 8);
       world.process();
       // Subtrack the tick delta from accumelated time
       accTime -= 1f/TPS;
@@ -160,10 +163,10 @@ public class GameScreen extends InputAdapter implements IView{
     }
 
     if(keysDown.containsKey(Input.Keys.W) && keysDown.get(Input.Keys.W)){
-      camVec.z += 1;
+      zoom -= dtime;
     }
     if(keysDown.containsKey(Input.Keys.S) && keysDown.get(Input.Keys.S)){
-      camVec.z -= 1;
+      zoom += dtime;
     }
 
     // Get the normal vec from the movement input
@@ -174,12 +177,8 @@ public class GameScreen extends InputAdapter implements IView{
 
     // Move camera
     currentCamera.translate(camVec.scl(300*dtime));
-
+    currentCamera.zoom = zoom;
     //currentCamera.rotate(rot, 1*dtime);
-    Vector2 dim = level.getDim();
-    Vector3 lookat = new Vector3(dim.x/2, dim.y/2, -200);
-
-    currentCamera.lookAt(lookat);
 
     currentCamera.update();
     
@@ -201,11 +200,14 @@ public class GameScreen extends InputAdapter implements IView{
     }
     // Flush all sprites
     batch.flush();
+    box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
   }
 
   @Override
   public void dispose(){
     world.dispose();
+    box2DDebugRenderer.dispose();
+    box2d.dispose();
     batch.dispose();
   }
 

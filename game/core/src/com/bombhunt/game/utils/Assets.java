@@ -67,7 +67,8 @@ public class Assets{
   }
 
   public void dispose(){
-    assetManager.dispose();
+    assetManager.clear();
+    //assetManager.dispose();
   }
 
 }

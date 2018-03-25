@@ -2,6 +2,7 @@
 package com.bombhunt.game.utils.level;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.artemis.Archetype;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -20,8 +23,20 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
+import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import java.util.List;
+
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ShortArray;
+import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.factories.IEntityFactory;
 
 // Wrapper for TiledMap
@@ -55,7 +70,9 @@ public class Level{
 
   // Object layers, spawn points, static collision meshes, etc
   private List<MapLayer> objectLayers;
-  
+
+
+  private EarClippingTriangulator triangulator = new EarClippingTriangulator();
 
   public Level(TiledMap map){
     this.map = map;
@@ -74,6 +91,7 @@ public class Level{
   private void parseMap(){
     System.out.println("Parsing map");
     MapLayers layers = map.getLayers();
+
     int depth = -(layers.getCount()*100 + 1000);
     for(MapLayer layer : layers){
       MapProperties props = layer.getProperties();
@@ -94,8 +112,23 @@ public class Level{
         }
       }else if(layer instanceof TiledMapImageLayer){
         imageLayers.add((TiledMapImageLayer)layer);
-      }else{
+      }else {
         objectLayers.add(layer);
+
+        for(MapObject object : layer.getObjects()) {
+          MapProperties objectProps = object.getProperties();
+
+
+          /*
+            NOTE: May want to use a 'type' prop to identify what type the object is.
+            i.e `type: collidable` instead of `collidable: true`
+          */
+          for(String prop : metaObjects.keySet()) {
+            if(objectProps.get(prop, false, Boolean.class)) {
+              metaObjects.get(prop).add(object);
+            }
+          }
+        }
       }
 
       depth += 100;
@@ -131,6 +164,82 @@ public class Level{
     return null;
   }
 
+
+  private Body createBodyFromPolygon(com.badlogic.gdx.physics.box2d.World box2d, Polygon poly){
+
+    Vector2 pos = poly.getBoundingRectangle().getPosition(new Vector2());
+    float[] verticies = poly.getTransformedVertices();
+
+    // Translate vertecies to box2d coords
+    for(int i = 0; i < verticies.length; i++){
+      // X-coord
+      if(i % 2 == 0){
+        verticies[i] -= pos.x;
+      }
+      // Y-coord
+      else {
+        verticies[i] -= pos.y;
+      }
+      verticies[i] *= Collision.worldTobox2d;
+    }
+    // Box2d does not support convex shapes so triangulate the polygon, TODO: add check to see if the shape is convex first
+    short[] indecies = triangulator.computeTriangles(verticies).toArray();
+
+    // The triangle count
+    int tcount = indecies.length/3;
+
+    // Fixture defs, one for each triangle
+    FixtureDef[] fixtures = new FixtureDef[tcount];
+    Arrays.fill(fixtures, Collision.wallFixture);
+    // Create the body
+    Body box2dBody = Collision.createBody(box2d, Collision.saticDef, fixtures);
+    int fixIdx = 0;
+    for(int i = 0; i < indecies.length; i+=3){
+      int idx1 = indecies[i] * 2;
+      int idx2 = indecies[i+1] * 2;
+      int idx3 = indecies[i+2] * 2;
+
+      float[] triangle = {
+          verticies[idx1], verticies[idx1+1],
+          verticies[idx2], verticies[idx2+1],
+          verticies[idx3], verticies[idx3+1]
+      };
+      PolygonShape shape = (PolygonShape) box2dBody.getFixtureList().get(fixIdx).getShape();
+      shape.set(triangle);
+      fixIdx++;
+    }
+    // Move the body to the correct position
+    box2dBody.setTransform(pos.scl(Collision.worldTobox2d), 0);
+    return box2dBody;
+  }
+
+  // Creates a list of collision bodies from the maps objects
+  public List<Body> createCollisionBodies(com.badlogic.gdx.physics.box2d.World box2d) {
+    ArrayList<Body> bodies = new ArrayList<Body>(metaObjects.get("collidable").size());
+    System.out.println(String.format("createCollisionBodies %d", metaObjects.get("collidable").size()));
+    for(MapObject object : metaObjects.get("collidable")){
+      Body box2dBody = null;
+      // Find out what the shape type is
+      if(object instanceof RectangleMapObject){
+        box2dBody = Collision.createBody(box2d, Collision.saticDef, Collision.wallFixture);
+        PolygonShape shape = (PolygonShape) box2dBody.getFixtureList().get(0).getShape();
+
+        Rectangle rect = ((RectangleMapObject) object).getRectangle();
+        Vector2 dim = rect.getSize(new Vector2()).scl(0.5f).scl(Collision.worldTobox2d);
+        Vector2 pos = rect.getPosition(new Vector2()).scl(Collision.worldTobox2d);
+
+        shape.setAsBox(dim.x, dim.y, dim, 0f);
+
+        box2dBody.setTransform(pos, 0);
+      } else if(object instanceof PolygonMapObject){
+        Polygon poly = ((PolygonMapObject) object).getPolygon();
+        box2dBody = createBodyFromPolygon(box2d, poly);
+      }
+
+      bodies.add(box2dBody);
+    }
+    return bodies;
+  }
   
 
   public Vector2 getDim(){

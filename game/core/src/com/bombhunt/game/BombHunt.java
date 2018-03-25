@@ -2,9 +2,11 @@ package com.bombhunt.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.physics.box2d.Box2D;
 import com.bombhunt.game.networking.PlayServices;
 import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.view.GameScreen;
@@ -31,6 +33,8 @@ public class BombHunt extends ApplicationAdapter {
   @Override
   public void create () {
 
+    Box2D.init();
+
     Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
     Gdx.gl.glDepthMask(true);
     Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -41,8 +45,10 @@ public class BombHunt extends ApplicationAdapter {
   @Override
   public void render () {
     // Temp setup for loading assets
+    boolean loading = !Assets.getInstance().update();
+
     if(!assetsLoaded){
-      assetsLoaded = Assets.getInstance().update();
+      assetsLoaded = !loading;
       if(assetsLoaded) {
         // Once loaded set the current view to the game screen
         setCurrentView(new GameScreen());
@@ -64,5 +70,7 @@ public class BombHunt extends ApplicationAdapter {
   
   @Override
   public void dispose () {
+    currentView.dispose();
+    //Assets.getInstance().dispose();
   }
 }
