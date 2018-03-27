@@ -29,9 +29,11 @@ import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
+import com.bombhunt.game.ecs.factories.BombFactory;
 import com.bombhunt.game.ecs.factories.CrateFactory;
 import com.bombhunt.game.ecs.factories.IEntityFactory;
 import com.bombhunt.game.ecs.factories.PlayerFactory;
+import com.bombhunt.game.ecs.systems.BombSystem;
 import com.bombhunt.game.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.ecs.systems.PlayerInputSystem;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
@@ -101,6 +103,7 @@ public class GameScreen extends InputAdapter implements IView{
     factoryMap = new HashMap<String, IEntityFactory>(){{
       put(CrateFactory.class.getSimpleName(), new CrateFactory());
       put(PlayerFactory.class.getSimpleName(), new PlayerFactory());
+      put(BombFactory.class.getSimpleName(), new BombFactory());
     }};
 
 
@@ -117,7 +120,7 @@ public class GameScreen extends InputAdapter implements IView{
 
     // Set up ECS world
     WorldConfiguration config = new WorldConfigurationBuilder()
-        .with(new SpriteSystem(), new PhysicsSystem(box2d), new PlayerInputSystem(box2d, joystick))
+        .with(new SpriteSystem(), new PhysicsSystem(box2d), new PlayerInputSystem(box2d, joystick, (BombFactory) factoryMap.get(BombFactory.class.getSimpleName())), new BombSystem((BombFactory) factoryMap.get(BombFactory.class.getSimpleName())))
         .build();
 
     world = new World(config);

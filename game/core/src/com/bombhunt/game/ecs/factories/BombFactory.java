@@ -4,7 +4,9 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.BombComponent;
@@ -12,6 +14,8 @@ import com.bombhunt.game.ecs.components.ExplosionComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TimerComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
+import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.utils.SpriteHelper;
 
 import java.util.Timer;
 
@@ -38,8 +42,13 @@ public class BombFactory implements IEntityFactory {
         mapTransform.get(e).position = pos;
 
         // TODO: add sprite/animation
-        //mapSprite.get(e).sprite
-        //mapAnimation.get(e).animation
+        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
+                SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4"),
+                        16, 4, 18, 6),
+                2);
+
+
+        mapTransform.get(e).scale = new Vector2(10f, 10f);
 
         mapTimer.get(e).timer = timer;
         return e;
@@ -70,8 +79,8 @@ public class BombFactory implements IEntityFactory {
         this.world = world;
 
         mapTransform = world.getMapper(TransformComponent.class);
-        mapSprite = world.getMapper(SpriteComponent.class);
         mapAnimation = world.getMapper(AnimationComponent.class);
+        mapSprite = world.getMapper(SpriteComponent.class);
         mapBomb = world.getMapper(BombComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
         mapExplosion = world.getMapper(ExplosionComponent.class);

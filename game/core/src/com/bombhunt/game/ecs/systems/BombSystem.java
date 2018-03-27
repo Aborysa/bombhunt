@@ -7,20 +7,24 @@ import com.badlogic.gdx.math.Vector3;
 import com.bombhunt.game.ecs.components.BombComponent;
 import com.bombhunt.game.ecs.components.TimerComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
+import com.bombhunt.game.ecs.factories.BombFactory;
 
 public class BombSystem extends IteratingSystem {
     private ComponentMapper<BombComponent> mapBomb;
     private ComponentMapper<TimerComponent> mapTimer;
     private ComponentMapper<TransformComponent> mapTransform;
 
+    private BombFactory bombFactory;
 
-    public BombSystem() {
+
+    public BombSystem(BombFactory bombFactory) {
         super(Aspect.all(TransformComponent.class, BombComponent.class, TimerComponent.class));
-
+        this.bombFactory = bombFactory;
 
     }
     @Override
     protected void process(int e) {
+        //System.out.println("bomb livin");
 
         TimerComponent timerComponent = mapTimer.get(e);
         float delta = world.getDelta();
