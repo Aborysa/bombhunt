@@ -1,5 +1,7 @@
 [
   {"file": "textures/tilemap1.atlas", "type": "com.badlogic.gdx.graphics.g2d.TextureAtlas"},
   {"file": "textures/badlogic.jpg", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "textures/analogBackground.png", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "textures/analogForeground.png", "type": "com.badlogic.gdx.graphics.Texture"},
   {"file": "maps/map1.tmx", "type": "com.bombhunt.game.utils.level.Level"}
 ]

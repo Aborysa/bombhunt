@@ -28,9 +28,9 @@ public class Joystick extends Touchpad {
     private static Touchpad.TouchpadStyle getTouchpadStyle() {
 
         touchpadSkin = new Skin();
-        touchpadSkin.add("touchBackground", new Texture("textures/analogBackground.png"));
+        touchpadSkin.add("touchBackground", Assets.getInstance().get("textures/analogBackground.png", Texture.class));
 
-        touchpadSkin.add("touchKnob", new Texture("textures/analogForeground.png"));
+        touchpadSkin.add("touchKnob", Assets.getInstance().get("textures/analogForeground.png", Texture.class));
 
         touchpadStyle = new Touchpad.TouchpadStyle();
 
