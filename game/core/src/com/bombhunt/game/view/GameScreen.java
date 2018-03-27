@@ -132,9 +132,9 @@ public class GameScreen extends InputAdapter implements IView{
 
     // create player entitiy
 
-    TextureRegion tex = new TextureRegion(new Texture("textures/badlogic.jpg"));
+    /*TextureRegion tex = new TextureRegion(new Texture("textures/badlogic.jpg"));
     PlayerFactory playerFactory = (PlayerFactory) factoryMap.get(PlayerFactory.class.getSimpleName());
-    playerFactory.createPlayer(0, 0, Decal.newDecal(tex));
+    playerFactory.createPlayer(0, 0, Decal.newDecal(tex));*/
 
 
     // Initial update of camera

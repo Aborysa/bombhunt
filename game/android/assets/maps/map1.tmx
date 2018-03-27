@@ -14,6 +14,14 @@
    H4sIAAAAAAAACu3TsQ2AQAwEwe+/MSIyOqEBvgZnz+xIlgtY3VrJWa59z/D/wbvvHv6cT++v71+n99f3r9P76/vX6f31/ev0/vr+dXp/ff86vb++f53ev/3b/XV6f33/SZIkmfsAdgjf/gAqAAA=
   </data>
  </layer>
+ <layer name="player" width="64" height="42">
+  <properties>
+   <property name="entity_factory" value="PlayerFactory"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACu3OAQkAAAgDsL9/aVOIIFuCJQDAhvZ6AAAAAAAAAADAVwM0FN7JACoAAA==
+  </data>
+ </layer>
  <layer name="Rutelag 4" width="64" height="42">
   <properties>
    <property name="depth" type="int" value="-100"/>
