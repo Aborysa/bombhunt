@@ -44,11 +44,10 @@ public class BombFactory implements IEntityFactory {
         int e = world.create(bombArchetype);
         mapTransform.get(e).position = pos;
 
-        // TODO: add sprite/animation
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4"),
                         16, 4, 18, 6),
-                2);
+                6/timer);
 
 
         //mapSprite.get(e).sprite = Decal.newDecal(new TextureRegion(new Texture("textures/badlogic.jpg")));

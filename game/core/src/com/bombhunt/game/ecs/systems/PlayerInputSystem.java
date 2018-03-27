@@ -56,7 +56,7 @@ public class PlayerInputSystem extends IteratingSystem{
         TransformComponent transformComponent = mapTransform.get(e);
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
             // spawn test bomb
-            bombFactory.createBomb(new Vector3(transformComponent.position.x, transformComponent.position.y, 0 ), 5);
+            bombFactory.createBomb(new Vector3(transformComponent.position.x, transformComponent.position.y, 0 ), 3);
         }
 
     }
