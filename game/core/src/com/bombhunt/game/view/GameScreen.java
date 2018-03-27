@@ -13,6 +13,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
@@ -29,6 +31,7 @@ import com.bombhunt.game.ecs.factories.IEntityFactory;
 import com.bombhunt.game.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
 import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.utils.Joystick;
 import com.bombhunt.game.utils.level.*;
 
 import java.util.HashMap;
@@ -68,6 +71,8 @@ public class GameScreen extends InputAdapter implements IView{
   private int tick = 0;
   private float gameTime = 0;
 
+  private Joystick joystick;
+  private Stage stage;
 
   public GameScreen(){
     System.out.println("Creating gamescreen");
@@ -126,6 +131,12 @@ public class GameScreen extends InputAdapter implements IView{
     currentCamera.position.set(level.getDim().scl(0.5f), 0f);
 
     currentCamera.update();
+
+
+    // Set up joystick
+    joystick = new Joystick(20,20);
+    stage = new Stage();
+    stage.addActor(joystick);
   }
 
 
@@ -187,7 +198,7 @@ public class GameScreen extends InputAdapter implements IView{
 
     currentCamera.update();
 
-
+    stage.act(dtime);
   }
 
   @Override
@@ -206,6 +217,8 @@ public class GameScreen extends InputAdapter implements IView{
     // Flush all sprites
     batch.flush();
     box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
+
+    stage.draw();
   }
 
   @Override
@@ -218,7 +231,7 @@ public class GameScreen extends InputAdapter implements IView{
 
   @Override
   public InputProcessor getInputProcessor() {
-      return this;
+      return stage;
   }
 
   @Override
