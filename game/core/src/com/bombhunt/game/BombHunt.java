@@ -2,75 +2,75 @@ package com.bombhunt.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.bombhunt.game.networking.PlayServices;
 import com.bombhunt.game.utils.Assets;
-import com.bombhunt.game.view.GameScreen;
+import com.bombhunt.game.view.screens.GameScreen;
 import com.bombhunt.game.view.IView;
 
 public class BombHunt extends ApplicationAdapter {
+    private IView currentView;
+    private boolean assetsLoaded = false;
+    private boolean viewLoaded = false;
+    PlayServices playServices;
 
-  IView currentView;
-
-  boolean assetsLoaded = false;
-
-  PlayServices playServices;
-  public BombHunt(PlayServices playServices){
-    this.playServices = playServices;
-    playServices.signIn();
-  }
-
-  public void setCurrentView(IView view){
-    // May want to despose old view
-    Gdx.input.setInputProcessor(view.getInputProcessor());
-    currentView = view;
-  }
-
-  @Override
-  public void create () {
-
-    Box2D.init();
-
-    Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-    Gdx.gl.glDepthMask(true);
-    Gdx.gl.glDisable(GL20.GL_BLEND);
-    Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
-
-  }
-
-  @Override
-  public void render () {
-    // Temp setup for loading assets
-    boolean loading = !Assets.getInstance().update();
-
-    if(!assetsLoaded){
-      assetsLoaded = !loading;
-      if(assetsLoaded) {
-        // Once loaded set the current view to the game screen
-        setCurrentView(new GameScreen());
-      }
-      return;
+    public BombHunt(PlayServices playServices) {
+        this.playServices = playServices;
+        playServices.signIn();
     }
 
+    public void setCurrentView(IView view) {
+        // May want to dispose old view
+        Gdx.input.setInputProcessor(view.getInputProcessor());
+        currentView = view;
+    }
 
-    float dtime = Gdx.graphics.getDeltaTime();
+    @Override
+    public void create() {
+        Box2D.init();
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+        Gdx.gl.glDepthMask(true);
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
+    }
 
-    currentView.update(dtime);
+    @Override
+    public void render() {
+        loadMainMenuScreen();
+        float dtime = Gdx.graphics.getDeltaTime();
+        currentView.update(dtime);
+        clearScreen();
+        currentView.render();
+    }
 
-    Gdx.gl.glClearColor(0.2f, 0, 0, 1);
-    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+    @Override
+    public void dispose() {
+        currentView.dispose();
+        //Assets.getInstance().dispose();
+    }
 
-    currentView.render();
+    private void loadMainMenuScreen() {
+        while (!viewLoaded) {
+            if (isAssetsLoaded()) {
+                setCurrentView(new GameScreen());
+                viewLoaded = true;
+            }
+        }
+    }
 
-  }
-  
-  @Override
-  public void dispose () {
-    currentView.dispose();
-    //Assets.getInstance().dispose();
-  }
+    private boolean isAssetsLoaded() {
+        // Temp setup for loading assets
+        if (assetsLoaded) {
+            return true;
+        } else {
+            assetsLoaded = Assets.getInstance().update();
+            return assetsLoaded;
+        }
+    }
+
+    private void clearScreen() {
+        Gdx.gl.glClearColor(0.2f, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+    }
 }
