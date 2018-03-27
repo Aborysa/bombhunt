@@ -3,31 +3,64 @@ package com.bombhunt.game.ecs.systems;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.badlogic.gdx.math.Vector3;
-import com.bombhunt.game.ecs.components.PlayerComponent;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
+import com.bombhunt.game.ecs.components.Box2dComponent;
+import com.bombhunt.game.ecs.components.PlayerInputComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
 import com.bombhunt.game.ecs.components.VelocityComponent;
 
 public class PlayerInputSystem extends IteratingSystem{
 
-    private ComponentMapper<TransformComponent> mapTransform;
-    private ComponentMapper<VelocityComponent> mapVelocity;
-    private ComponentMapper<PlayerComponent> mapPlayer;
+    //private ComponentMapper<VelocityComponent> mapVelocity;
+    private ComponentMapper<Box2dComponent> mapBox2D;
+    private ComponentMapper<PlayerInputComponent> mapPlayer;
 
-    public PlayerInputSystem() {
-        super(Aspect.all(TransformComponent.class, VelocityComponent.class, PlayerComponent.class));
+    private World box2d;
+
+    public PlayerInputSystem(World box2d) {
+        super(Aspect.all(TransformComponent.class, Box2dComponent.class, PlayerInputComponent.class));
+        this.box2d = box2d;
     }
 
 
 
     protected void process(int e){
 
+        //VelocityComponent velocityComponent = mapVelocity.get(e);
+        //PlayerInputComponent playerInputComponent = mapPlayer.get(e);
+        Box2dComponent box2dComponent = mapBox2D.get(e);
+        Body body = box2dComponent.body;
 
-        TransformComponent transformComponent = mapTransform.get(e);
-        VelocityComponent velocityComponent = mapVelocity.get(e);
-        PlayerComponent playerComponent = mapPlayer.get(e);
+        // set velocity values based on input touchpad inputs
+        //velocityComponent.velocity = new Vector2(touchpad.getKnobPercentX()*speed, touchpad.getKnobPercentY()*speed)
 
-        // set velocity values based on input.
+        // using keyboard to controll player
+        float speed = 10;
+        float horisontal = 0;
+        float vertical = 0;
+        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
+            //velocityComponent.velocity.y = speed;
+            vertical = speed;
+        } else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+            //velocityComponent.velocity.y = -speed;
+            vertical = -speed;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.D)){
+            //velocityComponent.velocity.x = speed;
+            horisontal = speed;
+        } else if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            //velocityComponent.velocity.x = -speed;
+            horisontal = -speed;
+        }
+        body.setLinearVelocity(new Vector2(horisontal, vertical));
+
+        //System.out.println(velocityComponent.velocity);
+
+
 
     }
 }
