@@ -21,6 +21,7 @@ public class PlayerInputSystem extends IteratingSystem{
     //private ComponentMapper<VelocityComponent> mapVelocity;
     private ComponentMapper<Box2dComponent> mapBox2D;
     private ComponentMapper<PlayerInputComponent> mapPlayer;
+    private ComponentMapper<TransformComponent> mapTransform;
 
     private World box2d;
     private Touchpad joystick;
@@ -52,9 +53,10 @@ public class PlayerInputSystem extends IteratingSystem{
 
         //System.out.println(velocityComponent.velocity);
 
+        TransformComponent transformComponent = mapTransform.get(e);
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
             // spawn test bomb
-            bombFactory.createBomb(new Vector3(body.getPosition().x, body.getPosition().y, 0 ), 5);
+            bombFactory.createBomb(new Vector3(transformComponent.position.x, transformComponent.position.y, 0 ), 5);
         }
 
     }

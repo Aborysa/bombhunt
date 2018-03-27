@@ -4,7 +4,10 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -48,7 +51,9 @@ public class BombFactory implements IEntityFactory {
                 2);
 
 
-        mapTransform.get(e).scale = new Vector2(10f, 10f);
+        //mapSprite.get(e).sprite = Decal.newDecal(new TextureRegion(new Texture("textures/badlogic.jpg")));
+        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
+        mapTransform.get(e).scale = new Vector2(1f, 1f);
 
         mapTimer.get(e).timer = timer;
         return e;
