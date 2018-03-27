@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.bombhunt.game.networking.PlayServices;
 import com.bombhunt.game.utils.Assets;
-import com.bombhunt.game.view.screens.GameScreen;
+import com.bombhunt.game.view.screens.MainMenuScreen;
 import com.bombhunt.game.view.IView;
 
 public class BombHunt extends ApplicationAdapter {
@@ -53,7 +53,7 @@ public class BombHunt extends ApplicationAdapter {
     private void loadMainMenuScreen() {
         while (!viewLoaded) {
             if (isAssetsLoaded()) {
-                setCurrentView(new GameScreen());
+                setCurrentView(new MainMenuScreen());
                 viewLoaded = true;
             }
         }
