@@ -109,9 +109,15 @@ public class GameScreen extends InputAdapter implements IView{
 
     box2d.setGravity(new Vector2(0, 0));
     Collision.world = box2d;
+
+    // Set up joystick
+    joystick = new Joystick(20,20);
+    stage = new Stage();
+    stage.addActor(joystick);
+
     // Set up ECS world
     WorldConfiguration config = new WorldConfigurationBuilder()
-        .with(new SpriteSystem(), new PhysicsSystem(box2d), new PlayerInputSystem(box2d))
+        .with(new SpriteSystem(), new PhysicsSystem(box2d), new PlayerInputSystem(box2d, joystick))
         .build();
 
     world = new World(config);
@@ -148,11 +154,6 @@ public class GameScreen extends InputAdapter implements IView{
 
     currentCamera.update();
 
-
-    // Set up joystick
-    joystick = new Joystick(20,20);
-    stage = new Stage();
-    stage.addActor(joystick);
   }
 
 
