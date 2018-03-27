@@ -20,7 +20,7 @@ public class Joystick extends Touchpad {
     public Joystick(float x, float y) {
 
         super(10, getTouchpadStyle());
-        setBounds(15, 15, 200, 200);
+        setBounds(15, 15, 300, 300);
         setPosition(x,y);
 
     }
@@ -28,14 +28,16 @@ public class Joystick extends Touchpad {
     private static Touchpad.TouchpadStyle getTouchpadStyle() {
 
         touchpadSkin = new Skin();
-        touchpadSkin.add("touchBackground", new Texture("touchpad/touchBackground.png"));
+        touchpadSkin.add("touchBackground", new Texture("textures/analogBackground.png"));
 
-        touchpadSkin.add("touchKnob", new Texture("touchpad/touchKnob.png"));
+        touchpadSkin.add("touchKnob", new Texture("textures/analogForeground.png"));
 
         touchpadStyle = new Touchpad.TouchpadStyle();
 
         touchBackground = touchpadSkin.getDrawable("touchBackground");
         touchKnob = touchpadSkin.getDrawable("touchKnob");
+        touchKnob.setMinHeight(120);
+        touchKnob.setMinWidth(120);
 
         touchpadStyle.background = touchBackground;
         touchpadStyle.knob = touchKnob;
