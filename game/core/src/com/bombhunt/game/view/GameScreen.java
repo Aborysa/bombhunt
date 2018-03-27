@@ -13,7 +13,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -26,12 +29,16 @@ import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
 import com.bombhunt.game.ecs.factories.CrateFactory;
 import com.bombhunt.game.ecs.factories.IEntityFactory;
+import com.bombhunt.game.ecs.factories.PlayerFactory;
 import com.bombhunt.game.ecs.systems.PhysicsSystem;
+import com.bombhunt.game.ecs.systems.PlayerInputSystem;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
 import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.utils.level.*;
 
 import java.util.HashMap;
+
+import javax.xml.soap.Text;
 
 
 public class GameScreen extends InputAdapter implements IView{
@@ -88,6 +95,7 @@ public class GameScreen extends InputAdapter implements IView{
 
     factoryMap = new HashMap<String, IEntityFactory>(){{
       put(CrateFactory.class.getSimpleName(), new CrateFactory());
+      put(PlayerFactory.class.getSimpleName(), new PlayerFactory());
     }};
 
 
@@ -98,7 +106,7 @@ public class GameScreen extends InputAdapter implements IView{
     Collision.world = box2d;
     // Set up ECS world
     WorldConfiguration config = new WorldConfigurationBuilder()
-        .with(new SpriteSystem(), new PhysicsSystem(box2d))
+        .with(new SpriteSystem(), new PhysicsSystem(box2d), new PlayerInputSystem(box2d))
         .build();
 
     world = new World(config);
@@ -120,6 +128,14 @@ public class GameScreen extends InputAdapter implements IView{
 
     level.createEntities(factoryMap);
     level.createCollisionBodies(box2d);
+
+
+    // create player entitiy
+
+    TextureRegion tex = new TextureRegion(new Texture("textures/badlogic.jpg"));
+    PlayerFactory playerFactory = (PlayerFactory) factoryMap.get(PlayerFactory.class.getSimpleName());
+    playerFactory.createPlayer(0, 0, Decal.newDecal(tex));
+
 
     // Initial update of camera
     
@@ -167,12 +183,12 @@ public class GameScreen extends InputAdapter implements IView{
       camVec.y -= 1;
     }
 
-    if(keysDown.getOrDefault(Input.Keys.W, false)){
+    /*if(keysDown.getOrDefault(Input.Keys.W, false)){
       zoom -= dtime;
     }
     if(keysDown.getOrDefault(Input.Keys.S, false)){
       zoom += dtime;
-    }
+    }*/
 
     // Get the normal vec from the movement input
     camVec.nor();
