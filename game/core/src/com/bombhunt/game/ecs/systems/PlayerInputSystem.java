@@ -39,26 +39,7 @@ public class PlayerInputSystem extends IteratingSystem{
         Body body = box2dComponent.body;
 
         // set velocity values based on input touchpad inputs
-
-        // using keyboard to controll player
         float speed = 10;
-        /*float horisontal = 0;
-        float vertical = 0;
-        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-            //velocityComponent.velocity.y = speed;
-            vertical = speed;
-        } else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-            //velocityComponent.velocity.y = -speed;
-            vertical = -speed;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            //velocityComponent.velocity.x = speed;
-            horisontal = speed;
-        } else if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            //velocityComponent.velocity.x = -speed;
-            horisontal = -speed;
-        }
-        body.setLinearVelocity(new Vector2(horisontal, vertical));*/
 
         // using the joystick for player input
 
