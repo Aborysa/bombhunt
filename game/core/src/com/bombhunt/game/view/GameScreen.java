@@ -26,6 +26,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
@@ -113,11 +116,14 @@ public class GameScreen extends InputAdapter implements IView{
     Collision.world = box2d;
 
     // Set up joystick
+    Table table = new Table();
     joystick = new Joystick(30,30);
+    bombButton = new Button(new TextureRegionDrawable(new TextureRegion(Assets.getInstance().get("textures/bombButton.png",Texture.class))));
+    table.add(joystick).padBottom(200).left();
+    table.add(bombButton).right();
+
     stage = new Stage();
-    stage.addActor(joystick);
-    bombButton = new Button();
-    stage.addActor(bombButton);
+    stage.addActor(table);
 
 
     // Set up ECS world
