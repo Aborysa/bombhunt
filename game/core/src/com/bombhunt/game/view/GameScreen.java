@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
@@ -79,6 +80,7 @@ public class GameScreen extends InputAdapter implements IView{
   private float gameTime = 0;
 
   private Joystick joystick;
+  private Button bombButton;
   private Stage stage;
 
   public GameScreen(){
@@ -114,6 +116,9 @@ public class GameScreen extends InputAdapter implements IView{
     joystick = new Joystick(30,30);
     stage = new Stage();
     stage.addActor(joystick);
+    bombButton = new Button();
+    stage.addActor(bombButton);
+
 
     // Set up ECS world
     WorldConfiguration config = new WorldConfigurationBuilder()
