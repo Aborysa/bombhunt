@@ -35,10 +35,11 @@ public class BombSystem extends IteratingSystem {
         // check if the bomb fuse timer has run out
         if(timerComponent.timer <= 0){
             // call factory to create an explosion
+            System.out.println("boom");
             TransformComponent transformComponent = mapTransform.get(e);
 
             // TODO: implement the bomb factory class
-            //bombFactory.createExplosion(transformComponent.position);
+            bombFactory.createExplosion(transformComponent.position, 0.5f);
 
 
             // delete the bomb entity from the world since the timer has expired.

@@ -34,6 +34,7 @@ import com.bombhunt.game.ecs.factories.CrateFactory;
 import com.bombhunt.game.ecs.factories.IEntityFactory;
 import com.bombhunt.game.ecs.factories.PlayerFactory;
 import com.bombhunt.game.ecs.systems.BombSystem;
+import com.bombhunt.game.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.ecs.systems.PlayerInputSystem;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
@@ -120,7 +121,7 @@ public class GameScreen extends InputAdapter implements IView{
 
     // Set up ECS world
     WorldConfiguration config = new WorldConfigurationBuilder()
-        .with(new SpriteSystem(), new PhysicsSystem(box2d), new PlayerInputSystem(box2d, joystick, (BombFactory) factoryMap.get(BombFactory.class.getSimpleName())), new BombSystem((BombFactory) factoryMap.get(BombFactory.class.getSimpleName())))
+        .with(new SpriteSystem(), new PhysicsSystem(box2d), new PlayerInputSystem(box2d, joystick, (BombFactory) factoryMap.get(BombFactory.class.getSimpleName())), new BombSystem((BombFactory) factoryMap.get(BombFactory.class.getSimpleName())), new ExplosionSystem())
         .build();
 
     world = new World(config);

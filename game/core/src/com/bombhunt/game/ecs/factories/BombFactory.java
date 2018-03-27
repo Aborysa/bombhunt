@@ -6,11 +6,13 @@ import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.BombComponent;
 import com.bombhunt.game.ecs.components.ExplosionComponent;
@@ -59,12 +61,20 @@ public class BombFactory implements IEntityFactory {
     }
 
     public int createExplosion(Vector3 pos, float timer) {
+        System.out.println("creating exp");
         int e = world.create(explosionArchetype);
         mapTransform.get(e).position = pos;
+        mapTransform.get(e).rotation = 90f*(float)Math.random();
 
-        // TODO: add sprite/animation
-        //mapSprite.get(e).sprite
-        //mapAnimation.get(e).animation
+        // TODO: add sprite/animatio
+        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
+                SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4"),
+                        16, 4, 13, 3),
+                3/timer);
+
+
+        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
+        mapTransform.get(e).scale = new Vector2(5f, 5f);
 
         mapTimer.get(e).timer = timer;
         return e;
