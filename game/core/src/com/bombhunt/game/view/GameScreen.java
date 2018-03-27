@@ -111,7 +111,7 @@ public class GameScreen extends InputAdapter implements IView{
     Collision.world = box2d;
 
     // Set up joystick
-    joystick = new Joystick(20,20);
+    joystick = new Joystick(30,30);
     stage = new Stage();
     stage.addActor(joystick);
 
