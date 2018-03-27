@@ -38,15 +38,15 @@ public class PlayerFactory implements IEntityFactory{
 
 
 
-    public int createPlayer(int x, int y, Decal sprite){
+    public int createPlayer(Vector3 pos, Decal sprite){
         int e = world.create(playerArchtype);
 
         mapSprite.get(e).sprite = sprite;
-        mapTransform.get(e).position = new Vector3(x, y, 0);
+        mapTransform.get(e).position.set(pos);
         Body body = Collision.createBody(Collision.dynamicDef, Collision.wallFixture);
         PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
         shape.setAsBox((sprite.getWidth()/2 - 0.2f) * Collision.worldTobox2d, (sprite.getHeight()/2f -0.2f) * Collision.worldTobox2d);
-        body.setTransform(new Vector2(x, y).scl(Collision.worldTobox2d), 0);
+        body.setTransform(new Vector2(pos.x, pos.y).scl(Collision.worldTobox2d), 0);
 
         // prevents the player from rotating about when it collides with other objects.
         body.setFixedRotation(true);
@@ -58,8 +58,45 @@ public class PlayerFactory implements IEntityFactory{
 
     @Override
     public int createFromTile(TiledMapTileLayer.Cell cell, TiledMapTileLayer layer, int x, int y, int depth) {
-        return 0;
+        TiledMapTile tile = cell.getTile();
+        TextureRegion tex = tile.getTextureRegion();
+        float rotation = 90*cell.getRotation();
+
+        Decal decal = Decal.newDecal(tex, true);
+        Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y, depth).add(new Vector3(layer.getTileWidth()/2f, layer.getTileHeight()/2f, 0));
+        int e = createPlayer(pos, decal);
+
+        mapTransform.get(e).rotation = rotation;
+
+
+
+        return e;
     }
+
+    /*
+      public int createFromTile(Cell cell, TiledMapTileLayer layer, int x, int y, int depth){
+    TiledMapTile tile = cell.getTile();
+    TextureRegion tex = tile.getTextureRegion();
+    float rotation = 90*cell.getRotation();
+
+    //
+    Decal decal = Decal.newDecal(tex, true);
+
+
+    Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y, depth).add(new Vector3(layer.getTileWidth()/2f, layer.getTileHeight()/2f, 0));
+    int e = createCrate(pos, decal, 1);
+
+    mapTransform.get(e).rotation = rotation;
+
+    MapProperties props = layer.getProperties();
+    Vector2 veloc = new Vector2(props.get("velocity", 0.0f, Float.class),0f);
+
+    //NOTE: box2d has a hardcoded max speed of 120 units per second
+    mapBox2d.get(e).body.setLinearVelocity(veloc);
+
+
+    return e;
+     */
 
     public void setWorld(World world){
         this.world = world;
