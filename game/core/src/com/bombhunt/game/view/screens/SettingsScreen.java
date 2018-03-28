@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.bombhunt.game.BombHunt;
 
@@ -24,8 +25,9 @@ public class SettingsScreen extends MovingBackgroundScreen {
     private Table feedMainTable() {
         Label title = new Label("Settings", skin, "title");
         Table table = new Table();
-        table.add(title).row();
-        addReturnButton(table);
+        table.add(title).colspan(4).padBottom(10).row();
+        addSliders(table);
+        addReturnButton(table, 4);
         table.setFillParent(true);
         return table;
     }
@@ -41,15 +43,29 @@ public class SettingsScreen extends MovingBackgroundScreen {
         batch.draw(background, -offsetBackgroundX, -offsetBackgroundY,
                 0, 0,
                 Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(background, -background.getWidth()-offsetBackgroundX, -offsetBackgroundY,
+        batch.draw(background, -background.getWidth() - offsetBackgroundX, -offsetBackgroundY,
                 0, 0,
                 Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(background, -offsetBackgroundX, -background.getHeight()-offsetBackgroundY,
+        batch.draw(background, -offsetBackgroundX, -background.getHeight() - offsetBackgroundY,
                 0, 0,
                 Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(background, -background.getWidth()-offsetBackgroundX, -background.getHeight()-offsetBackgroundY,
+        batch.draw(background, -background.getWidth() - offsetBackgroundX, -background.getHeight() - offsetBackgroundY,
                 0, 0,
                 Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    private void addSliders(Table table) {
+        Label label_volume = new Label("Volume", skin, "default");
+        Slider slider_volume = new Slider(0, 100, 1, false, skin);
+        slider_volume.setValue(50);
+        slider_volume.getStyle().knob.setMinHeight(100);
+        Label label_soundFX = new Label("Sound FX", skin, "default");
+        Slider slider_soundFX = new Slider(0, 100, 1, false, skin);
+        slider_soundFX.setValue(50);
+        table.add(label_volume).right().expandX();
+        table.add(slider_volume).left().padLeft(25).expandX().padBottom(10).row();
+        table.add(label_soundFX).right().expandX();
+        table.add(slider_soundFX).left().padLeft(25).expandX().padBottom(10).row();
     }
 
 }

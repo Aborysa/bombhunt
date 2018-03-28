@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
  * Created by samuel on 28/03/18.
  * reference: https://stackoverflow.com/questions/15484077
  * reference: https://stackoverflow.com/questions/27577976
+ * reference: https://stackoverflow.com/questions/3574065
  */
 
 public abstract class MovingBackgroundScreen extends BasicView {
@@ -116,10 +117,10 @@ public abstract class MovingBackgroundScreen extends BasicView {
         return listener;
     }
 
-    protected void addReturnButton(Table table) {
+    protected void addReturnButton(Table table, int colspan) {
         TextButton btnReturn = createButton("Back",
                 createChangeListener(this, MainMenuScreen.class));
-        table.add(btnReturn).expandX();
+        table.add(btnReturn).colspan(colspan).expandX();
     }
 
 }
