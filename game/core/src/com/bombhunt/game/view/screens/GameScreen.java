@@ -19,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
@@ -29,12 +30,12 @@ import com.bombhunt.game.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
 import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.utils.level.Level;
-import com.bombhunt.game.view.IView;
+import com.bombhunt.game.view.BasicView;
 
 import java.util.HashMap;
 
 
-public class GameScreen extends InputAdapter implements IView {
+public class GameScreen extends BasicView {
 
     private World world;
     private com.badlogic.gdx.physics.box2d.World box2d;
@@ -69,7 +70,8 @@ public class GameScreen extends InputAdapter implements IView {
     private float gameTime = 0;
 
 
-    public GameScreen() {
+    public GameScreen(BombHunt bombHunt) {
+        super(bombHunt);
         System.out.println("Creating gamescreen");
 
         // Create a camera

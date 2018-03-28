@@ -1,83 +1,48 @@
 package com.bombhunt.game.view.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.bombhunt.game.BombHunt;
-import com.bombhunt.game.view.BasicView;
 
 /**
  * Created by samuel on 27/03/18.
- * reference: https://stackoverflow.com/questions/15484077
- * reference: https://stackoverflow.com/questions/27577976
  */
 
-public class CreditsScreen extends BasicView {
-
-    private SpriteBatch batch;
-    private Texture background;
-    private ScrollPane scroller;
-    private int offsetBackgroundX = 0;
-    private int offsetBackgroundY = 0;
+public class CreditsScreen extends MovingBackgroundScreen {
 
     public CreditsScreen(BombHunt bombHunt) {
         super(bombHunt);
+        Texture background = new Texture(Gdx.files.internal("angryBombsBackground.png"));
+        setBackground(background);
+        Table main_table = feedMainTable();
+        setTable(main_table);
+    }
 
-        batch = new SpriteBatch();
-        background = new Texture(Gdx.files.internal("angryBombsBackground.png"));
-        background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+    private Table feedMainTable() {
+        Table table = new Table();
+        table.setFillParent(true);
+        ScrollPane scroller = feedScrollPane();
+        table.add(scroller).top().fill().expand().row();
+        return table;
+    }
 
+    private ScrollPane feedScrollPane() {
+        Table scroll_table = feedScrollTable();
+        ScrollPane scroller = new ScrollPane(scroll_table);
+        return scroller;
+    }
+
+    private Table feedScrollTable() {
         Table scroll_table = new Table();
         addTitle(scroll_table);
         addDevelopersToTable(scroll_table);
-
-        // Should read content through files
-        // developers
-        // content TDT4240 - Software Architecture NTNU (date)
-        // course staff
-        // artists
-        // Label developers = new Label("");
-
-        scroller = new ScrollPane(scroll_table, skin, "default");
-
-        Table table = new Table();
-        table.setFillParent(true);
-        table.add(scroller).top().fill().expand().row();
-        stage.addActor(table);
-    }
-
-    @Override
-    public void update(float dtime) {
-        updateMovingBackgroundPosition();
-    }
-
-    @Override
-    public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        drawMovingBackground(batch);
-        batch.end();
-        stage.act();
-        stage.draw();
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        batch.dispose();
-        background.dispose();
-    }
-
-    @Override
-    public InputProcessor getInputProcessor() {
-        return stage;
+        addCourseStaff(scroll_table);
+        addArtists(scroll_table);
+        return scroll_table;
     }
 
     private void addTitle(Table table) {
@@ -86,31 +51,25 @@ public class CreditsScreen extends BasicView {
     }
 
     private void addDevelopersToTable(Table table) {
-        table.add(new Label("Developers", skin, "bold")).row();
-        FileHandle file = Gdx.files.internal("developers.txt");
-        String lines[] = file.readString().split("\\r?\\n");
+        addFromFile(table, "Developers", "developers.txt");
+    }
+
+    private void addCourseStaff(Table table) {
+        addFromFile(table, "TDT4240 - Course Staff", "tdt4240Staff.txt");
+    }
+
+    private void addArtists(Table table) {
+        addFromFile(table, "Artists", "artists.txt");
+    }
+
+    private void addFromFile(Table table, String section_title, String file_name) {
+        table.add(new Label(section_title, skin, "bold")).row();
+        FileHandle file = Gdx.files.internal(file_name);
+        String lines[] = file.readString("UTF-8").split("\\r?\\n");
         for (int i = 0; i < lines.length; i++) {
             table.add(new Label(lines[i], skin, "default")).row();
         }
+        table.add(new Label("", skin)).row();
     }
 
-    private void updateMovingBackgroundPosition() {
-        offsetBackgroundX = (offsetBackgroundX + 2) % background.getWidth();
-        offsetBackgroundY = (offsetBackgroundY + 2) % background.getHeight();
-    }
-
-    private void drawMovingBackground(SpriteBatch batch) {
-        batch.draw(background, -offsetBackgroundX, -offsetBackgroundY,
-                0, 0,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(background, background.getWidth()-offsetBackgroundX, -offsetBackgroundY,
-                0, 0,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(background, -offsetBackgroundX, background.getHeight()-offsetBackgroundY,
-                0, 0,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(background, background.getWidth()-offsetBackgroundX, background.getHeight()-offsetBackgroundY,
-                0, 0,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    }
 }

@@ -1,57 +1,19 @@
 package com.bombhunt.game.view.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.bombhunt.game.view.IView;
+import com.bombhunt.game.BombHunt;
+import com.bombhunt.game.view.BasicView;
 
-public class MainMenuScreen extends InputAdapter implements IView {
-    private Camera camera;
-    private Stage stage;
-    private Table table;
-    private Skin skin;
+public class MainMenuScreen extends MovingBackgroundScreen {
 
-    private TextButton btnPlay;
-    private TextButton btnSettings;
-    private TextButton btnCredits;
-    private TextButton btnQuit;
-
-    private BitmapFont font;
-
-    public MainMenuScreen() {
-        camera = new OrthographicCamera(800,
-                800 * (Gdx.graphics.getHeight() / (float) Gdx.graphics.getWidth()));
-        stage = new Stage(new StretchViewport(camera.viewportWidth, camera.viewportHeight));
-        table = new Table();
-        Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("skin/craftacular-ui.json"));
-
-        btnPlay = createButton("Play");
-        btnSettings = createButton("Settings");
-        btnCredits = createButton("Credits");
-        btnQuit = createButton("Quit");
-
-        Label test = new Label("test", skin, "title");
-
-        table.add(test).center().row();
-        table.add(btnPlay).expandX().center().padBottom(10);
-        table.add(btnSettings).expandX().center().padBottom(10).row();
-        table.add(btnCredits).expandX().center().padBottom(10);
-        table.add(btnQuit).expandX();
-        table.setFillParent(true);
-        stage.addActor(table);
+    public MainMenuScreen(BombHunt bombHunt) {
+        super(bombHunt);
+        Table main_table = feedMainTable();
+        setTable(main_table);
     }
 
     @Override
@@ -60,33 +22,61 @@ public class MainMenuScreen extends InputAdapter implements IView {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        clearBackground();
         stage.act();
         stage.draw();
     }
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
 
     }
 
-    @Override
-    public InputProcessor getInputProcessor() {
-        return stage;
-    }
-
-    private TextButton createButton(String text) {
+    private TextButton createButton(String text, ChangeListener listener) {
         TextButton button = new TextButton(text, skin, "default");
         button.setTransform(true);
-        button.addListener(new ChangeListener() {
+        button.addListener(listener);
+        return button;
+    }
+
+    private ChangeListener createChangeListener(BasicView current_view, BasicView new_view) {
+        ChangeListener listener = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Button " + text + " Pressed");
+                changeView(current_view, new_view);
             }
-        });
-        return button;
+        };
+        return listener;
+    }
+
+    private ChangeListener createQuitListener(BasicView current_view, BombHunt bombHunt) {
+        ChangeListener listener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                current_view.dispose();
+                System.exit(-1);
+            }
+        };
+        return listener;
+    }
+
+    private Table feedMainTable() {
+        Label title = new Label("Bomb Hunt", skin, "title");
+        TextButton btnPlay = createButton("Play",
+                createChangeListener(this, new GameScreen(bombHunt)));
+        TextButton btnSettings = createButton("Settings",
+                createChangeListener(this, new SettingsScreen(bombHunt)));
+        TextButton btnCredits = createButton("Credits",
+                createChangeListener(this, new CreditsScreen(bombHunt)));
+        TextButton btnQuit = createButton("Quit",
+                createQuitListener(this, bombHunt));
+        Table table = new Table();
+        table.add(title).colspan(3).row();
+        table.add(btnPlay).expandX().center().padBottom(10);
+        table.add(btnSettings).expandX().center().padBottom(10).row();
+        table.add(btnCredits).expandX().center().padBottom(10);
+        table.add(btnQuit).expandX();
+        table.setFillParent(true);
+        return table;
     }
 }

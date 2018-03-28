@@ -7,10 +7,10 @@ import com.badlogic.gdx.physics.box2d.Box2D;
 import com.bombhunt.game.networking.PlayServices;
 import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.view.screens.MainMenuScreen;
-import com.bombhunt.game.view.IView;
+import com.bombhunt.game.view.BasicView;
 
 public class BombHunt extends ApplicationAdapter {
-    private IView currentView;
+    private BasicView currentView;
     private boolean assetsLoaded = false;
     private boolean viewLoaded = false;
     PlayServices playServices;
@@ -20,7 +20,7 @@ public class BombHunt extends ApplicationAdapter {
         playServices.signIn();
     }
 
-    public void setCurrentView(IView view) {
+    public void setCurrentView(BasicView view) {
         // May want to dispose old view
         Gdx.input.setInputProcessor(view.getInputProcessor());
         currentView = view;
@@ -53,7 +53,7 @@ public class BombHunt extends ApplicationAdapter {
     private void loadMainMenuScreen() {
         while (!viewLoaded) {
             if (isAssetsLoaded()) {
-                setCurrentView(new MainMenuScreen());
+                setCurrentView(new MainMenuScreen(this));
                 viewLoaded = true;
             }
         }
