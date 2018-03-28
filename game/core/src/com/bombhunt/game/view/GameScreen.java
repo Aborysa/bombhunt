@@ -12,6 +12,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
@@ -117,10 +119,22 @@ public class GameScreen extends InputAdapter implements IView{
 
     // Set up joystick
     Table table = new Table();
+    table.setDebug(true);
+    table.setFillParent(true);
+    table.pad(50);
     joystick = new Joystick(30,30);
     bombButton = new Button(new TextureRegionDrawable(new TextureRegion(Assets.getInstance().get("textures/bombButton.png",Texture.class))));
-    table.add(joystick).padBottom(200).left();
-    table.add(bombButton).right();
+    table.add().height(50);
+    table.add();
+    table.add();
+    table.row();
+    table.add();
+    table.add().expand();
+    table.add();
+    table.row();
+    table.add(joystick).size(200);
+    table.add();
+    table.add(bombButton).size(200);
 
     stage = new Stage();
     stage.addActor(table);
