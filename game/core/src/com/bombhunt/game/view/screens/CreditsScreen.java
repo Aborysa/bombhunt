@@ -3,9 +3,11 @@ package com.bombhunt.game.view.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.bombhunt.game.BombHunt;
 
 /**
@@ -42,6 +44,7 @@ public class CreditsScreen extends MovingBackgroundScreen {
         addDevelopersToTable(scroll_table);
         addCourseStaff(scroll_table);
         addArtists(scroll_table);
+        addReturnButton(scroll_table);
         return scroll_table;
     }
 
@@ -72,4 +75,25 @@ public class CreditsScreen extends MovingBackgroundScreen {
         table.add(new Label("", skin)).row();
     }
 
+    @Override
+    void updateMovingBackgroundPosition() {
+        offsetBackgroundX = (offsetBackgroundX + OFFSET_BACKGROUND_STEP_X) % background.getWidth();
+        offsetBackgroundY = (offsetBackgroundY + OFFSET_BACKGROUND_STEP_Y) % background.getHeight();
+    }
+
+    @Override
+    void drawMovingBackground(SpriteBatch batch) {
+        batch.draw(background, -offsetBackgroundX, -offsetBackgroundY,
+                0, 0,
+                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(background, background.getWidth()-offsetBackgroundX, -offsetBackgroundY,
+                0, 0,
+                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(background, -offsetBackgroundX, background.getHeight()-offsetBackgroundY,
+                0, 0,
+                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(background, background.getWidth()-offsetBackgroundX, background.getHeight()-offsetBackgroundY,
+                0, 0,
+                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
 }

@@ -1,5 +1,6 @@
 package com.bombhunt.game.view.screens;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -32,23 +33,6 @@ public class MainMenuScreen extends MovingBackgroundScreen {
 
     }
 
-    private TextButton createButton(String text, ChangeListener listener) {
-        TextButton button = new TextButton(text, skin, "default");
-        button.setTransform(true);
-        button.addListener(listener);
-        return button;
-    }
-
-    private ChangeListener createChangeListener(BasicView current_view, BasicView new_view) {
-        ChangeListener listener = new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                changeView(current_view, new_view);
-            }
-        };
-        return listener;
-    }
-
     private ChangeListener createQuitListener(BasicView current_view, BombHunt bombHunt) {
         ChangeListener listener = new ChangeListener() {
             @Override
@@ -63,11 +47,11 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     private Table feedMainTable() {
         Label title = new Label("Bomb Hunt", skin, "title");
         TextButton btnPlay = createButton("Play",
-                createChangeListener(this, new GameScreen(bombHunt)));
+                createChangeListener(this, GameScreen.class));
         TextButton btnSettings = createButton("Settings",
-                createChangeListener(this, new SettingsScreen(bombHunt)));
+                createChangeListener(this, SettingsScreen.class));
         TextButton btnCredits = createButton("Credits",
-                createChangeListener(this, new CreditsScreen(bombHunt)));
+                createChangeListener(this, CreditsScreen.class));
         TextButton btnQuit = createButton("Quit",
                 createQuitListener(this, bombHunt));
         Table table = new Table();
@@ -79,4 +63,14 @@ public class MainMenuScreen extends MovingBackgroundScreen {
         table.setFillParent(true);
         return table;
     }
+
+    @Override
+    void updateMovingBackgroundPosition() {
+    }
+
+    @Override
+    void drawMovingBackground(SpriteBatch batch) {
+
+    }
+
 }

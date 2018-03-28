@@ -6,12 +6,18 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.view.BasicView;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by samuel on 28/03/18.
@@ -19,10 +25,11 @@ import com.bombhunt.game.view.BasicView;
  * reference: https://stackoverflow.com/questions/27577976
  */
 
-public class MovingBackgroundScreen extends BasicView {
+public abstract class MovingBackgroundScreen extends BasicView {
 
-    private final int OFFSET_BACKGROUND_STEP_X = 2;
-    private final int OFFSET_BACKGROUND_STEP_Y = 2;
+    protected final int OFFSET_BACKGROUND_STEP_X = 2;
+    protected final int OFFSET_BACKGROUND_STEP_Y = 2;
+
     private final int SCALE = 800;
     private final String SKIN_PATH = "skin/craftacular-ui.json";
 
@@ -31,9 +38,9 @@ public class MovingBackgroundScreen extends BasicView {
     protected Skin skin;
 
     private SpriteBatch batch;
-    private Texture background;
-    private int offsetBackgroundX = 0;
-    private int offsetBackgroundY = 0;
+    protected Texture background;
+    protected int offsetBackgroundX = 0;
+    protected int offsetBackgroundY = 0;
 
     public MovingBackgroundScreen(BombHunt bombHunt) {
         super(bombHunt);
@@ -82,24 +89,37 @@ public class MovingBackgroundScreen extends BasicView {
         return stage;
     }
 
-    private void updateMovingBackgroundPosition() {
-        offsetBackgroundX = (offsetBackgroundX + OFFSET_BACKGROUND_STEP_X) % background.getWidth();
-        offsetBackgroundY = (offsetBackgroundY + OFFSET_BACKGROUND_STEP_Y) % background.getHeight();
+    abstract void updateMovingBackgroundPosition();
+
+    abstract void drawMovingBackground(SpriteBatch batch);
+
+    protected TextButton createButton(String text, ChangeListener listener) {
+        TextButton button = new TextButton(text, skin, "default");
+        button.setTransform(true);
+        button.addListener(listener);
+        return button;
     }
 
-    private void drawMovingBackground(SpriteBatch batch) {
-        batch.draw(background, -offsetBackgroundX, -offsetBackgroundY,
-                0, 0,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(background, background.getWidth()-offsetBackgroundX, -offsetBackgroundY,
-                0, 0,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(background, -offsetBackgroundX, background.getHeight()-offsetBackgroundY,
-                0, 0,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(background, background.getWidth()-offsetBackgroundX, background.getHeight()-offsetBackgroundY,
-                0, 0,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    protected ChangeListener createChangeListener(BasicView current_view, Class new_view_class) {
+        ChangeListener listener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                try {
+                    Constructor<?> cons = new_view_class.getConstructor(BombHunt.class);
+                    BasicView new_view = (BasicView) cons.newInstance(bombHunt);
+                    changeView(current_view, (BasicView) new_view);
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        return listener;
+    }
+
+    protected void addReturnButton(Table table) {
+        TextButton btnReturn = createButton("Back",
+                createChangeListener(this, MainMenuScreen.class));
+        table.add(btnReturn).expandX();
     }
 
 }
