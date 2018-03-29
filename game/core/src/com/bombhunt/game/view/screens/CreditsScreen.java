@@ -48,7 +48,7 @@ public class CreditsScreen extends MovingBackgroundScreen {
         addDevelopersToTable(scroll_table);
         addCourseStaff(scroll_table);
         addArtists(scroll_table);
-        ChangeListener listener = controller.createChangeListener(this, MainMenuScreen.class);
+        ChangeListener listener = controller.createViewTransitionListener(this, MainMenuScreen.class);
         addReturnButton(scroll_table, listener, 1);
         return scroll_table;
     }

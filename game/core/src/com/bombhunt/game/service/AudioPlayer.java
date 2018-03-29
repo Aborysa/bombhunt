@@ -17,6 +17,12 @@ import static java.lang.Float.min;
 
 public class AudioPlayer {
 
+    private Thread thread_fade_in;
+    private Thread thread_fade_out;
+
+    private float app_volume = 0.5f;
+    private float app_sound = 0.75f;
+
     private Music current_theme_song;
 
     public AudioPlayer() {
@@ -25,6 +31,28 @@ public class AudioPlayer {
 
     public void dispose() {
         current_theme_song.dispose();
+    }
+
+    public float getVolumeThemeSong() {
+        return app_volume;
+    }
+
+    public void setVolumeThemeSong(float volume) {
+        app_volume = volume;
+        current_theme_song.setVolume(volume);
+        if (thread_fade_in.isAlive()) {
+            thread_fade_in.interrupt();
+        }
+        // IMPORTANT: not needed for thread_fade_out (will vanish anyway)
+    }
+
+    public float getVolumeSoundFX() {
+        return app_sound;
+    }
+
+    public void setVolumeSoundFX(float volume) {
+        app_sound = volume;
+        // HOW TO CHANGE FOR ALL SOUNDS ?
     }
 
     public void setNewThemeSong(String new_theme_song_path) {
@@ -44,7 +72,6 @@ public class AudioPlayer {
             @Override
             public void run() {
                 float current_volume = 0f;
-                float desired_volume = 1f;
                 float time_window = 3f;
                 float adjustment_factor;
                 float time_elapsed = 0;
@@ -52,20 +79,20 @@ public class AudioPlayer {
                 long current_frame_id;
                 music.setVolume(current_volume);
                 music.play();
-                while (current_volume < desired_volume) {
+                while (current_volume < app_volume) {
                     current_frame_id = Gdx.graphics.getFrameId();
                     if (current_frame_id != prev_frame_id) {
                         prev_frame_id = current_frame_id;
                         time_elapsed += Gdx.graphics.getDeltaTime();
                         adjustment_factor = min(1f, time_elapsed/time_window);
-                        current_volume = desired_volume*adjustment_factor;
+                        current_volume = app_volume*adjustment_factor;
                         music.setVolume(current_volume);
                     }
                 }
             }
         };
-        Thread thread = new Thread(runnable);
-        thread.start();
+        thread_fade_in = new Thread(runnable);
+        thread_fade_in.start();
     }
 
     private void fadeOut(Music music) {

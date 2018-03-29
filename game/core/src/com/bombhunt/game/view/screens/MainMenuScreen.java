@@ -94,11 +94,11 @@ public class MainMenuScreen extends MovingBackgroundScreen {
 
     private void addButtons(Table table) {
         TextButton btnPlay = createButton("Play",
-                controller.createChangeListener(this, GameScreen.class));
+                controller.createViewTransitionListener(this, GameScreen.class));
         TextButton btnSettings = createButton("Settings",
-                controller.createChangeListener(this, SettingsScreen.class));
+                controller.createViewTransitionListener(this, SettingsScreen.class));
         TextButton btnCredits = createButton("Credits",
-                controller.createChangeListener(this, CreditsScreen.class));
+                controller.createViewTransitionListener(this, CreditsScreen.class));
         TextButton btnQuit = createButton("Quit",
                 controller.createQuitListener(this));
         table.add(btnPlay).expandX().center().padBottom(10);
