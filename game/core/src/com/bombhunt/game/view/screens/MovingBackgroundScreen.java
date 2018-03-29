@@ -38,7 +38,7 @@ public abstract class MovingBackgroundScreen extends BasicView {
     protected Stage stage;
     protected Skin skin;
 
-    private SpriteBatch batch;
+    protected SpriteBatch batch;
     protected Texture background;
     protected int offsetBackgroundX = 0;
     protected int offsetBackgroundY = 0;

@@ -10,6 +10,7 @@ import com.bombhunt.game.BombHunt;
 
 /**
  * Created by samuel on 27/03/18.
+ * reference: https://stackoverflow.com/questions/23833251/
  */
 
 public class SettingsScreen extends MovingBackgroundScreen {
