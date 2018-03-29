@@ -1,6 +1,7 @@
 package com.bombhunt.game.view.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -22,6 +23,10 @@ public class SettingsScreen extends MovingBackgroundScreen {
     public SettingsScreen(BombHunt bombHunt) {
         super(bombHunt);
         controller = SettingsController.getInstance(bombHunt);
+
+        String theme_song = "unfinishedBusiness.mp3";
+        controller.setNewThemeSong(theme_song);
+
         Texture background = new Texture(Gdx.files.internal("dynamitesBackground.png"));
         setBackground(background);
         Table main_table = feedMainTable();

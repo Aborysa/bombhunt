@@ -44,6 +44,10 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     public MainMenuScreen(BombHunt bombHunt) {
         super(bombHunt);
         controller = MainMenuController.getInstance(bombHunt);
+
+        String theme_song = "heroism.ogg";
+        controller.setNewThemeSong(theme_song);
+
         atlas = new TextureAtlas("colorbomb/colorbomb.pack");
         feedListColors();
         rnd = new Random();

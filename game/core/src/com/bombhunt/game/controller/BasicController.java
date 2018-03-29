@@ -41,4 +41,8 @@ public class BasicController {
         current_view.dispose();
     }
 
+    public void setNewThemeSong(String theme_song) {
+        bombHunt.audioPlayer.setNewThemeSong(theme_song);
+    }
+
 }

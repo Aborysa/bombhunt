@@ -1,0 +1,100 @@
+package com.bombhunt.game.service;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+
+import static java.lang.Float.max;
+import static java.lang.Float.min;
+
+/**
+ * Created by samuel on 29/03/18.
+ * references:
+ * https://github.com/libgdx/libgdx/wiki/Threading
+ * http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=1084&p=6362&hilit=audio+fade#p6362
+ * http://badlogicgames.com/forum/viewtopic.php?f=11&t=11152
+ * https://libgdx.badlogicgames.com/nightlies/docs/api/com/badlogic/gdx/Graphics.html
+ */
+
+public class AudioPlayer {
+
+    private Music current_theme_song;
+
+    public AudioPlayer() {
+        current_theme_song = null;
+    }
+
+    public void dispose() {
+        current_theme_song.dispose();
+    }
+
+    public void setNewThemeSong(String new_theme_song_path) {
+        Music new_theme_song = Gdx.audio.newMusic(Gdx.files.internal(new_theme_song_path));
+        new_theme_song.setLooping(true);
+        if (current_theme_song != null) {
+            fadeOut(current_theme_song);
+            fadeIn(new_theme_song);
+        } else {
+            fadeIn(new_theme_song);
+        }
+        current_theme_song = new_theme_song;
+    }
+
+    private void fadeIn(Music music) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                float current_volume = 0f;
+                float desired_volume = 1f;
+                float time_window = 3f;
+                float adjustment_factor;
+                float time_elapsed = 0;
+                long prev_frame_id = Gdx.graphics.getFrameId();
+                long current_frame_id;
+                music.setVolume(current_volume);
+                music.play();
+                while (current_volume < desired_volume) {
+                    current_frame_id = Gdx.graphics.getFrameId();
+                    if (current_frame_id != prev_frame_id) {
+                        prev_frame_id = current_frame_id;
+                        time_elapsed += Gdx.graphics.getDeltaTime();
+                        adjustment_factor = min(1f, time_elapsed/time_window);
+                        current_volume = desired_volume*adjustment_factor;
+                        music.setVolume(current_volume);
+                    }
+                }
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+
+    private void fadeOut(Music music) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                float initial_volume = music.getVolume();
+                float current_volume = initial_volume;
+                float desired_volume = 0f;
+                float time_window = 5f;
+                float adjustment_factor;
+                float time_elapsed = 0;
+                long prev_frame_id = Gdx.graphics.getFrameId();
+                long current_frame_id;
+                while (current_volume > desired_volume) {
+                    current_frame_id = Gdx.graphics.getFrameId();
+                    if (current_frame_id != prev_frame_id) {
+                        prev_frame_id = current_frame_id;
+                        time_elapsed += Gdx.graphics.getDeltaTime();
+                        adjustment_factor = max(0f, 1-time_elapsed/time_window);
+                        current_volume = initial_volume*adjustment_factor;
+                        music.setVolume(current_volume);
+                    }
+                }
+                music.dispose();
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+
+}
