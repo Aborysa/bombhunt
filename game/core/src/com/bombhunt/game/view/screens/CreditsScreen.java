@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
+import com.bombhunt.game.controller.CreditsController;
 
 /**
  * Created by samuel on 27/03/18.
@@ -15,8 +17,11 @@ import com.bombhunt.game.BombHunt;
 
 public class CreditsScreen extends MovingBackgroundScreen {
 
+    private CreditsController controller;
+
     public CreditsScreen(BombHunt bombHunt) {
         super(bombHunt);
+        controller = CreditsController.getInstance(bombHunt);
         Texture background = new Texture(Gdx.files.internal("angryBombsBackground.png"));
         setBackground(background);
         Table main_table = feedMainTable();
@@ -43,7 +48,8 @@ public class CreditsScreen extends MovingBackgroundScreen {
         addDevelopersToTable(scroll_table);
         addCourseStaff(scroll_table);
         addArtists(scroll_table);
-        addReturnButton(scroll_table, 1);
+        ChangeListener listener = controller.createChangeListener(this, MainMenuScreen.class);
+        addReturnButton(scroll_table, listener, 1);
         return scroll_table;
     }
 

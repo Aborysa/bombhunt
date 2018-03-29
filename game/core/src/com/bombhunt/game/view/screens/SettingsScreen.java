@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
+import com.bombhunt.game.controller.SettingsController;
 
 /**
  * Created by samuel on 27/03/18.
@@ -15,8 +17,11 @@ import com.bombhunt.game.BombHunt;
 
 public class SettingsScreen extends MovingBackgroundScreen {
 
+    private SettingsController controller;
+
     public SettingsScreen(BombHunt bombHunt) {
         super(bombHunt);
+        controller = SettingsController.getInstance(bombHunt);
         Texture background = new Texture(Gdx.files.internal("dynamitesBackground.png"));
         setBackground(background);
         Table main_table = feedMainTable();
@@ -28,7 +33,8 @@ public class SettingsScreen extends MovingBackgroundScreen {
         Table table = new Table();
         table.add(title).colspan(4).padBottom(10).row();
         addSliders(table);
-        addReturnButton(table, 4);
+        ChangeListener listener = controller.createChangeListener(this, MainMenuScreen.class);
+        addReturnButton(table, listener,4);
         table.setFillParent(true);
         return table;
     }

@@ -6,14 +6,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
-import com.bombhunt.game.view.BasicView;
+import com.bombhunt.game.controller.MainMenuController;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -31,6 +29,8 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     private final int ROTATION_ANGLE_INCREMENT = 1;
     private final float PROB_COLOR_CHANGE_FACTOR = 0.0025f;
 
+    private MainMenuController controller;
+
     float elapsedTime;
     float angle;
     float last_color_change;
@@ -43,6 +43,7 @@ public class MainMenuScreen extends MovingBackgroundScreen {
 
     public MainMenuScreen(BombHunt bombHunt) {
         super(bombHunt);
+        controller = MainMenuController.getInstance(bombHunt);
         atlas = new TextureAtlas("colorbomb/colorbomb.pack");
         feedListColors();
         rnd = new Random();
@@ -89,28 +90,17 @@ public class MainMenuScreen extends MovingBackgroundScreen {
 
     private void addButtons(Table table) {
         TextButton btnPlay = createButton("Play",
-                createChangeListener(this, GameScreen.class));
+                controller.createChangeListener(this, GameScreen.class));
         TextButton btnSettings = createButton("Settings",
-                createChangeListener(this, SettingsScreen.class));
+                controller.createChangeListener(this, SettingsScreen.class));
         TextButton btnCredits = createButton("Credits",
-                createChangeListener(this, CreditsScreen.class));
+                controller.createChangeListener(this, CreditsScreen.class));
         TextButton btnQuit = createButton("Quit",
-                createQuitListener(this, bombHunt));
+                controller.createQuitListener(this));
         table.add(btnPlay).expandX().center().padBottom(10);
         table.add(btnSettings).expandX().center().padBottom(10).row();
         table.add(btnCredits).expandX().center().padBottom(10);
         table.add(btnQuit).expandX().padBottom(10).row();
-    }
-
-    private ChangeListener createQuitListener(BasicView current_view, BombHunt bombHunt) {
-        ChangeListener listener = new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                current_view.dispose();
-                System.exit(-1);
-            }
-        };
-        return listener;
     }
 
     @Override
