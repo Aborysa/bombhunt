@@ -10,10 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.MainMenuController;
 import com.bombhunt.game.utils.Assets;
-import com.bombhunt.game.utils.level.Level;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -95,14 +95,15 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     }
 
     private void addButtons(Table table) {
-        TextButton btnPlay = createButton("Play",
-                controller.createViewTransitionListener(this, GameScreen.class));
-        TextButton btnSettings = createButton("Settings",
-                controller.createViewTransitionListener(this, SettingsScreen.class));
-        TextButton btnCredits = createButton("Credits",
-                controller.createViewTransitionListener(this, CreditsScreen.class));
-        TextButton btnQuit = createButton("Quit",
-                controller.createQuitListener(this));
+        ChangeListener listener;
+        listener = controller.createViewTransitionWithSoundListener(this, GameScreen.class);
+        TextButton btnPlay = createButton("Play", listener);
+        listener = controller.createViewTransitionWithSoundListener(this, SettingsScreen.class);
+        TextButton btnSettings = createButton("Settings", listener);
+        listener = controller.createViewTransitionWithSoundListener(this, CreditsScreen.class);
+        TextButton btnCredits = createButton("Credits", listener);
+        listener = controller.createQuitWithSoundListener(this);
+        TextButton btnQuit = createButton("Quit", listener);
         table.add(btnPlay).expandX().center().padBottom(10);
         table.add(btnSettings).expandX().center().padBottom(10).row();
         table.add(btnCredits).expandX().center().padBottom(10);

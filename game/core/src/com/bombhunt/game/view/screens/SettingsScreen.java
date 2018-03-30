@@ -36,12 +36,10 @@ public class SettingsScreen extends MovingBackgroundScreen {
     }
 
     private Table feedMainTable() {
-        Label title = new Label("Settings", skin, "title");
         Table table = new Table();
-        table.add(title).colspan(4).padBottom(10).row();
+        addTitle(table);
         addSliders(table);
-        ChangeListener listener = controller.createViewTransitionListener(this, MainMenuScreen.class);
-        addReturnButton(table, listener,4);
+        addButtons(table);
         table.setFillParent(true);
         return table;
     }
@@ -66,6 +64,11 @@ public class SettingsScreen extends MovingBackgroundScreen {
         batch.draw(background, -background.getWidth() - offsetBackgroundX, -background.getHeight() - offsetBackgroundY,
                 0, 0,
                 Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    private void addTitle(Table table) {
+        Label title = new Label("Settings", skin, "title");
+        table.add(title).colspan(4).padBottom(10).row();
     }
 
     private void addSliders(Table table) {
@@ -117,6 +120,11 @@ public class SettingsScreen extends MovingBackgroundScreen {
         ChangeListener listener_volume_sound = controller.createChangeListener(runnable_sound);
         slider_soundFX.addListener(listener_volume_sound);
         return slider_soundFX;
+    }
+
+    private void addButtons(Table table) {
+        ChangeListener listener = controller.createViewTransitionWithSoundListener(this, MainMenuScreen.class);
+        addReturnButton(table, listener,4);
     }
 
 }

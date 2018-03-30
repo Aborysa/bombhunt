@@ -35,6 +35,9 @@ public class MainMenuController extends BasicController {
         return listener;
     }
 
-
-
+    public ChangeListener createQuitWithSoundListener(BasicView current_view) {
+        ChangeListener listener = createQuitListener(current_view);
+        ChangeListener bonified_listener = bonifySoundListener(listener);
+        return bonified_listener;
+    }
 }

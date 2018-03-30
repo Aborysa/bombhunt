@@ -26,7 +26,7 @@ public class AudioPlayer {
     private Thread thread_fade_out;
 
     private float app_volume = 0.5f;
-    private float app_sound = 0.75f;
+    private float app_sound = 0.5f;
 
     private Music current_theme_song;
 

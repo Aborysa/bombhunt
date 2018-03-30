@@ -49,8 +49,7 @@ public class CreditsScreen extends MovingBackgroundScreen {
         addDevelopersToTable(scroll_table);
         addCourseStaff(scroll_table);
         addArtists(scroll_table);
-        ChangeListener listener = controller.createViewTransitionListener(this, MainMenuScreen.class);
-        addReturnButton(scroll_table, listener, 1);
+        addButtons(scroll_table);
         return scroll_table;
     }
 
@@ -79,6 +78,11 @@ public class CreditsScreen extends MovingBackgroundScreen {
             table.add(new Label(lines[i], skin, "default")).row();
         }
         table.add(new Label("", skin)).row();
+    }
+
+    private void addButtons(Table table) {
+        ChangeListener listener = controller.createViewTransitionWithSoundListener(this, MainMenuScreen.class);
+        addReturnButton(table, listener, 1);
     }
 
     @Override
