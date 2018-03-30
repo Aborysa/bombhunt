@@ -2,6 +2,8 @@ package com.bombhunt.game.service;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.bombhunt.game.utils.Assets;
 
 import static java.lang.Float.max;
 import static java.lang.Float.min;
@@ -16,6 +18,9 @@ import static java.lang.Float.min;
  */
 
 public class AudioPlayer {
+
+    private final float FADE_IN_WINDOW = 2f;
+    private final float FADE_OUT_WINDOW = 3f;
 
     private Thread thread_fade_in;
     private Thread thread_fade_out;
@@ -40,9 +45,7 @@ public class AudioPlayer {
     public void setVolumeThemeSong(float volume) {
         app_volume = volume;
         current_theme_song.setVolume(volume);
-        if (thread_fade_in.isAlive()) {
-            thread_fade_in.interrupt();
-        }
+        interuptFadeIn();
         // IMPORTANT: not needed for thread_fade_out (will vanish anyway)
     }
 
@@ -52,7 +55,6 @@ public class AudioPlayer {
 
     public void setVolumeSoundFX(float volume) {
         app_sound = volume;
-        // HOW TO CHANGE FOR ALL SOUNDS ?
     }
 
     public void setNewThemeSong(String new_theme_song_path) {
@@ -68,11 +70,12 @@ public class AudioPlayer {
     }
 
     private void fadeIn(Music music) {
+        interuptFadeIn();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 float current_volume = 0f;
-                float time_window = 3f;
+                float time_window = FADE_IN_WINDOW;
                 float adjustment_factor;
                 float time_elapsed = 0;
                 long prev_frame_id = Gdx.graphics.getFrameId();
@@ -96,13 +99,14 @@ public class AudioPlayer {
     }
 
     private void fadeOut(Music music) {
+        interuptFadeOut();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 float initial_volume = music.getVolume();
                 float current_volume = initial_volume;
                 float desired_volume = 0f;
-                float time_window = 5f;
+                float time_window = FADE_OUT_WINDOW;
                 float adjustment_factor;
                 float time_elapsed = 0;
                 long prev_frame_id = Gdx.graphics.getFrameId();
@@ -120,8 +124,29 @@ public class AudioPlayer {
                 music.dispose();
             }
         };
-        Thread thread = new Thread(runnable);
-        thread.start();
+        thread_fade_out = new Thread(runnable);
+        thread_fade_out.start();
+    }
+
+    public void playButtonSound() {
+        Sound sound = Assets.getInstance().get("digitalButton.mp3", Sound.class);
+        sound.play(app_sound);
+    }
+
+    private void interuptFadeIn() {
+        interuptThread(thread_fade_in);
+    }
+
+    private void interuptFadeOut() {
+        interuptThread(thread_fade_out);
+    }
+
+    private void interuptThread(Thread thread) {
+        if (thread != null) {
+            if (thread.isAlive()) {
+                thread.interrupt();
+            }
+        }
     }
 
 }

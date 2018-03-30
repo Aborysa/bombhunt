@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.MainMenuController;
+import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.utils.level.Level;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -48,7 +50,7 @@ public class MainMenuScreen extends MovingBackgroundScreen {
         String theme_song = "heroism.ogg";
         controller.setNewThemeSong(theme_song);
 
-        atlas = new TextureAtlas("colorbomb/colorbomb.pack");
+        atlas = Assets.getInstance().get("colorbomb/colorbomb.pack", TextureAtlas.class);
         feedListColors();
         rnd = new Random();
         String init_color = selectRandomColor();
@@ -64,7 +66,7 @@ public class MainMenuScreen extends MovingBackgroundScreen {
         stage.dispose();
         skin.dispose();
         batch.dispose();
-        atlas.dispose();
+        //atlas.dispose();
     }
 
     private Table feedMainTable() {

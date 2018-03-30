@@ -3,6 +3,7 @@ package com.bombhunt.game.utils;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -29,6 +30,7 @@ public class Assets{
     assetManager.setLoader(TiledMap.class, new TmxMapLoader(resolver));
     assetManager.setLoader(JsonValue.class, new JsonLoader(resolver));
     assetManager.setLoader(Level.class, new LevelLoader(resolver));
+    //assetManager.setLoader(Sound.class, new SoundLoader(resolver));
 
     assetManager.load("preload.json", JsonValue.class);
     assetManager.finishLoadingAsset("preload.json");

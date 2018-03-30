@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.CreditsController;
+import com.bombhunt.game.utils.Assets;
 
 /**
  * Created by samuel on 27/03/18.
@@ -22,7 +23,7 @@ public class CreditsScreen extends MovingBackgroundScreen {
     public CreditsScreen(BombHunt bombHunt) {
         super(bombHunt);
         controller = CreditsController.getInstance(bombHunt);
-        Texture background = new Texture(Gdx.files.internal("angryBombsBackground.png"));
+        Texture background = Assets.getInstance().get("angryBombsBackground.png", Texture.class);
         setBackground(background);
         Table main_table = feedMainTable();
         setTable(main_table);

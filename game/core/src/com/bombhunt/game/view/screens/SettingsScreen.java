@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.SettingsController;
+import com.bombhunt.game.utils.Assets;
 
 /**
  * Created by samuel on 27/03/18.
@@ -28,7 +29,7 @@ public class SettingsScreen extends MovingBackgroundScreen {
         String theme_song = "unfinishedBusiness.mp3";
         controller.setNewThemeSong(theme_song);
 
-        Texture background = new Texture(Gdx.files.internal("dynamitesBackground.png"));
+        Texture background = Assets.getInstance().get("dynamitesBackground.png", Texture.class);
         setBackground(background);
         Table main_table = feedMainTable();
         setTable(main_table);
