@@ -46,10 +46,8 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     public MainMenuScreen(BombHunt bombHunt) {
         super(bombHunt);
         controller = MainMenuController.getInstance(bombHunt);
-
         String theme_song = "heroism.ogg";
         controller.setNewThemeSong(theme_song);
-
         atlas = Assets.getInstance().get("colorbomb/colorbomb.pack", TextureAtlas.class);
         feedListColors();
         rnd = new Random();
@@ -66,7 +64,7 @@ public class MainMenuScreen extends MovingBackgroundScreen {
         stage.dispose();
         skin.dispose();
         batch.dispose();
-        //atlas.dispose();
+        //TODO: atlas.dispose();
     }
 
     private Table feedMainTable() {

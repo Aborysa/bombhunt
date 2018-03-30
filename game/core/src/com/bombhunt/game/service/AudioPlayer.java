@@ -20,7 +20,7 @@ import static java.lang.Float.min;
 public class AudioPlayer {
 
     private final float FADE_IN_WINDOW = 2f;
-    private final float FADE_OUT_WINDOW = 3f;
+    private final float FADE_OUT_WINDOW = 2f;
 
     private Thread thread_fade_in;
     private Thread thread_fade_out;
@@ -58,7 +58,7 @@ public class AudioPlayer {
     }
 
     public void setNewThemeSong(String new_theme_song_path) {
-        Music new_theme_song = Gdx.audio.newMusic(Gdx.files.internal(new_theme_song_path));
+        Music new_theme_song = Assets.getInstance().get(new_theme_song_path, Music.class);
         new_theme_song.setLooping(true);
         if (current_theme_song != null) {
             fadeOut(current_theme_song);
@@ -121,7 +121,8 @@ public class AudioPlayer {
                         music.setVolume(current_volume);
                     }
                 }
-                music.dispose();
+                music.setPosition(0);
+                //TODO: music.dispose();
             }
         };
         thread_fade_out = new Thread(runnable);

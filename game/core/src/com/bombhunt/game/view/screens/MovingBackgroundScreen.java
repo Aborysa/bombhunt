@@ -70,7 +70,7 @@ public abstract class MovingBackgroundScreen extends BasicView {
         super.dispose();
         stage.dispose();
         batch.dispose();
-        //background.dispose();
+        //TODO: background.dispose();
     }
 
     @Override

@@ -25,10 +25,8 @@ public class SettingsScreen extends MovingBackgroundScreen {
     public SettingsScreen(BombHunt bombHunt) {
         super(bombHunt);
         controller = SettingsController.getInstance(bombHunt);
-
         String theme_song = "unfinishedBusiness.mp3";
         controller.setNewThemeSong(theme_song);
-
         Texture background = Assets.getInstance().get("dynamitesBackground.png", Texture.class);
         setBackground(background);
         Table main_table = feedMainTable();
