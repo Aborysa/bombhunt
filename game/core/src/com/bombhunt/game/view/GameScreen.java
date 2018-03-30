@@ -1,4 +1,4 @@
-package com.bombhunt.game.view;
+package com.bombhunt.game.view.screens;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
@@ -9,7 +9,6 @@ import com.artemis.WorldConfigurationBuilder;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
@@ -19,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
@@ -26,14 +26,16 @@ import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
 import com.bombhunt.game.ecs.factories.CrateFactory;
 import com.bombhunt.game.ecs.factories.IEntityFactory;
+import com.bombhunt.game.ecs.factories.PlayerFactory;
 import com.bombhunt.game.ecs.systems.PhysicsSystem;
+import com.bombhunt.game.ecs.systems.PlayerInputSystem;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
 import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.utils.Joystick;
 import com.bombhunt.game.utils.level.Level;
 import com.bombhunt.game.view.BasicView;
 
 import java.util.HashMap;
-
 
 public class GameScreen extends BasicView {
 
@@ -69,6 +71,8 @@ public class GameScreen extends BasicView {
     private int tick = 0;
     private float gameTime = 0;
 
+    private Joystick joystick;
+    private Stage stage;
 
     public GameScreen(BombHunt bombHunt) {
         super(bombHunt);
@@ -90,18 +94,23 @@ public class GameScreen extends BasicView {
 
         factoryMap = new HashMap<String, IEntityFactory>() {{
             put(CrateFactory.class.getSimpleName(), new CrateFactory());
+            put(PlayerFactory.class.getSimpleName(), new PlayerFactory());
         }};
-
 
         box2d = new com.badlogic.gdx.physics.box2d.World(level.getDim(), true);
 
         box2d.setGravity(new Vector2(0, 0));
         Collision.world = box2d;
+
+        // Set up joystick
+        joystick = new Joystick(30, 30);
+        stage = new Stage();
+        stage.addActor(joystick);
+
         // Set up ECS world
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(new SpriteSystem(), new PhysicsSystem(box2d))
+                .with(new SpriteSystem(), new PhysicsSystem(box2d), new PlayerInputSystem(box2d, joystick))
                 .build();
-
         world = new World(config);
 
 
@@ -122,11 +131,19 @@ public class GameScreen extends BasicView {
 
         // Initial update of camera
 
+        // create player entitiy
+
+        /*TextureRegion tex = new TextureRegion(new Texture("textures/badlogic.jpg"));
+        PlayerFactory playerFactory = (PlayerFactory) factoryMap.get(PlayerFactory.class.getSimpleName());
+        playerFactory.createPlayer(0, 0, Decal.newDecal(tex));*/
+
+
+        // Initial update of camera
+
         currentCamera.position.set(level.getDim().scl(0.5f), 0f);
 
         currentCamera.update();
     }
-
 
     @Override
     public void update(float dtime) {
@@ -205,6 +222,29 @@ public class GameScreen extends BasicView {
         // Flush all sprites
         batch.flush();
         box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
+
+        // TODO: CLEAN THOSE COMMENTS
+        // TODO: STOP COMMENTING... just split your methods
+        /*
+        if(keysDown.getOrDefault(Input.Keys.W, false)){
+          zoom -= dtime;
+        }
+        if(keysDown.getOrDefault(Input.Keys.S, false)){
+          zoom += dtime;
+        }
+        // Get the normal vec from the movement input
+        camVec.nor();
+        rot.nor();
+        //camRot.add(rot.scl(dtime));
+        // Move camera
+        currentCamera.translate(camVec.scl(300*dtime));
+        currentCamera.zoom = zoom;
+        //currentCamera.rotate(rot, 1*dtime);
+        currentCamera.update();
+        stage.act(dtime);
+        */
+
+        stage.draw();
     }
 
     @Override
@@ -217,7 +257,7 @@ public class GameScreen extends BasicView {
 
     @Override
     public InputProcessor getInputProcessor() {
-        return this;
+        return stage;
     }
 
     @Override
