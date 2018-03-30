@@ -1,4 +1,4 @@
-package com.bombhunt.game.view.screens;
+package com.bombhunt.game.view;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
