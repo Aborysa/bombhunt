@@ -47,39 +47,32 @@ import com.bombhunt.game.view.BasicView;
 import java.util.HashMap;
 
 public class GameScreen extends BasicView {
+    private static final int TPS = 64;
+    private float zoom = 1;
+    private int tick = 0;
+    private float accTime = 0;
+    private float gameTime = 0;
 
     private World world;
     private com.badlogic.gdx.physics.box2d.World box2d;
-    public static int TPS = 64;
-
-    private float accTime = 0;
-    EntitySubscription subscription;
-
-    private DecalBatch batch;
-    private OrthogonalTiledMapRenderer mapRenderer;
     private Box2DDebugRenderer box2DDebugRenderer;
 
+    EntitySubscription subscription;
+    private DecalBatch batch;
     private InputMultiplexer inputMux;
-
-    private ComponentMapper<SpriteComponent> mapSprite;
-
-    private ComponentMapper<AnimationComponent> mapAnimation;
     private OrthographicCamera currentCamera;
-    ComponentMapper<TransformComponent> mapTransform;
 
-    private TiledMap testMap;
-
-
-    private HashMap<Integer, Boolean> keysDown = new HashMap<Integer, Boolean>(20);
-
-
-    private float zoom = 1;
-    // Temporary map for factories, may want to use injection in the future with @Wire
+    // TODO: Temporary map for factories, may want to use injection in the future with @Wire
     private HashMap<String, IEntityFactory> factoryMap;
+    private ComponentMapper<SpriteComponent> mapSprite;
     private Level level;
+    ComponentMapper<TransformComponent> mapTransform;
+    // TODO: clean those... will this be necessary ?
+    private OrthogonalTiledMapRenderer mapRenderer;
+    private TiledMap testMap;
+    private ComponentMapper<AnimationComponent> mapAnimation;
 
-    private int tick = 0;
-    private float gameTime = 0;
+    private HashMap<Integer, Boolean> keysDown = new HashMap<>(20);
 
     private Joystick joystick;
     private Button bombButton;
@@ -87,36 +80,52 @@ public class GameScreen extends BasicView {
 
     public GameScreen(BombHunt bombHunt) {
         super(bombHunt);
-        System.out.println("Creating gamescreen");
+        feedFactoryMap();
+        setUpCamera();
+        setUpBatching();
+        setUpWorld();
+        setUpJoystick();
+        setUpECS();
+        setUpComponentMappers();
+        setUpAspectSubscription();
+        setUpInputProcessor();
+        createMapEntities();
+        createCollisionBodies();
+        createPlayerEntities();
+        initialUpdateCamera();
+    }
 
-        // Create a camera
+    private void feedFactoryMap() {
+        String crateFactoryName = CrateFactory.class.getSimpleName();
+        String playerFactoryName = PlayerFactory.class.getSimpleName();
+        String bombFactoryName = BombFactory.class.getSimpleName();
+        factoryMap = new HashMap<String, IEntityFactory>() {{
+            put(crateFactoryName, new CrateFactory());
+            put(playerFactoryName, new PlayerFactory());
+            put(bombFactoryName, new BombFactory());
+        }};
+    }
+
+    private void setUpCamera() {
         currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         currentCamera.position.set(new Vector3(0, 0, 0f));
+        currentCamera.far = 1000000f;
+    }
 
-        level = Assets.getInstance().get("maps/map1.tmx", Level.class);
-
-        // Set up batch
+    private void setUpBatching() {
         batch = new DecalBatch(100000, new CameraGroupStrategy(currentCamera));
+    }
+
+    private void setUpWorld() {
+        level = Assets.getInstance().get("maps/map1.tmx", Level.class);
+        box2d = new com.badlogic.gdx.physics.box2d.World(level.getDim(), true);
+        box2d.setGravity(new Vector2(0, 0));
         box2DDebugRenderer = new Box2DDebugRenderer(true, false, false,
                 false, false, true);
-
-
-        // Set the camera's max depth
-        currentCamera.far = 1000000f;
-
-        factoryMap = new HashMap<String, IEntityFactory>() {{
-            put(CrateFactory.class.getSimpleName(), new CrateFactory());
-            put(PlayerFactory.class.getSimpleName(), new PlayerFactory());
-            put(BombFactory.class.getSimpleName(), new BombFactory());
-        }};
-
-
-        box2d = new com.badlogic.gdx.physics.box2d.World(level.getDim(), true);
-
-        box2d.setGravity(new Vector2(0, 0));
         Collision.world = box2d;
+    }
 
-        // Set up joystick
+    private void setUpJoystick() {
         Table table = new Table();
         table.setDebug(true);
         table.setFillParent(true);
@@ -125,7 +134,6 @@ public class GameScreen extends BasicView {
         bombButton = new Button(new TextureRegionDrawable(
                 new TextureRegion(Assets.getInstance().get("textures/bombButton.png",
                         Texture.class))));
-
         table.add().height(50);
         table.add();
         table.add();
@@ -137,56 +145,59 @@ public class GameScreen extends BasicView {
         table.add(joystick).size(200);
         table.add();
         table.add(bombButton).size(200);
-
         stage = new Stage();
         stage.addActor(table);
+    }
 
-
-        // Set up ECS world
+    private void setUpECS() {
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(new SpriteSystem(), 
-                new PhysicsSystem(box2d), 
-                new PlayerInputSystem(box2d, joystick, bombButton,
-                        (BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
+                .with(new SpriteSystem(),
+                        new PhysicsSystem(box2d),
+                        new PlayerInputSystem(box2d, joystick, bombButton,
+                                (BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
                         new BombSystem((BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
                         new ExplosionSystem())
                 .build();
-
         world = new World(config);
-
-
         for (IEntityFactory factory : factoryMap.values()) {
             factory.setWorld(world);
         }
-
-        //Set up component mappers
-
-        mapSprite = world.getMapper(SpriteComponent.class);
-        mapTransform = world.getMapper(TransformComponent.class);
-
-        // Set up aspect subscription for rendering
-        subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class));
-
-        level.createEntities(factoryMap);
-        level.createCollisionBodies(box2d);
-
-
-        // create player entitiy
-
-    /*TextureRegion tex = new TextureRegion(new Texture("textures/badlogic.jpg"));
-    PlayerFactory playerFactory = (PlayerFactory) factoryMap.get(PlayerFactory.class.getSimpleName());
-    playerFactory.createPlayer(0, 0, Decal.newDecal(tex));*/
-
-
-        // Initial update of camera
-
-        currentCamera.position.set(level.getDim().scl(0.5f), 0f);
-        currentCamera.update();
-
-        inputMux = new InputMultiplexer(stage, this);
-
     }
 
+    private void setUpComponentMappers() {
+        mapSprite = world.getMapper(SpriteComponent.class);
+        mapTransform = world.getMapper(TransformComponent.class);
+    }
+
+    private void setUpAspectSubscription() {
+        subscription = world.getAspectSubscriptionManager().get(Aspect.all(SpriteComponent.class));
+    }
+
+    private void setUpInputProcessor() {
+        inputMux = new InputMultiplexer(stage, this);
+    }
+
+    private void createMapEntities() {
+        level.createEntities(factoryMap);
+    }
+
+    private void createCollisionBodies() {
+        level.createCollisionBodies(box2d);
+    }
+
+    private void createPlayerEntities() {
+        /*
+        TextureRegion textureRegion = new TextureRegion(new Texture("textures/badlogic.jpg"));
+        String playerFactoryName = PlayerFactory.class.getSimpleName()
+        PlayerFactory playerFactory = (PlayerFactory) factoryMap.get(playerFactoryName);
+        playerFactory.createPlayer(0, 0, Decal.newDecal(textureRegion));
+        */
+    }
+
+    private void initialUpdateCamera() {
+        currentCamera.position.set(level.getDim().scl(0.5f), 0f);
+        currentCamera.update();
+    }
 
     @Override
     public void update(float dtime) {
@@ -201,13 +212,12 @@ public class GameScreen extends BasicView {
         while (accTime >= 1f / TPS) {
             box2d.step(1f / TPS, 6, 4);
             world.process();
-            // Subtrack the tick delta from accumelated time
+            // Subtrack the tick delta from accumulated time
             accTime -= 1f / TPS;
             tick++;
             if (tick % TPS == 0) {
                 System.out.println(Gdx.graphics.getFramesPerSecond() + " : " + tick + " : " + tick / gameTime);
             }
-
         }
 
         // Temp code for moving camera
@@ -225,13 +235,6 @@ public class GameScreen extends BasicView {
         if (keysDown.getOrDefault(Input.Keys.DOWN, false)) {
             camVec.y -= 1;
         }
-
-    /*if(keysDown.getOrDefault(Input.Keys.W, false)){
-      zoom -= dtime;
-    }
-    if(keysDown.getOrDefault(Input.Keys.S, false)){
-      zoom += dtime;
-    }*/
 
         // Get the normal vec from the movement input
         camVec.nor();
@@ -267,27 +270,6 @@ public class GameScreen extends BasicView {
         box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
 
         stage.draw();
-
-        // TODO: CLEAN THOSE COMMENTS
-        // TODO: STOP COMMENTING... just split your methods
-    /*
-    if(keysDown.getOrDefault(Input.Keys.W, false)){
-      zoom -= dtime;
-    }
-    if(keysDown.getOrDefault(Input.Keys.S, false)){
-      zoom += dtime;
-    }
-    // Get the normal vec from the movement input
-    camVec.nor();
-    rot.nor();
-    //camRot.add(rot.scl(dtime));
-    // Move camera
-    currentCamera.translate(camVec.scl(300*dtime));
-    currentCamera.zoom = zoom;
-    //currentCamera.rotate(rot, 1*dtime);
-    currentCamera.update();
-    stage.act(dtime);
-    */
     }
 
     @Override
