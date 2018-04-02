@@ -9,6 +9,7 @@ import com.artemis.WorldConfigurationBuilder;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -58,6 +59,7 @@ public class GameScreen extends BasicView {
     private OrthogonalTiledMapRenderer mapRenderer;
     private Box2DDebugRenderer box2DDebugRenderer;
 
+    private InputMultiplexer inputMux;
 
     private ComponentMapper<SpriteComponent> mapSprite;
 
@@ -179,8 +181,9 @@ public class GameScreen extends BasicView {
         // Initial update of camera
 
         currentCamera.position.set(level.getDim().scl(0.5f), 0f);
-
         currentCamera.update();
+
+        inputMux = new InputMultiplexer(stage, this);
 
     }
 
@@ -297,7 +300,7 @@ public class GameScreen extends BasicView {
 
     @Override
     public InputProcessor getInputProcessor() {
-        return stage;
+        return inputMux;
     }
 
     @Override
