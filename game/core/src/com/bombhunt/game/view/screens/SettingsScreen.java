@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.SettingsController;
-import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.services.assets.Assets;
 
 /**
  * Created by samuel on 27/03/18.
@@ -43,9 +43,17 @@ public class SettingsScreen extends MovingBackgroundScreen {
     }
 
     @Override
-    void updateMovingBackgroundPosition() {
-        offsetBackgroundX = (offsetBackgroundX - OFFSET_BACKGROUND_STEP_X) % background.getWidth();
-        offsetBackgroundY = (offsetBackgroundY - OFFSET_BACKGROUND_STEP_Y) % background.getHeight();
+    void updateMovingBackgroundPosition(float dt) {
+        offsetBackgroundX = getBackgroundX(dt);
+        offsetBackgroundY = getBackgroundY(dt);
+    }
+
+    private int getBackgroundX(float dt) {
+        return (int) ((offsetBackgroundX - OFFSET_BACKGROUND_STEP_X*dt) % background.getWidth());
+    }
+
+    private int getBackgroundY(float dt) {
+        return (int) ((offsetBackgroundY - OFFSET_BACKGROUND_STEP_Y*dt) % background.getHeight());
     }
 
     @Override

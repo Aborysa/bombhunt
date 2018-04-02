@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.MainMenuController;
-import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.services.assets.Assets;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,7 +28,7 @@ import java.util.Random;
 
 public class MainMenuScreen extends MovingBackgroundScreen {
 
-    private final int ROTATION_ANGLE_INCREMENT = 1;
+    private final int ROTATION_ANGLE_INCREMENT = 50;
     private final float PROB_COLOR_CHANGE_FACTOR = 0.0025f;
 
     private MainMenuController controller;
@@ -109,8 +109,7 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     }
 
     @Override
-    void updateMovingBackgroundPosition() {
-        float dt = Gdx.graphics.getDeltaTime();
+    void updateMovingBackgroundPosition(float dt) {
         switchColorAnimation(dt);
         updateSprite(dt);
     }
@@ -154,7 +153,7 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     private void updateSprite(float dt) {
         elapsedTime += dt;
         updateFrame();
-        rotateAnimation();
+        rotateAnimation(dt);
     }
 
     private void updateFrame() {
@@ -162,8 +161,8 @@ public class MainMenuScreen extends MovingBackgroundScreen {
         sprite.setRegion(frame);
     }
 
-    private void rotateAnimation() {
-        angle += ROTATION_ANGLE_INCREMENT;
+    private void rotateAnimation(float dt) {
+        angle += ROTATION_ANGLE_INCREMENT*dt;
         sprite.setRotation(angle);
     }
 

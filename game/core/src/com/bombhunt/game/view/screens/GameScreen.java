@@ -26,22 +26,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.bombhunt.game.BombHunt;
-import com.bombhunt.game.box2d.Collision;
-import com.bombhunt.game.ecs.components.AnimationComponent;
-import com.bombhunt.game.ecs.components.SpriteComponent;
-import com.bombhunt.game.ecs.components.TransformComponent;
-import com.bombhunt.game.ecs.factories.BombFactory;
-import com.bombhunt.game.ecs.factories.CrateFactory;
-import com.bombhunt.game.ecs.factories.IEntityFactory;
-import com.bombhunt.game.ecs.factories.PlayerFactory;
-import com.bombhunt.game.ecs.systems.BombSystem;
-import com.bombhunt.game.ecs.systems.ExplosionSystem;
-import com.bombhunt.game.ecs.systems.PhysicsSystem;
-import com.bombhunt.game.ecs.systems.PlayerInputSystem;
-import com.bombhunt.game.ecs.systems.SpriteSystem;
-import com.bombhunt.game.utils.Assets;
-import com.bombhunt.game.utils.Joystick;
-import com.bombhunt.game.utils.level.Level;
+import com.bombhunt.game.services.physic.Collision;
+import com.bombhunt.game.model.ecs.components.AnimationComponent;
+import com.bombhunt.game.model.ecs.components.SpriteComponent;
+import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.model.ecs.factories.BombFactory;
+import com.bombhunt.game.model.ecs.factories.CrateFactory;
+import com.bombhunt.game.model.ecs.factories.IEntityFactory;
+import com.bombhunt.game.model.ecs.factories.PlayerFactory;
+import com.bombhunt.game.model.ecs.systems.BombSystem;
+import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
+import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
+import com.bombhunt.game.model.ecs.systems.PlayerInputSystem;
+import com.bombhunt.game.model.ecs.systems.SpriteSystem;
+import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.view.Joystick;
+import com.bombhunt.game.model.Level;
 import com.bombhunt.game.view.BasicView;
 
 import java.util.HashMap;
@@ -134,7 +134,7 @@ public class GameScreen extends BasicView {
         table.add().expand();
         table.add();
         table.row();
-        table.add(joystick).size(200);
+        table.add(joystick.getTouchpad()).size(200);
         table.add();
         table.add(bombButton).size(200);
 
@@ -146,7 +146,7 @@ public class GameScreen extends BasicView {
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(new SpriteSystem(), 
                 new PhysicsSystem(box2d), 
-                new PlayerInputSystem(box2d, joystick, bombButton,
+                new PlayerInputSystem(box2d, joystick.getTouchpad(), bombButton,
                         (BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
                         new BombSystem((BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
                         new ExplosionSystem())
@@ -189,15 +189,15 @@ public class GameScreen extends BasicView {
 
 
     @Override
-    public void update(float dtime) {
+    public void update(float dt) {
 
         // Accumelate time
-        accTime += dtime;
+        accTime += dt;
         accTime = Math.min(accTime, 1);
         // Set delta to match tps
         world.setDelta((1f / TPS));
         // While we got ticks to process, process ticks
-        gameTime += dtime;
+        gameTime += dt;
         while (accTime >= 1f / TPS) {
             box2d.step(1f / TPS, 6, 4);
             world.process();
@@ -240,13 +240,13 @@ public class GameScreen extends BasicView {
         //camRot.add(rot.scl(dtime));
 
         // Move camera
-        currentCamera.translate(camVec.scl(300 * dtime));
+        currentCamera.translate(camVec.scl(300 * dt));
         currentCamera.zoom = zoom;
         //currentCamera.rotate(rot, 1*dtime);
 
         currentCamera.update();
 
-        stage.act(dtime);
+        stage.act(dt);
     }
 
     @Override
