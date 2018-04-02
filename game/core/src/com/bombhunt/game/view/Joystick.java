@@ -11,6 +11,7 @@ import com.bombhunt.game.services.assets.Assets;
  * Created by bartc on 3/27/2018.
  * references:
  * https://stackoverflow.com/questions/32145428/
+ * http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=16249
  */
 
 public class Joystick {
@@ -18,22 +19,23 @@ public class Joystick {
     private final String backgroundTexturePath = "textures/analogBackground.png";
     private final String knobTexturePath = "textures/analogForeground.png";
     private final int DEAD_ZONE_RADIUS = 10;
-    private final int DEFAULT_X = 15;
-    private final int DEFAULT_Y = 15;
-    private final int SIZE = 600;
+    private final float RATIO_KNOB = 0.5f;
 
     private Touchpad touchpad;
+    private int size;
 
-    public Joystick(float x, float y) {
-        touchpad = new Touchpad(DEAD_ZONE_RADIUS, getTouchpadStyle());
-        touchpad.setBounds(DEFAULT_X, DEFAULT_Y, SIZE, SIZE);
-        touchpad.setPosition(x, y);
+    public Joystick(int size) {
+        this.size = size;
+        Touchpad.TouchpadStyle style = getTouchpadStyle();
+        touchpad = new Touchpad(DEAD_ZONE_RADIUS, style);
     }
 
     private Touchpad.TouchpadStyle getTouchpadStyle() {
         Touchpad.TouchpadStyle style = new Touchpad.TouchpadStyle();
         style.background = getBackgroundDrawable();
+        resizeBackground(style.background);
         style.knob = getKnobDrawable();
+        resizeKnob(style.knob);
         return style;
     }
 
@@ -51,6 +53,16 @@ public class Joystick {
 
     private Drawable getDrawableFromTexture(Texture texture) {
         return new TextureRegionDrawable(new TextureRegion(texture));
+    }
+
+    private void resizeBackground(Drawable background) {
+        background.setMinWidth(size);
+        background.setMinHeight(size);
+    }
+
+    private void resizeKnob(Drawable knob) {
+        knob.setMinWidth(size*RATIO_KNOB);
+        knob.setMinHeight(size*RATIO_KNOB);
     }
 
     public Touchpad getTouchpad() {

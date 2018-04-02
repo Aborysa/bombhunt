@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -130,21 +131,13 @@ public class GameScreen extends BasicView {
         table.setDebug(true);
         table.setFillParent(true);
         table.pad(50);
-        joystick = new Joystick(30, 30);
+        joystick = new Joystick(400);
         bombButton = new Button(new TextureRegionDrawable(
                 new TextureRegion(Assets.getInstance().get("textures/bombButton.png",
                         Texture.class))));
-        table.add().height(50);
-        table.add();
-        table.add();
-        table.row();
-        table.add();
-        table.add().expand();
-        table.add();
-        table.row();
-        table.add(joystick.getTouchpad()).size(200);
-        table.add();
-        table.add(bombButton).size(200);
+        table.bottom();
+        table.add(joystick.getTouchpad()).left().expandX();
+        table.add(bombButton).right();
         stage = new Stage();
         stage.addActor(table);
     }
@@ -257,6 +250,9 @@ public class GameScreen extends BasicView {
 
     @Override
     public void render() {
+        Gdx.gl.glClearColor(1, 1, 1, 0);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         // Grab entities with sprites
         IntBag entities = subscription.getEntities();
 
