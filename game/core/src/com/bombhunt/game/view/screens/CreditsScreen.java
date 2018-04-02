@@ -88,9 +88,17 @@ public class CreditsScreen extends MovingBackgroundScreen {
     }
 
     @Override
-    void updateMovingBackgroundPosition() {
-        offsetBackgroundX = (offsetBackgroundX + OFFSET_BACKGROUND_STEP_X) % background.getWidth();
-        offsetBackgroundY = (offsetBackgroundY + OFFSET_BACKGROUND_STEP_Y) % background.getHeight();
+    void updateMovingBackgroundPosition(float dt) {
+        offsetBackgroundX = getBackgroundX(dt);
+        offsetBackgroundY = getBackgroundY(dt);
+    }
+
+    private int getBackgroundX(float dt) {
+        return (int) ((offsetBackgroundX + OFFSET_BACKGROUND_STEP_X*dt) % background.getWidth());
+    }
+
+    private int getBackgroundY(float dt) {
+        return (int) ((offsetBackgroundY + OFFSET_BACKGROUND_STEP_Y*dt) % background.getHeight());
     }
 
     @Override

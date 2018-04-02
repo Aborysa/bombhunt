@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.bombhunt.game.box2d.Collision;
+import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.ecs.components.Box2dComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
 import com.bombhunt.game.ecs.components.VelocityComponent;

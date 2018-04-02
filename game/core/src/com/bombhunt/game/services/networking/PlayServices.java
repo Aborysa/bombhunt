@@ -1,4 +1,4 @@
-package com.bombhunt.game.networking;
+package com.bombhunt.game.services.networking;
 
 /**
  * Created by erlin on 22.03.2018.

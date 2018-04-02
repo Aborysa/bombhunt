@@ -1,4 +1,4 @@
-package com.bombhunt.game.service;
+package com.bombhunt.game.services.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;

@@ -1,7 +1,6 @@
 package com.bombhunt.game.google;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,17 +8,14 @@ import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
 import com.bombhunt.game.AndroidLauncher;
-import com.bombhunt.game.networking.PlayServices;
-import com.google.android.gms.auth.api.Auth;
+import com.bombhunt.game.services.networking.PlayServices;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.GamesCallbackStatusCodes;
 import com.google.android.gms.games.InvitationsClient;
 import com.google.android.gms.games.RealTimeMultiplayerClient;

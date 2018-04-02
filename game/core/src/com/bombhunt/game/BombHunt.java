@@ -4,8 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.physics.box2d.Box2D;
-import com.bombhunt.game.networking.PlayServices;
-import com.bombhunt.game.service.AudioPlayer;
+import com.bombhunt.game.services.networking.PlayServices;
+import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.utils.Assets;
 import com.bombhunt.game.view.screens.MainMenuScreen;
 import com.bombhunt.game.view.BasicView;
@@ -51,7 +51,7 @@ public class BombHunt extends ApplicationAdapter {
     public void dispose() {
         currentView.dispose();
         audioPlayer.dispose();
-        //Assets.getInstance().dispose();
+        //TODO: Assets.getInstance().dispose();
     }
 
     private void loadMainMenuScreen() {

@@ -1,4 +1,4 @@
-package com.bombhunt.game.networking;
+package com.bombhunt.game.services.networking;
 
 
 public class PlayAdapter implements PlayServices {

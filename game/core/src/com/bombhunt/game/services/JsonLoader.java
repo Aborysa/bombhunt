@@ -1,4 +1,4 @@
-package com.bombhunt.game.utils.json;
+package com.bombhunt.game.services;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -15,17 +15,18 @@ import com.badlogic.gdx.utils.JsonValue;
 public class JsonLoader extends SynchronousAssetLoader<JsonValue, JsonLoader.JsonLoaderParameters> {
 
     private JsonReader reader = new JsonReader();
-    public JsonLoader(FileHandleResolver resolver){
+
+    public JsonLoader(FileHandleResolver resolver) {
         super(resolver);
     }
 
     @Override
-    public JsonValue load(AssetManager assetManager, String filename, FileHandle file, JsonLoader.JsonLoaderParameters params){
+    public JsonValue load(AssetManager assetManager, String filename, FileHandle file, JsonLoader.JsonLoaderParameters params) {
         return reader.parse(file);
     }
 
     @Override
-    public  Array<AssetDescriptor> getDependencies(String filename, FileHandle file, JsonLoader.JsonLoaderParameters params){
+    public Array<AssetDescriptor> getDependencies(String filename, FileHandle file, JsonLoader.JsonLoaderParameters params) {
         return new Array<>(+0);
     }
 

@@ -25,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.bombhunt.game.BombHunt;
-import com.bombhunt.game.box2d.Collision;
+import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;

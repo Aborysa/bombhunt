@@ -2,35 +2,23 @@ package com.bombhunt.game.ecs.factories;
 
 import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
-import com.artemis.ArtemisPlugin;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
-import com.artemis.WorldConfigurationBuilder;
-import com.artemis.annotations.Wire;
-import com.artemis.injection.FieldResolver;
-import com.artemis.injection.WiredFieldResolver;
-import com.artemis.utils.reflect.Field;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.bombhunt.game.box2d.Collision;
-import com.bombhunt.game.ecs.components.AnimationComponent;
+import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.ecs.components.Box2dComponent;
 import com.bombhunt.game.ecs.components.DestroyableComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
-import com.bombhunt.game.ecs.components.VelocityComponent;
-import com.bombhunt.game.ecs.systems.SpriteSystem;
 
 public class CrateFactory implements IEntityFactory {
   

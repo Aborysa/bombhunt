@@ -6,21 +6,17 @@ import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.bombhunt.game.box2d.Collision;
+import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.ecs.components.Box2dComponent;
-import com.bombhunt.game.ecs.components.DestroyableComponent;
 import com.bombhunt.game.ecs.components.PlayerInputComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
-import com.bombhunt.game.ecs.components.VelocityComponent;
-import com.bombhunt.game.ecs.systems.PlayerInputSystem;
 
 /**
  * Created by erlin on 23.03.2018.
