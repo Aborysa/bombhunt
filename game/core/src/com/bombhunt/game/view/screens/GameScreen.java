@@ -9,7 +9,6 @@ import com.artemis.WorldConfigurationBuilder;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,9 +29,12 @@ import com.bombhunt.game.box2d.Collision;
 import com.bombhunt.game.ecs.components.AnimationComponent;
 import com.bombhunt.game.ecs.components.SpriteComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
+import com.bombhunt.game.ecs.factories.BombFactory;
 import com.bombhunt.game.ecs.factories.CrateFactory;
 import com.bombhunt.game.ecs.factories.IEntityFactory;
 import com.bombhunt.game.ecs.factories.PlayerFactory;
+import com.bombhunt.game.ecs.systems.BombSystem;
+import com.bombhunt.game.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.ecs.systems.PlayerInputSystem;
 import com.bombhunt.game.ecs.systems.SpriteSystem;
@@ -42,7 +44,6 @@ import com.bombhunt.game.utils.level.Level;
 import com.bombhunt.game.view.BasicView;
 
 import java.util.HashMap;
-
 
 public class GameScreen extends BasicView {
 
@@ -94,7 +95,8 @@ public class GameScreen extends BasicView {
 
         // Set up batch
         batch = new DecalBatch(100000, new CameraGroupStrategy(currentCamera));
-        box2DDebugRenderer = new Box2DDebugRenderer(true, false, false, false, false, true);
+        box2DDebugRenderer = new Box2DDebugRenderer(true, false, false,
+                false, false, true);
 
 
         // Set the camera's max depth
@@ -103,6 +105,7 @@ public class GameScreen extends BasicView {
         factoryMap = new HashMap<String, IEntityFactory>() {{
             put(CrateFactory.class.getSimpleName(), new CrateFactory());
             put(PlayerFactory.class.getSimpleName(), new PlayerFactory());
+            put(BombFactory.class.getSimpleName(), new BombFactory());
         }};
 
 
@@ -117,7 +120,10 @@ public class GameScreen extends BasicView {
         table.setFillParent(true);
         table.pad(50);
         joystick = new Joystick(30, 30);
-        bombButton = new Button(new TextureRegionDrawable(new TextureRegion(Assets.getInstance().get("textures/bombButton.png", Texture.class))));
+        bombButton = new Button(new TextureRegionDrawable(
+                new TextureRegion(Assets.getInstance().get("textures/bombButton.png",
+                        Texture.class))));
+
         table.add().height(50);
         table.add();
         table.add();
@@ -136,7 +142,12 @@ public class GameScreen extends BasicView {
 
         // Set up ECS world
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(new SpriteSystem(), new PhysicsSystem(box2d), new PlayerInputSystem(box2d, joystick))
+                .with(new SpriteSystem(), 
+                new PhysicsSystem(box2d), 
+                new PlayerInputSystem(box2d, joystick, bombButton,
+                        (BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
+                        new BombSystem((BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
+                        new ExplosionSystem())
                 .build();
 
         world = new World(config);

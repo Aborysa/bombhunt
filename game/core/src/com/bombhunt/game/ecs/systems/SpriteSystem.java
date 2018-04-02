@@ -34,8 +34,8 @@ public class SpriteSystem extends IteratingSystem{
         Decal sprite = null;
         if(animationComponent != null){
             animationComponent.time += world.getDelta();
-            System.out.println(animationComponent.animation);
-            System.out.println(animationComponent.time);
+            //System.out.println(animationComponent.animation);
+            //System.out.println(animationComponent.time);
             sprite = animationComponent.animation
                     .getKeyFrame(animationComponent.time, true);
             if(spriteComponent != null){
