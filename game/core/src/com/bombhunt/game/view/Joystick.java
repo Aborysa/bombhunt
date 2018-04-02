@@ -16,10 +16,10 @@ import com.bombhunt.game.services.assets.Assets;
 
 public class Joystick {
 
-    private final String backgroundTexturePath = "textures/analogBackground.png";
-    private final String knobTexturePath = "textures/analogForeground.png";
+    private final String BACKGROUND_TEXTURE_PATH = "textures/analogBackground.png";
+    private final String KNOB_TEXTURE_PATH = "textures/analogForeground.png";
     private final int DEAD_ZONE_RADIUS = 10;
-    private final float RATIO_KNOB = 0.5f;
+    private final float KNOB_RATIO = 0.5f;
 
     private Touchpad touchpad;
     private int size;
@@ -41,13 +41,13 @@ public class Joystick {
 
     private Drawable getBackgroundDrawable() {
         Assets assetsManager = Assets.getInstance();
-        Texture backgroundTexture = assetsManager.get(backgroundTexturePath, Texture.class);
+        Texture backgroundTexture = assetsManager.get(BACKGROUND_TEXTURE_PATH, Texture.class);
         return getDrawableFromTexture(backgroundTexture);
     }
 
     private Drawable getKnobDrawable() {
         Assets assetsManager = Assets.getInstance();
-        Texture knobTexture = assetsManager.get(knobTexturePath, Texture.class);
+        Texture knobTexture = assetsManager.get(KNOB_TEXTURE_PATH, Texture.class);
         return getDrawableFromTexture(knobTexture);
     }
 
@@ -61,8 +61,8 @@ public class Joystick {
     }
 
     private void resizeKnob(Drawable knob) {
-        knob.setMinWidth(size*RATIO_KNOB);
-        knob.setMinHeight(size*RATIO_KNOB);
+        knob.setMinWidth(size* KNOB_RATIO);
+        knob.setMinHeight(size* KNOB_RATIO);
     }
 
     public Touchpad getTouchpad() {
@@ -70,5 +70,5 @@ public class Joystick {
         return touchpad;
     }
 
-    //TODO: make the joystick bigger and make it move with finger position
+    // TODO: make it move with finger position
 }

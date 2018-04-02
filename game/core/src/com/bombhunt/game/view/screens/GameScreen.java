@@ -24,7 +24,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.services.physic.Collision;
@@ -85,7 +88,7 @@ public class GameScreen extends BasicView {
         setUpCamera();
         setUpBatching();
         setUpWorld();
-        setUpJoystick();
+        setUpControls();
         setUpECS();
         setUpComponentMappers();
         setUpAspectSubscription();
@@ -126,15 +129,33 @@ public class GameScreen extends BasicView {
         Collision.world = box2d;
     }
 
-    private void setUpJoystick() {
+    private void setUpControls() {
         Table table = new Table();
         table.setDebug(true);
         table.setFillParent(true);
+        // TODO: CONVERT PADDING AS CTE
         table.pad(50);
-        joystick = new Joystick(400);
-        bombButton = new Button(new TextureRegionDrawable(
-                new TextureRegion(Assets.getInstance().get("textures/bombButton.png",
-                        Texture.class))));
+        // TODO : CONVERT THIS AS CTE
+        int size_joystick = Gdx.graphics.getWidth()/6;
+        joystick = new Joystick(size_joystick);
+
+        // TODO: CREATE CLASS FOR BOMB BUTTON
+        // TODO: make common base class having extract drawable from texture as common method
+        // TODO: maybe resize too
+        // TODO: second picture for bombButton when clicked
+        Texture texture_up = Assets.getInstance().get("textures/bombButtonUp.png", Texture.class);
+        Texture texture_down = Assets.getInstance().get("textures/bombButtonDown.png", Texture.class);
+        Drawable drawable_up = new TextureRegionDrawable(new TextureRegion(texture_up));
+        Drawable drawable_down = new TextureRegionDrawable(new TextureRegion(texture_down));
+        ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
+        drawable_up.setMinWidth(size_joystick);
+        drawable_up.setMinHeight(size_joystick);
+        drawable_down.setMinWidth(size_joystick);
+        drawable_down.setMinHeight(size_joystick);
+        style.imageUp = drawable_up;
+        style.imageDown = drawable_down;
+        bombButton = new ImageButton(style);
+
         table.bottom();
         table.add(joystick.getTouchpad()).left().expandX();
         table.add(bombButton).right();
