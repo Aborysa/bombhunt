@@ -3,7 +3,7 @@ package com.bombhunt.game.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.bombhunt.game.BombHunt;
-import com.bombhunt.game.networking.PlayAdapter;
+import com.bombhunt.game.services.networking.PlayAdapter;
 
 public class DesktopLauncher {
   public static void main (String[] arg) {

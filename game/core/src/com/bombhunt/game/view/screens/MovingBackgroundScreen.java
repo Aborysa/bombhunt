@@ -21,8 +21,8 @@ import com.bombhunt.game.view.BasicView;
 
 public abstract class MovingBackgroundScreen extends BasicView {
 
-    protected final int OFFSET_BACKGROUND_STEP_X = 2;
-    protected final int OFFSET_BACKGROUND_STEP_Y = 2;
+    protected final int OFFSET_BACKGROUND_STEP_X = 200;
+    protected final int OFFSET_BACKGROUND_STEP_Y = 200;
     protected final int SCALE = 800;
 
     protected Camera camera;
@@ -51,8 +51,8 @@ public abstract class MovingBackgroundScreen extends BasicView {
     }
 
     @Override
-    public void update(float dtime) {
-        updateMovingBackgroundPosition();
+    public void update(float dt) {
+        updateMovingBackgroundPosition(dt);
     }
 
     @Override
@@ -78,7 +78,7 @@ public abstract class MovingBackgroundScreen extends BasicView {
         return stage;
     }
 
-    abstract void updateMovingBackgroundPosition();
+    abstract void updateMovingBackgroundPosition(float dt);
 
     abstract void drawMovingBackground(SpriteBatch batch);
 
