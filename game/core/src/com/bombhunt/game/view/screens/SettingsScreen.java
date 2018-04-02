@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.SettingsController;
-import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.services.assets.Assets;
 
 /**
  * Created by samuel on 27/03/18.

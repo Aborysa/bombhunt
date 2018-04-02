@@ -3,7 +3,7 @@ package com.bombhunt.game.services.audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.bombhunt.game.utils.Assets;
+import com.bombhunt.game.services.assets.Assets;
 
 import static java.lang.Float.max;
 import static java.lang.Float.min;

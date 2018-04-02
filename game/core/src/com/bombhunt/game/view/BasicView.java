@@ -22,7 +22,7 @@ public abstract class BasicView extends InputAdapter {
         skin = new Skin(Gdx.files.internal(SKIN_PATH));
     }
 
-    public abstract void update(float dtime);
+    public abstract void update(float dt);
 
     public abstract void render();
 
