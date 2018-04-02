@@ -1,10 +1,8 @@
-package com.bombhunt.game.view;
+package com.bombhunt.game.view.controls;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.bombhunt.game.services.assets.Assets;
 
 /**
@@ -14,7 +12,7 @@ import com.bombhunt.game.services.assets.Assets;
  * http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=16249
  */
 
-public class Joystick {
+public class Joystick extends Controller {
 
     private final String BACKGROUND_TEXTURE_PATH = "textures/analogBackground.png";
     private final String KNOB_TEXTURE_PATH = "textures/analogForeground.png";
@@ -22,47 +20,32 @@ public class Joystick {
     private final float KNOB_RATIO = 0.5f;
 
     private Touchpad touchpad;
-    private int size;
 
     public Joystick(int size) {
-        this.size = size;
+        super(size);
         Touchpad.TouchpadStyle style = getTouchpadStyle();
         touchpad = new Touchpad(DEAD_ZONE_RADIUS, style);
     }
 
     private Touchpad.TouchpadStyle getTouchpadStyle() {
         Touchpad.TouchpadStyle style = new Touchpad.TouchpadStyle();
-        style.background = getBackgroundDrawable();
-        resizeBackground(style.background);
-        style.knob = getKnobDrawable();
-        resizeKnob(style.knob);
+        style.background = getDrawableBackground();
+        resizeDrawable(style.background);
+        style.knob = getDrawableKnob();
+        resizeDrawable(style.knob, KNOB_RATIO);
         return style;
     }
 
-    private Drawable getBackgroundDrawable() {
+    private Drawable getDrawableBackground() {
         Assets assetsManager = Assets.getInstance();
         Texture backgroundTexture = assetsManager.get(BACKGROUND_TEXTURE_PATH, Texture.class);
         return getDrawableFromTexture(backgroundTexture);
     }
 
-    private Drawable getKnobDrawable() {
+    private Drawable getDrawableKnob() {
         Assets assetsManager = Assets.getInstance();
         Texture knobTexture = assetsManager.get(KNOB_TEXTURE_PATH, Texture.class);
         return getDrawableFromTexture(knobTexture);
-    }
-
-    private Drawable getDrawableFromTexture(Texture texture) {
-        return new TextureRegionDrawable(new TextureRegion(texture));
-    }
-
-    private void resizeBackground(Drawable background) {
-        background.setMinWidth(size);
-        background.setMinHeight(size);
-    }
-
-    private void resizeKnob(Drawable knob) {
-        knob.setMinWidth(size* KNOB_RATIO);
-        knob.setMinHeight(size* KNOB_RATIO);
     }
 
     public Touchpad getTouchpad() {

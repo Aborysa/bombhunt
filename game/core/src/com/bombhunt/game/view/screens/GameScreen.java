@@ -13,8 +13,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -23,14 +21,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.bombhunt.game.BombHunt;
-import com.bombhunt.game.services.physic.Collision;
+import com.bombhunt.game.model.Level;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
@@ -44,9 +37,10 @@ import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.model.ecs.systems.PlayerInputSystem;
 import com.bombhunt.game.model.ecs.systems.SpriteSystem;
 import com.bombhunt.game.services.assets.Assets;
-import com.bombhunt.game.view.Joystick;
-import com.bombhunt.game.model.Level;
+import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
+import com.bombhunt.game.view.controls.BombButton;
+import com.bombhunt.game.view.controls.Joystick;
 
 import java.util.HashMap;
 
@@ -79,7 +73,7 @@ public class GameScreen extends BasicView {
     private HashMap<Integer, Boolean> keysDown = new HashMap<>(20);
 
     private Joystick joystick;
-    private Button bombButton;
+    private BombButton bombButton;
     private Stage stage;
 
     public GameScreen(BombHunt bombHunt) {
@@ -138,27 +132,10 @@ public class GameScreen extends BasicView {
         // TODO : CONVERT THIS AS CTE
         int size_joystick = Gdx.graphics.getWidth()/6;
         joystick = new Joystick(size_joystick);
-
-        // TODO: CREATE CLASS FOR BOMB BUTTON
-        // TODO: make common base class having extract drawable from texture as common method
-        // TODO: maybe resize too
-        // TODO: second picture for bombButton when clicked
-        Texture texture_up = Assets.getInstance().get("textures/bombButtonUp.png", Texture.class);
-        Texture texture_down = Assets.getInstance().get("textures/bombButtonDown.png", Texture.class);
-        Drawable drawable_up = new TextureRegionDrawable(new TextureRegion(texture_up));
-        Drawable drawable_down = new TextureRegionDrawable(new TextureRegion(texture_down));
-        ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
-        drawable_up.setMinWidth(size_joystick);
-        drawable_up.setMinHeight(size_joystick);
-        drawable_down.setMinWidth(size_joystick);
-        drawable_down.setMinHeight(size_joystick);
-        style.imageUp = drawable_up;
-        style.imageDown = drawable_down;
-        bombButton = new ImageButton(style);
-
+        bombButton = new BombButton(size_joystick);
         table.bottom();
         table.add(joystick.getTouchpad()).left().expandX();
-        table.add(bombButton).right();
+        table.add(bombButton.getImageButton()).right();
         stage = new Stage();
         stage.addActor(table);
     }
@@ -171,7 +148,7 @@ public class GameScreen extends BasicView {
         BombSystem bombSystem = new BombSystem(bombFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem();
         PlayerInputSystem playerInputSystem = new PlayerInputSystem(box2d, joystick.getTouchpad(),
-                bombButton, bombFactory);
+                bombButton.getImageButton(), bombFactory);
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem, physicsSystem, playerInputSystem, bombSystem, explosionSystem)
                 .build();
