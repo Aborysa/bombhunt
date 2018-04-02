@@ -3,17 +3,15 @@ package com.bombhunt.game.ecs.systems;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.bombhunt.game.ecs.components.Box2dComponent;
 import com.bombhunt.game.ecs.components.PlayerInputComponent;
 import com.bombhunt.game.ecs.components.TransformComponent;
-import com.bombhunt.game.ecs.components.VelocityComponent;
 import com.bombhunt.game.ecs.factories.BombFactory;
 
 public class PlayerInputSystem extends IteratingSystem{
@@ -25,12 +23,14 @@ public class PlayerInputSystem extends IteratingSystem{
 
     private World box2d;
     private Touchpad joystick;
+    private Button bombButton;
     private BombFactory bombFactory;
 
-    public PlayerInputSystem(World box2d, Touchpad joystick, BombFactory bombFactory) {
+    public PlayerInputSystem(World box2d, Touchpad joystick, Button bombButton, BombFactory bombFactory) {
         super(Aspect.all(TransformComponent.class, Box2dComponent.class, PlayerInputComponent.class));
         this.box2d = box2d;
         this.joystick = joystick;
+        this.bombButton = bombButton;
         this.bombFactory = bombFactory;
     }
 
@@ -54,10 +54,11 @@ public class PlayerInputSystem extends IteratingSystem{
         //System.out.println(velocityComponent.velocity);
 
         TransformComponent transformComponent = mapTransform.get(e);
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+        if(bombButton.isPressed()){
             // spawn test bomb
             bombFactory.createBomb(new Vector3(transformComponent.position.x, transformComponent.position.y, 0 ), 3);
         }
 
     }
+
 }

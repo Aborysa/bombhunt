@@ -1,5 +1,16 @@
 [
   {"file": "textures/tilemap1.atlas", "type": "com.badlogic.gdx.graphics.g2d.TextureAtlas"},
   {"file": "textures/badlogic.jpg", "type": "com.badlogic.gdx.graphics.Texture"},
-  {"file": "maps/map1.tmx", "type": "com.bombhunt.game.utils.level.Level"}
+  {"file": "textures/analogBackground.png", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "textures/analogForeground.png", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "textures/bombButton.png", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "maps/map1.tmx", "type": "com.bombhunt.game.utils.level.Level"},
+  {"file": "colorbomb/colorbomb.pack", "type": "com.badlogic.gdx.graphics.g2d.TextureAtlas"},
+  {"file": "angryBombsBackground.png", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "dynamitesBackground.png", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "digitalButton.mp3", "type": "com.badlogic.gdx.audio.Sound"},
+  {"file": "heroism.ogg", "type": "com.badlogic.gdx.audio.Music"},
+  {"file": "unfinishedBusiness.mp3", "type": "com.badlogic.gdx.audio.Music"},
+  {"file": "onMyWay.wav", "type": "com.badlogic.gdx.audio.Music"}
 ]
+
