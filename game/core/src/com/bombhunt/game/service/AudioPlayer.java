@@ -74,6 +74,7 @@ public class AudioPlayer {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                music.setPosition(0);
                 float current_volume = 0f;
                 float time_window = FADE_IN_WINDOW;
                 float adjustment_factor;
@@ -116,12 +117,11 @@ public class AudioPlayer {
                     if (current_frame_id != prev_frame_id) {
                         prev_frame_id = current_frame_id;
                         time_elapsed += Gdx.graphics.getDeltaTime();
-                        adjustment_factor = max(0f, 1-time_elapsed/time_window);
-                        current_volume = initial_volume*adjustment_factor;
+                        adjustment_factor = max(0f, 1 - time_elapsed / time_window);
+                        current_volume = initial_volume * adjustment_factor;
                         music.setVolume(current_volume);
                     }
                 }
-                music.setPosition(0);
                 //TODO: music.dispose();
             }
         };
