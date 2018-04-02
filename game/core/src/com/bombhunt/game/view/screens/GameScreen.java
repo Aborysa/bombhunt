@@ -150,13 +150,15 @@ public class GameScreen extends BasicView {
     }
 
     private void setUpECS() {
+        SpriteSystem spriteSystem = new SpriteSystem();
+        PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
+        String bombFactoryName = BombFactory.class.getSimpleName();
+        BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
+        BombSystem bombSystem = new BombSystem(bombFactory);
+        ExplosionSystem explosionSystem = new ExplosionSystem();
+        PlayerInputSystem playerInputSystem = new PlayerInputSystem(box2d, joystick, bombButton, bombFactory);
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(new SpriteSystem(),
-                        new PhysicsSystem(box2d),
-                        new PlayerInputSystem(box2d, joystick, bombButton,
-                                (BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
-                        new BombSystem((BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
-                        new ExplosionSystem())
+                .with(spriteSystem, physicsSystem, playerInputSystem, bombSystem, explosionSystem)
                 .build();
         world = new World(config);
         for (IEntityFactory factory : factoryMap.values()) {
