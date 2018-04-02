@@ -17,18 +17,17 @@ public class LevelLoader extends SynchronousAssetLoader<Level, LevelLoader.Level
     }
 
     @Override
-    public Level load(AssetManager assetManager, String filename, FileHandle file, LevelLoader.LevelLoaderParameters params) {
+    public Level load(AssetManager assetManager, String filename, FileHandle file,
+                      LevelLoader.LevelLoaderParameters params) {
         TiledMap map = assetManager.get(filename, TiledMap.class);
-        Level level = new Level(map);
-
-        return level;
+        return new Level(map);
     }
 
     @Override
-    public Array<AssetDescriptor> getDependencies(final String filename, FileHandle file, LevelLoader.LevelLoaderParameters params) {
-        Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
-        dependencies.add(new AssetDescriptor<TiledMap>(file, TiledMap.class));
-
+    public Array<AssetDescriptor> getDependencies(final String filename, FileHandle file,
+                                                  LevelLoader.LevelLoaderParameters params) {
+        Array<AssetDescriptor> dependencies = new Array<>();
+        dependencies.add(new AssetDescriptor<>(file, TiledMap.class));
         return dependencies;
     }
 

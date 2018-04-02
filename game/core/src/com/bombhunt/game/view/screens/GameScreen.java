@@ -132,7 +132,7 @@ public class GameScreen extends BasicView {
         table.add().expand();
         table.add();
         table.row();
-        table.add(joystick).size(200);
+        table.add(joystick.getTouchpad()).size(200);
         table.add();
         table.add(bombButton).size(200);
 
@@ -144,7 +144,7 @@ public class GameScreen extends BasicView {
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(new SpriteSystem(), 
                 new PhysicsSystem(box2d), 
-                new PlayerInputSystem(box2d, joystick, bombButton,
+                new PlayerInputSystem(box2d, joystick.getTouchpad(), bombButton,
                         (BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
                         new BombSystem((BombFactory) factoryMap.get(BombFactory.class.getSimpleName())),
                         new ExplosionSystem())

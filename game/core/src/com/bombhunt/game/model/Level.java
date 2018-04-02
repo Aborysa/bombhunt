@@ -62,10 +62,10 @@ public class Level {
 
     public Level(TiledMap map) {
         this.map = map;
-        tileEntityLayer = new ArrayList<TiledMapTileLayer>();
-        tileDecalLayer = new ArrayList<TiledMapTileLayer>();
-        objectLayers = new ArrayList<MapLayer>();
-        imageLayers = new ArrayList<TiledMapImageLayer>();
+        tileEntityLayer = new ArrayList<>();
+        tileDecalLayer = new ArrayList<>();
+        objectLayers = new ArrayList<>();
+        imageLayers = new ArrayList<>();
         parseMap();
     }
 
@@ -161,7 +161,8 @@ public class Level {
             }
             verticies[i] *= Collision.worldTobox2d;
         }
-        // Box2d does not support convex shapes so triangulate the polygon, TODO: add check to see if the shape is convex first
+        // Box2d does not support convex shapes so triangulate the polygon,
+        // TODO: add check to see if the shape is convex first
         short[] indecies = triangulator.computeTriangles(verticies).toArray();
 
         // The triangle count
