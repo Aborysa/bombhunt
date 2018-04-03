@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.audio.AudioPlayer;
-import com.bombhunt.game.services.networking.PlayServices;
+import com.bombhunt.game.services.networking.IPlayServices;
 import com.bombhunt.game.view.BasicView;
 import com.bombhunt.game.view.screens.MainMenuScreen;
 
@@ -14,10 +14,10 @@ public class BombHunt extends ApplicationAdapter {
     private BasicView currentView;
     private boolean assetsLoaded = false;
     private boolean viewLoaded = false;
-    PlayServices playServices;
+    IPlayServices playServices;
     public AudioPlayer audioPlayer;
 
-    public BombHunt(PlayServices playServices) {
+    public BombHunt(IPlayServices playServices) {
         this.playServices = playServices;
         playServices.signIn();
         audioPlayer = new AudioPlayer();

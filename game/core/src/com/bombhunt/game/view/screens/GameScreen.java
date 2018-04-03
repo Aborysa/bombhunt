@@ -23,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.bombhunt.game.BombHunt;
+import com.bombhunt.game.controller.GameController;
 import com.bombhunt.game.model.Level;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
@@ -34,7 +35,7 @@ import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.model.ecs.systems.BombSystem;
 import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
-import com.bombhunt.game.model.ecs.systems.PlayerInputSystem;
+import com.bombhunt.game.model.ecs.systems.PlayerSystem;
 import com.bombhunt.game.model.ecs.systems.SpriteSystem;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.physic.Collision;
@@ -52,6 +53,7 @@ public class GameScreen extends BasicView {
     private float gameTime = 0;
 
     private World world;
+    private GameController controller;
     private com.badlogic.gdx.physics.box2d.World box2d;
     private Box2DDebugRenderer box2DDebugRenderer;
 
@@ -147,16 +149,17 @@ public class GameScreen extends BasicView {
         BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
         BombSystem bombSystem = new BombSystem(bombFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem();
-        // TODO: should not have direct link
-        PlayerInputSystem playerInputSystem = new PlayerInputSystem(box2d, joystick.getTouchpad(),
+        // TODO: clean constructor PlayerSystem
+        PlayerSystem playerSystem = new PlayerSystem(box2d, joystick.getTouchpad(),
                 bombButton.getImageButton(), bombFactory);
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(spriteSystem, physicsSystem, playerInputSystem, bombSystem, explosionSystem)
+                .with(spriteSystem, physicsSystem, playerSystem, bombSystem, explosionSystem)
                 .build();
         world = new World(config);
         for (IEntityFactory factory : factoryMap.values()) {
             factory.setWorld(world);
         }
+        controller = GameController.getInstance(bombHunt);
     }
 
     private void setUpComponentMappers() {

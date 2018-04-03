@@ -3,7 +3,7 @@ package com.bombhunt.game.model.ecs.systems;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.bombhunt.game.model.ecs.components.ExplosionComponent;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 
@@ -17,16 +17,24 @@ public class TimerSystem extends IteratingSystem {
 
     @Override
     protected void process(int e) {
-        // substract time remaining of how long the explosion effect should be in the game, and delete the explosion entity if it's ran out
         TimerComponent timerComponent = mapTimer.get(e);
+        decreaseTimer(timerComponent);
+        raiseEndTimer(timerComponent);
+    }
+
+    private void decreaseTimer(TimerComponent timerComponent) {
         float delta = world.getDelta();
-
         timerComponent.timer -= delta;
+    }
 
-        // explosion timer is over and we can delete the entity
+    private void raiseEndTimer(TimerComponent timerComponent) {
         if(timerComponent.timer <= 0){
-            world.delete(e);
+            Event event = createEvent();
+            timerComponent.listener.handle(event);
         }
+    }
 
+    private Event createEvent() {
+        return new Event();
     }
 }

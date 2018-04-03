@@ -12,9 +12,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
-import com.bombhunt.game.model.ecs.components.PlayerInputComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 
@@ -30,7 +30,7 @@ public class PlayerFactory implements IEntityFactory{
     ComponentMapper<SpriteComponent> mapSprite;
     //ComponentMapper<VelocityComponent> mapVelocity;
     ComponentMapper<Box2dComponent> mapBox2d;
-    ComponentMapper<PlayerInputComponent> mapPlayerInput;
+    ComponentMapper<PlayerComponent> mapPlayerInput;
 
 
 
@@ -101,7 +101,7 @@ public class PlayerFactory implements IEntityFactory{
         mapSprite = world.getMapper(SpriteComponent.class);
         //mapVelocity = world.getMapper(VelocityComponent.class);
         mapBox2d = world.getMapper(Box2dComponent.class);
-        mapPlayerInput = world.getMapper(PlayerInputComponent.class);
+        mapPlayerInput = world.getMapper(PlayerComponent.class);
 
 
         playerArchtype = new ArchetypeBuilder()
@@ -109,7 +109,7 @@ public class PlayerFactory implements IEntityFactory{
                 .add(SpriteComponent.class)
                 //.add(VelocityComponent.class)
                 .add(Box2dComponent.class)
-                .add(PlayerInputComponent.class)
+                .add(PlayerComponent.class)
                 .build(world);
 
 

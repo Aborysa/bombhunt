@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
 import com.bombhunt.game.AndroidLauncher;
-import com.bombhunt.game.services.networking.PlayServices;
+import com.bombhunt.game.services.networking.IPlayServices;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,7 +37,7 @@ import java.util.List;
  * Created by erlin on 23.03.2018.
  */
 
-public class GoogleCommunication implements PlayServices {
+public class GoogleCommunication implements IPlayServices {
     public GoogleSignInClient googleSignInClient;
     public GoogleSignInAccount googleSignInAccount;
     public RealTimeMultiplayerClient realTimeMultiplayerClient;
