@@ -44,12 +44,8 @@ public class PlayerSystem extends IteratingSystem{
 
         Body body = box2dComponent.body;
 
-        Vector2 velocity = last_orientation.scl(playerComponent.movement_speed);
+        Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
         body.setLinearVelocity(velocity);
-        /*
-        body.setLinearVelocity(new Vector2(joystick.getKnobPercentX()*playerComponent.movement_speed,
-                joystick.getKnobPercentY()*playerComponent.movement_speed));
-        */
 
         if(bombButton.isPressed()){
             float position_x = transformComponent.position.x;
@@ -59,8 +55,8 @@ public class PlayerSystem extends IteratingSystem{
         }
     }
 
-    public void move(Vector2 orientation) {
-        last_orientation = orientation;
+    public void move(Vector2 new_orientation) {
+        last_orientation = new_orientation;
     }
 
 }

@@ -19,7 +19,9 @@ public class TimerSystem extends IteratingSystem {
     protected void process(int e) {
         TimerComponent timerComponent = mapTimer.get(e);
         decreaseTimer(timerComponent);
-        raiseEndTimer(timerComponent);
+        if (isTimerOver(timerComponent)) {
+            raiseEndTimer(timerComponent);
+        }
     }
 
     private void decreaseTimer(TimerComponent timerComponent) {
@@ -27,11 +29,17 @@ public class TimerSystem extends IteratingSystem {
         timerComponent.timer -= delta;
     }
 
-    private void raiseEndTimer(TimerComponent timerComponent) {
+    private Boolean isTimerOver(TimerComponent timerComponent) {
         if(timerComponent.timer <= 0){
-            Event event = createEvent();
-            timerComponent.listener.handle(event);
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    private void raiseEndTimer(TimerComponent timerComponent) {
+        Event event = createEvent();
+        timerComponent.listener.handle(event);
     }
 
     private Event createEvent() {
