@@ -44,7 +44,7 @@ public class BombFactory implements IEntityFactory {
                 SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
                         TextureAtlas.class).findRegion("bomb_party_v4"),
                         16, 4, 18, 6),
-                6/timer);
+                6 / timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         TimerComponent timerComponent = mapTimer.get(e);
@@ -52,10 +52,8 @@ public class BombFactory implements IEntityFactory {
         timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
-
                 TransformComponent transformComponent = mapTransform.get(e);
                 createExplosion(transformComponent.position, 0.5f);
-
                 world.delete(e);
                 return true;
             }
@@ -67,23 +65,20 @@ public class BombFactory implements IEntityFactory {
         System.out.println("creating exp");
         final int e = world.create(explosionArchetype);
         mapTransform.get(e).position = pos;
-        mapTransform.get(e).rotation = 90f*(float)Math.random();
+        mapTransform.get(e).rotation = 90f * (float) Math.random();
 
         // TODO: add sprite/animatio
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
                         TextureAtlas.class).findRegion("bomb_party_v4"),
                         16, 4, 13, 3),
-                3/timer);
+                3 / timer);
 
 
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(5f, 5f);
-
         mapTimer.get(e).timer = timer;
-
-        mapTimer.get(e).listener = new EventListener(){
-        
+        mapTimer.get(e).listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
                 world.delete(e);
@@ -93,8 +88,6 @@ public class BombFactory implements IEntityFactory {
 
         return e;
     }
-
-
 
     // dunno if we can use this in some way fancy to create new bombs as the map loads or something
     @Override

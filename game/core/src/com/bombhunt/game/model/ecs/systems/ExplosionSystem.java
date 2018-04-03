@@ -18,9 +18,5 @@ public class ExplosionSystem extends IteratingSystem {
 
     @Override
     protected void process(int e) {
-        // TODO: to be remove and use TimerComponent instead
-
-        // TODO: check if player is in bounds and hit the player if it is
-
     }
 }

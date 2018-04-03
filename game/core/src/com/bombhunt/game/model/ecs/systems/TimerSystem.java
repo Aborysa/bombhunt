@@ -30,7 +30,7 @@ public class TimerSystem extends IteratingSystem {
     }
 
     private Boolean isTimerOver(TimerComponent timerComponent) {
-        if(timerComponent.timer <= 0){
+        if (timerComponent.timer <= 0) {
             return true;
         } else {
             return false;
@@ -39,8 +39,9 @@ public class TimerSystem extends IteratingSystem {
 
     private void raiseEndTimer(TimerComponent timerComponent) {
         Event event = createEvent();
-        if(timerComponent.listener != null)
+        if (timerComponent.listener != null) {
             timerComponent.listener.handle(event);
+        }
     }
 
     private Event createEvent() {

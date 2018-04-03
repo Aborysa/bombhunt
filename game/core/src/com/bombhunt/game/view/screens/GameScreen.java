@@ -21,6 +21,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -135,7 +137,7 @@ public class GameScreen extends BasicView {
         // TODO: CONVERT PADDING AS CTE
         table.pad(50);
         // TODO : CONVERT THIS AS CTE
-        int size_joystick = Gdx.graphics.getWidth()/6;
+        int size_joystick = Gdx.graphics.getWidth() / 6;
         joystick = new Joystick(size_joystick);
         joystick.getTouchpad().addListener(new ChangeListener() {
             @Override
@@ -146,6 +148,12 @@ public class GameScreen extends BasicView {
             }
         });
         bombButton = new BombButton(size_joystick);
+        bombButton.getImageButton().addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                controller.playerPlantBomb();
+            }
+        });
         table.bottom();
         table.add(joystick.getTouchpad()).left().expandX();
         table.add(bombButton.getImageButton()).right();
@@ -161,9 +169,7 @@ public class GameScreen extends BasicView {
         BombSystem bombSystem = new BombSystem(bombFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem();
         TimerSystem timerSystem = new TimerSystem();
-        // TODO: clean constructor PlayerSystem
-        PlayerSystem playerSystem = new PlayerSystem(box2d,
-                bombButton.getImageButton(), bombFactory);
+        PlayerSystem playerSystem = new PlayerSystem(box2d, bombFactory);
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem, physicsSystem, playerSystem, bombSystem, explosionSystem, timerSystem)
                 .build();
