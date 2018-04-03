@@ -4,7 +4,7 @@ package com.bombhunt.game.services.networking;
  * Created by erlin on 22.03.2018.
  */
 
-public interface PlayServices {
+public interface IPlayServices {
     public void signIn();
     public void signOut();
     public void startMatchMaking();

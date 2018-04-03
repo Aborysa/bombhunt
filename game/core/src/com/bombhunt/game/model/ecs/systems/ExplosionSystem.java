@@ -18,19 +18,5 @@ public class ExplosionSystem extends IteratingSystem {
 
     @Override
     protected void process(int e) {
-        // substract time remaining of how long the explosion effect should be in the game, and delete the explosion entity if it's ran out
-        System.out.println("asdasdasd");
-        TimerComponent timerComponent = mapTimer.get(e);
-        float delta = world.getDelta();
-
-        timerComponent.timer -= delta;
-
-        // explosion timer is over and we can delete the entity
-        if(timerComponent.timer <= 0){
-            world.delete(e);
-        }
-
-        // TODO: check if player is in bounds and hit the player if it is
-
     }
 }
