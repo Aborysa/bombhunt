@@ -20,8 +20,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.GameController;
 import com.bombhunt.game.model.Level;
@@ -134,6 +136,14 @@ public class GameScreen extends BasicView {
         // TODO : CONVERT THIS AS CTE
         int size_joystick = Gdx.graphics.getWidth()/6;
         joystick = new Joystick(size_joystick);
+        joystick.getTouchpad().addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Vector2 orientation = new Vector2(joystick.getTouchpad().getKnobPercentX(),
+                        joystick.getTouchpad().getKnobPercentY());
+                controller.playerMove(orientation);
+            }
+        });
         bombButton = new BombButton(size_joystick);
         table.bottom();
         table.add(joystick.getTouchpad()).left().expandX();
@@ -159,7 +169,7 @@ public class GameScreen extends BasicView {
         for (IEntityFactory factory : factoryMap.values()) {
             factory.setWorld(world);
         }
-        controller = GameController.getInstance(bombHunt);
+        controller = GameController.getInstance(bombHunt, playerSystem);
     }
 
     private void setUpComponentMappers() {

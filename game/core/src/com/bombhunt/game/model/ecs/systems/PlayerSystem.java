@@ -25,6 +25,7 @@ public class PlayerSystem extends IteratingSystem{
     private Touchpad joystick;
     private Button bombButton;
     private BombFactory bombFactory;
+    private Vector2 last_orientation = new Vector2();
 
     public PlayerSystem(World box2d, Touchpad joystick, Button bombButton, BombFactory bombFactory) {
         // TODO: should create instance here instead of having to pass them...
@@ -42,7 +43,9 @@ public class PlayerSystem extends IteratingSystem{
         //VelocityComponent velocityComponent = mapVelocity.get(e);
 
         Body body = box2dComponent.body;
-        body.setLinearVelocity(playerComponent.velocity);
+
+        Vector2 velocity = last_orientation.scl(playerComponent.movement_speed);
+        body.setLinearVelocity(velocity);
         /*
         body.setLinearVelocity(new Vector2(joystick.getKnobPercentX()*playerComponent.movement_speed,
                 joystick.getKnobPercentY()*playerComponent.movement_speed));
@@ -54,6 +57,10 @@ public class PlayerSystem extends IteratingSystem{
             Vector3 position = new Vector3(position_x, position_y, 0);
             bombFactory.createBomb(position, 3);
         }
+    }
+
+    public void move(Vector2 orientation) {
+        last_orientation = orientation;
     }
 
 }
