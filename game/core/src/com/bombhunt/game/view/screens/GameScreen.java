@@ -147,6 +147,7 @@ public class GameScreen extends BasicView {
         BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
         BombSystem bombSystem = new BombSystem(bombFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem();
+        // TODO: should not have direct link
         PlayerInputSystem playerInputSystem = new PlayerInputSystem(box2d, joystick.getTouchpad(),
                 bombButton.getImageButton(), bombFactory);
         WorldConfiguration config = new WorldConfigurationBuilder()

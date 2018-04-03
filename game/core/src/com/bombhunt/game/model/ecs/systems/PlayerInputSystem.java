@@ -34,8 +34,6 @@ public class PlayerInputSystem extends IteratingSystem{
         this.bombFactory = bombFactory;
     }
 
-
-
     protected void process(int e){
 
         //VelocityComponent velocityComponent = mapVelocity.get(e);

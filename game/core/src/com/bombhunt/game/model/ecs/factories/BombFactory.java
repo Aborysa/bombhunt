@@ -40,7 +40,8 @@ public class BombFactory implements IEntityFactory {
         mapTransform.get(e).position = pos;
 
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4"),
+                SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
+                        TextureAtlas.class).findRegion("bomb_party_v4"),
                         16, 4, 18, 6),
                 6/timer);
 
@@ -61,7 +62,8 @@ public class BombFactory implements IEntityFactory {
 
         // TODO: add sprite/animatio
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4"),
+                SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
+                        TextureAtlas.class).findRegion("bomb_party_v4"),
                         16, 4, 13, 3),
                 3/timer);
 
