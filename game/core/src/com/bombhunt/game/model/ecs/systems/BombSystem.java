@@ -22,7 +22,5 @@ public class BombSystem extends IteratingSystem {
     
     @Override
     protected void process(int e) {
-        TransformComponent transformComponent = mapTransform.get(e);
-        bombFactory.createExplosion(transformComponent.position, 0.5f);
     }
 }

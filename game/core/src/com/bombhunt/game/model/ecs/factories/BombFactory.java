@@ -38,7 +38,7 @@ public class BombFactory implements IEntityFactory {
     private World world;
 
     public int createBomb(Vector3 position, float timer) {
-        int e = world.create(bombArchetype);
+        final int e = world.create(bombArchetype);
         mapTransform.get(e).position = position;
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
@@ -52,6 +52,10 @@ public class BombFactory implements IEntityFactory {
         timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
+
+                TransformComponent transformComponent = mapTransform.get(e);
+                createExplosion(transformComponent.position, 0.5f);
+
                 world.delete(e);
                 return true;
             }
@@ -61,7 +65,7 @@ public class BombFactory implements IEntityFactory {
 
     public int createExplosion(Vector3 pos, float timer) {
         System.out.println("creating exp");
-        int e = world.create(explosionArchetype);
+        final int e = world.create(explosionArchetype);
         mapTransform.get(e).position = pos;
         mapTransform.get(e).rotation = 90f*(float)Math.random();
 
@@ -77,6 +81,16 @@ public class BombFactory implements IEntityFactory {
         mapTransform.get(e).scale = new Vector2(5f, 5f);
 
         mapTimer.get(e).timer = timer;
+
+        mapTimer.get(e).listener = new EventListener(){
+        
+            @Override
+            public boolean handle(Event event) {
+                world.delete(e);
+                return true;
+            }
+        };
+
         return e;
     }
 

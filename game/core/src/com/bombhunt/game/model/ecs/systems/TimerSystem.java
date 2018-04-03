@@ -39,7 +39,8 @@ public class TimerSystem extends IteratingSystem {
 
     private void raiseEndTimer(TimerComponent timerComponent) {
         Event event = createEvent();
-        timerComponent.listener.handle(event);
+        if(timerComponent.listener != null)
+            timerComponent.listener.handle(event);
     }
 
     private Event createEvent() {
