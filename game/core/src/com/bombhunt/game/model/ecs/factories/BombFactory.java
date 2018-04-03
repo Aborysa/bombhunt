@@ -25,6 +25,8 @@ import com.bombhunt.game.services.graphics.SpriteHelper;
 
 public class BombFactory implements IEntityFactory {
 
+    private final float TIMER_EXPLOSION = 0.5f;
+
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<BombComponent> mapBomb;
@@ -47,27 +49,30 @@ public class BombFactory implements IEntityFactory {
                 6 / timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
+        setUpTimerBomb(e, timer);
+        return e;
+    }
+
+    private void setUpTimerBomb(int e, float timer) {
         TimerComponent timerComponent = mapTimer.get(e);
         timerComponent.timer = timer;
         timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
                 TransformComponent transformComponent = mapTransform.get(e);
-                createExplosion(transformComponent.position, 0.5f);
+                createExplosion(transformComponent.position, TIMER_EXPLOSION);
                 world.delete(e);
                 return true;
             }
         };
-        return e;
     }
 
     public int createExplosion(Vector3 pos, float timer) {
-        System.out.println("creating exp");
         final int e = world.create(explosionArchetype);
         mapTransform.get(e).position = pos;
         mapTransform.get(e).rotation = 90f * (float) Math.random();
 
-        // TODO: add sprite/animatio
+        // TODO: add sprite/animation
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
                         TextureAtlas.class).findRegion("bomb_party_v4"),
@@ -77,16 +82,20 @@ public class BombFactory implements IEntityFactory {
 
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(5f, 5f);
-        mapTimer.get(e).timer = timer;
-        mapTimer.get(e).listener = new EventListener() {
+        setUpTimerExplosion(e, timer);
+        return e;
+    }
+
+    private void setUpTimerExplosion(int e, float timer) {
+        TimerComponent timerComponent = mapTimer.get(e);
+        timerComponent.timer = timer;
+        timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
                 world.delete(e);
                 return true;
             }
         };
-
-        return e;
     }
 
     // dunno if we can use this in some way fancy to create new bombs as the map loads or something

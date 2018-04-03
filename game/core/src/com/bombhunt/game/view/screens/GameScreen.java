@@ -56,6 +56,8 @@ public class GameScreen extends BasicView {
     private int tick = 0;
     private float accTime = 0;
     private float gameTime = 0;
+    private float PADDING_TABLE_CONTROLS = 50;
+    private float RATIO_WIDTH_CONTROLS = 0.16f;
 
     private World world;
     private GameController controller;
@@ -131,13 +133,16 @@ public class GameScreen extends BasicView {
     }
 
     private void setUpControls() {
-        Table table = new Table();
-        table.setDebug(true);
-        table.setFillParent(true);
-        // TODO: CONVERT PADDING AS CTE
-        table.pad(50);
-        // TODO : CONVERT THIS AS CTE
-        int size_joystick = Gdx.graphics.getWidth() / 6;
+        setUpJoystick();
+        setUpBombButton();
+        Table table = feedControlsTable();
+        table = addControlsToTable(table);
+        stage = new Stage();
+        stage.addActor(table);
+    }
+
+    private void setUpJoystick() {
+        int size_joystick = (int) (Gdx.graphics.getWidth() * RATIO_WIDTH_CONTROLS);
         joystick = new Joystick(size_joystick);
         joystick.getTouchpad().addListener(new ChangeListener() {
             @Override
@@ -147,29 +152,45 @@ public class GameScreen extends BasicView {
                 controller.playerMove(orientation);
             }
         });
-        bombButton = new BombButton(size_joystick);
+    }
+
+    private void setUpBombButton() {
+        int size = (int) (Gdx.graphics.getWidth() * RATIO_WIDTH_CONTROLS);
+        bombButton = new BombButton(size);
         bombButton.getImageButton().addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 controller.playerPlantBomb();
             }
         });
+    }
+
+    private Table feedControlsTable() {
+        Table table = new Table();
+        table.setDebug(true);
+        table.setFillParent(true);
+        table.pad(PADDING_TABLE_CONTROLS);
+        return table;
+    }
+
+    private Table addControlsToTable(Table table) {
         table.bottom();
         table.add(joystick.getTouchpad()).left().expandX();
         table.add(bombButton.getImageButton()).right();
-        stage = new Stage();
-        stage.addActor(table);
+        return table;
     }
 
     private void setUpECS() {
         SpriteSystem spriteSystem = new SpriteSystem();
         PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
+        // TODO: why is the bomb factory has to be passed in argument?
+        // TODO: cannot that be created into the constructor of each system respectively
         String bombFactoryName = BombFactory.class.getSimpleName();
         BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
+        PlayerSystem playerSystem = new PlayerSystem(box2d, bombFactory);
         BombSystem bombSystem = new BombSystem(bombFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem();
         TimerSystem timerSystem = new TimerSystem();
-        PlayerSystem playerSystem = new PlayerSystem(box2d, bombFactory);
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem, physicsSystem, playerSystem, bombSystem, explosionSystem, timerSystem)
                 .build();
@@ -217,26 +238,32 @@ public class GameScreen extends BasicView {
 
     @Override
     public void update(float dt) {
+        updateClock(dt);
+        processTicks(dt);
+        updateCamera(dt);
+        stage.act(dt);
+    }
 
-        // Accumelate time
+    private void updateClock(float dt) {
         accTime += dt;
         accTime = Math.min(accTime, 1);
-        // Set delta to match tps
         world.setDelta((1f / TPS));
-        // While we got ticks to process, process ticks
+    }
+
+    private void processTicks(float dt) {
         gameTime += dt;
         while (accTime >= 1f / TPS) {
             box2d.step(1f / TPS, 6, 4);
             world.process();
-            // Subtrack the tick delta from accumulated time
             accTime -= 1f / TPS;
             tick++;
             if (tick % TPS == 0) {
                 System.out.println(Gdx.graphics.getFramesPerSecond() + " : " + tick + " : " + tick / gameTime);
             }
         }
+    }
 
-        // Temp code for moving camera
+    private void updateCamera(float dt) {
         Vector3 camVec = new Vector3(0, 0, 0);
         Vector3 rot = new Vector3(0, 0, 0);
         if (keysDown.getOrDefault(Input.Keys.RIGHT, false)) {
@@ -251,44 +278,32 @@ public class GameScreen extends BasicView {
         if (keysDown.getOrDefault(Input.Keys.DOWN, false)) {
             camVec.y -= 1;
         }
-
-        // Get the normal vec from the movement input
         camVec.nor();
-
         rot.nor();
-        //camRot.add(rot.scl(dtime));
-
-        // Move camera
         currentCamera.translate(camVec.scl(300 * dt));
         currentCamera.zoom = zoom;
-        //currentCamera.rotate(rot, 1*dtime);
-
         currentCamera.update();
-
-        stage.act(dt);
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(1, 1, 1, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        renderEntities();
+        flushAllSprites();
+        stage.draw();
+    }
 
-        // Grab entities with sprites
+    private void renderEntities() {
         IntBag entities = subscription.getEntities();
-
-        // Iterate over entities to be rendered
         for (int i = 0; i < entities.size(); i++) {
             int e = entities.get(i);
-
-            // Grab the sprite and add it to the decal batch
             SpriteComponent spriteComponent = mapSprite.get(e);
             batch.add(spriteComponent.sprite);
         }
-        // Flush all sprites
+    }
+
+    private void flushAllSprites() {
         batch.flush();
         box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
-
-        stage.draw();
     }
 
     @Override
