@@ -22,16 +22,14 @@ public class PlayerSystem extends IteratingSystem{
     private ComponentMapper<PlayerComponent> mapPlayer;
     //private ComponentMapper<VelocityComponent> mapVelocity;
 
-    private Touchpad joystick;
     private Button bombButton;
     private BombFactory bombFactory;
     private Vector2 last_orientation = new Vector2();
 
-    public PlayerSystem(World box2d, Touchpad joystick, Button bombButton, BombFactory bombFactory) {
+    public PlayerSystem(World box2d, Button bombButton, BombFactory bombFactory) {
         // TODO: should create instance here instead of having to pass them...
         super(Aspect.all(TransformComponent.class, Box2dComponent.class, PlayerComponent.class));
         this.box2d = box2d;
-        this.joystick = joystick;
         this.bombButton = bombButton;
         this.bombFactory = bombFactory;
     }

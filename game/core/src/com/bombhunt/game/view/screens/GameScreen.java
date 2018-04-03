@@ -39,6 +39,7 @@ import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.model.ecs.systems.PlayerSystem;
 import com.bombhunt.game.model.ecs.systems.SpriteSystem;
+import com.bombhunt.game.model.ecs.systems.TimerSystem;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
@@ -159,11 +160,12 @@ public class GameScreen extends BasicView {
         BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
         BombSystem bombSystem = new BombSystem(bombFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem();
+        TimerSystem timerSystem = new TimerSystem();
         // TODO: clean constructor PlayerSystem
-        PlayerSystem playerSystem = new PlayerSystem(box2d, joystick.getTouchpad(),
+        PlayerSystem playerSystem = new PlayerSystem(box2d,
                 bombButton.getImageButton(), bombFactory);
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(spriteSystem, physicsSystem, playerSystem, bombSystem, explosionSystem)
+                .with(spriteSystem, physicsSystem, playerSystem, bombSystem, explosionSystem, timerSystem)
                 .build();
         world = new World(config);
         for (IEntityFactory factory : factoryMap.values()) {
