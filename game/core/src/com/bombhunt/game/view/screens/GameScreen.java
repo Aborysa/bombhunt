@@ -14,6 +14,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -48,6 +49,7 @@ import com.bombhunt.game.view.BasicView;
 import com.bombhunt.game.view.controls.BombButton;
 import com.bombhunt.game.view.controls.Joystick;
 
+import java.awt.List;
 import java.util.HashMap;
 
 public class GameScreen extends BasicView {
@@ -73,17 +75,17 @@ public class GameScreen extends BasicView {
     private HashMap<String, IEntityFactory> factoryMap;
     private ComponentMapper<SpriteComponent> mapSprite;
     private Level level;
-    ComponentMapper<TransformComponent> mapTransform;
     // TODO: clean those... will this be necessary ?
     private OrthogonalTiledMapRenderer mapRenderer;
     private TiledMap testMap;
-    private ComponentMapper<AnimationComponent> mapAnimation;
 
     private HashMap<Integer, Boolean> keysDown = new HashMap<>(20);
 
     private Joystick joystick;
     private BombButton bombButton;
     private Stage stage;
+
+    private Decal mapDecals[];
 
     public GameScreen(BombHunt bombHunt) {
         super(bombHunt);
@@ -203,7 +205,6 @@ public class GameScreen extends BasicView {
 
     private void setUpComponentMappers() {
         mapSprite = world.getMapper(SpriteComponent.class);
-        mapTransform = world.getMapper(TransformComponent.class);
     }
 
     private void setUpAspectSubscription() {
@@ -216,6 +217,8 @@ public class GameScreen extends BasicView {
 
     private void createMapEntities() {
         level.createEntities(factoryMap);
+        java.util.List<Decal> decals = level.createDecals();
+        mapDecals = decals.toArray(new Decal[decals.size()]);
     }
 
     private void createCollisionBodies() {
@@ -299,6 +302,10 @@ public class GameScreen extends BasicView {
             SpriteComponent spriteComponent = mapSprite.get(e);
             batch.add(spriteComponent.sprite);
         }
+        for(Decal d : mapDecals){
+            batch.add(d);
+        }
+
     }
 
     private void flushAllSprites() {

@@ -27,6 +27,7 @@ import java.util.List;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.bombhunt.game.services.graphics.SpriteHelper;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
 
@@ -47,10 +48,10 @@ public class Level {
     }};
 
     // Layers that spawn entities using IEntityFactory
-    private List<TiledMapTileLayer> tileEntityLayer;
+    private List<TiledMapTileLayer> tileEntityLayers;
 
     // Only graphical layers
-    private List<TiledMapTileLayer> tileDecalLayer;
+    private List<TiledMapTileLayer> tileDecalLayers;
 
     // Image layers, backgrounds etc
     private List<TiledMapImageLayer> imageLayers;
@@ -62,8 +63,8 @@ public class Level {
 
     public Level(TiledMap map) {
         this.map = map;
-        tileEntityLayer = new ArrayList<>();
-        tileDecalLayer = new ArrayList<>();
+        tileEntityLayers = new ArrayList<>();
+        tileDecalLayers = new ArrayList<>();
         objectLayers = new ArrayList<>();
         imageLayers = new ArrayList<>();
         parseMap();
@@ -87,9 +88,9 @@ public class Level {
                 height = Math.max(width, tiledLayer.getTileHeight() * tiledLayer.getHeight());
 
                 if (props.containsKey("entity_factory")) {
-                    tileEntityLayer.add(tiledLayer);
+                    tileEntityLayers.add(tiledLayer);
                 } else {
-                    tileDecalLayer.add(tiledLayer);
+                    tileDecalLayers.add(tiledLayer);
                 }
             } else if (layer instanceof TiledMapImageLayer) {
                 imageLayers.add((TiledMapImageLayer) layer);
@@ -119,7 +120,7 @@ public class Level {
     // Spawn entities from entity layers, layers with `entity_factory` defined
     public IntBag createEntities(HashMap<String, IEntityFactory> factories) {
         IntBag bag = new IntBag(1024);
-        for (TiledMapTileLayer entityLayer : tileEntityLayer) {
+        for (TiledMapTileLayer entityLayer : tileEntityLayers) {
             MapProperties props = entityLayer.getProperties();
             IEntityFactory factory = factories.get(props.get("entity_factory"));
 
@@ -138,9 +139,21 @@ public class Level {
         return bag;
     }
 
-    // Create decals from tiledDecalLayer
+    // Create decals from tiledDecalLayers
     public List<Decal> createDecals() {
-        return null;
+        List<Decal> decals = new ArrayList<>();
+        for(TiledMapTileLayer decalLayer : tileDecalLayers){
+            int depth = decalLayer.getProperties().get("depth", Integer.class);
+            for (int x = 0; x < decalLayer.getWidth(); x++) {
+                for (int y = 0; y < decalLayer.getHeight(); y++) {
+                    Cell cell = decalLayer.getCell(x, y);
+                    if (cell != null) {
+                        Decal decal = Decal.newDecal(cell.getTile().getTextureRegion(), true);
+                    }
+                }
+            }
+        }
+        return decals;
     }
 
 
