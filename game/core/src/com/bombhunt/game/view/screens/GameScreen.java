@@ -175,7 +175,8 @@ public class GameScreen extends BasicView {
         settingsButton.getImageButton().addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                new InGameMenu("test", skin);
+                InGameMenu inGameMenu = new InGameMenu("test", skin);
+                inGameMenu.show(stage);
             }
         });
     }

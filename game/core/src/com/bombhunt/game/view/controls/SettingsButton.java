@@ -13,6 +13,7 @@ import com.bombhunt.game.services.assets.Assets;
 
 public class SettingsButton extends Controller {
 
+    // TODO: change textures
     private final String DOWN_TEXTURE_PATH = "textures/bombButtonDown.png";
     private final String UP_TEXTURE_PATH = "textures/bombButtonUp.png";
 
