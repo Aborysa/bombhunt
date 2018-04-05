@@ -20,7 +20,7 @@ public class BombHunt extends ApplicationAdapter {
     public BombHunt(IPlayServices playServices) {
         this.playServices = playServices;
         playServices.signIn();
-        audioPlayer = new AudioPlayer();
+        audioPlayer = AudioPlayer.getInstance();
     }
 
     public BasicView getCurrentView() {

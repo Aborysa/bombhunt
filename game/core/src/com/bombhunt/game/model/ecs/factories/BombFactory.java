@@ -4,6 +4,7 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
@@ -17,6 +18,7 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
 
 /**
@@ -42,14 +44,18 @@ public class BombFactory implements IEntityFactory {
     public int createBomb(Vector3 position, float timer) {
         final int e = world.create(bombArchetype);
         mapTransform.get(e).position = position;
+        Assets asset_manager = Assets.getInstance();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
+                SpriteHelper.createSprites(asset_manager.get("textures/tilemap1.atlas",
                         TextureAtlas.class).findRegion("bomb_party_v4"),
                         16, 4, 18, 6),
                 6 / timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         setUpTimerBomb(e, timer);
+        Sound sound = asset_manager.get("drop.wav", Sound.class);
+        AudioPlayer audioPlayer = AudioPlayer.getInstance();
+        audioPlayer.playSound(sound);
         return e;
     }
 
@@ -71,18 +77,19 @@ public class BombFactory implements IEntityFactory {
         final int e = world.create(explosionArchetype);
         mapTransform.get(e).position = pos;
         mapTransform.get(e).rotation = 90f * (float) Math.random();
-
-        // TODO: add sprite/animation
+        Assets asset_manager = Assets.getInstance();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
+                SpriteHelper.createSprites(asset_manager.get("textures/tilemap1.atlas",
                         TextureAtlas.class).findRegion("bomb_party_v4"),
                         16, 4, 13, 3),
                 3 / timer);
-
-
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(5f, 5f);
         setUpTimerExplosion(e, timer);
+        // TODO: clean sounds effects
+        AudioPlayer audioPlayer = AudioPlayer.getInstance();
+        Sound sound = asset_manager.get("explosion.wav", Sound.class);
+        audioPlayer.playSound(sound);
         return e;
     }
 

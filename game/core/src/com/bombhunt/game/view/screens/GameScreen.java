@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -171,8 +172,11 @@ public class GameScreen extends BasicView {
         settingsButton.getImageButton().addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                InGameSettings inGameSettings = new InGameSettings("Settings", skin, controller.getBombHunt());
+                InGameSettings inGameSettings = new InGameSettings(skin, controller.getBombHunt());
                 inGameSettings.show(stage);
+                Assets asset_manager = Assets.getInstance();
+                Sound popUpSound = asset_manager.get("popUp.wav", Sound.class);
+                controller.playSound(popUpSound, 1);
             }
         });
     }

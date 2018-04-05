@@ -1,5 +1,6 @@
 package com.bombhunt.game.controller;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
@@ -78,4 +79,7 @@ public class BasicController {
         return bombHunt;
     }
 
+    public void playSound(Sound sound, float factor) {
+        bombHunt.audioPlayer.playSoundWithFactor(sound, factor);
+    }
 }

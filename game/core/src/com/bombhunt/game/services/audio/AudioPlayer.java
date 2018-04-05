@@ -30,8 +30,17 @@ public class AudioPlayer {
 
     private Music current_theme_song;
 
-    public AudioPlayer() {
+    private static AudioPlayer instance = null;
+
+    private AudioPlayer() {
         current_theme_song = null;
+    }
+
+    public static AudioPlayer getInstance() {
+        if (instance == null) {
+            instance = new AudioPlayer();
+        }
+        return instance;
     }
 
     public void dispose() {
@@ -131,11 +140,6 @@ public class AudioPlayer {
         thread_fade_out.start();
     }
 
-    public void playButtonSound() {
-        Sound sound = Assets.getInstance().get("digitalButton.mp3", Sound.class);
-        sound.play(app_sound);
-    }
-
     private void interruptFadeIn() {
         interruptThread(thread_fade_in);
     }
@@ -150,6 +154,19 @@ public class AudioPlayer {
                 thread.interrupt();
             }
         }
+    }
+
+    public void playButtonSound() {
+        Sound sound = Assets.getInstance().get("digitalButton.mp3", Sound.class);
+        playSound(sound);
+    }
+
+    public void playSound(Sound sound) {
+        playSoundWithFactor(sound, 1);
+    }
+
+    public void playSoundWithFactor(Sound sound, float factor) {
+        sound.play(app_sound*factor);
     }
 
 }
