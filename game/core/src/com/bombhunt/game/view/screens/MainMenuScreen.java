@@ -44,7 +44,6 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     Sprite sprite;
 
     public MainMenuScreen(BombHunt bombHunt) {
-        super(bombHunt);
         controller = MainMenuController.getInstance(bombHunt);
         String theme_song = "heroism.ogg";
         controller.setNewThemeSong(theme_song);

@@ -86,13 +86,12 @@ public class GameScreen extends BasicView {
     private Stage stage;
 
     public GameScreen(BombHunt bombHunt) {
-        super(bombHunt);
         feedFactoryMap();
         setUpCamera();
         setUpBatching();
         setUpWorld();
         setUpControls();
-        setUpECS();
+        setUpECS(bombHunt);
         setUpComponentMappers();
         setUpAspectSubscription();
         setUpInputProcessor();
@@ -172,7 +171,7 @@ public class GameScreen extends BasicView {
         settingsButton.getImageButton().addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                InGameSettings inGameSettings = new InGameSettings("Settings", skin, bombHunt);
+                InGameSettings inGameSettings = new InGameSettings("Settings", skin, controller.getBombHunt());
                 inGameSettings.show(stage);
             }
         });
@@ -194,7 +193,7 @@ public class GameScreen extends BasicView {
         return table;
     }
 
-    private void setUpECS() {
+    private void setUpECS(BombHunt bombHunt) {
         SpriteSystem spriteSystem = new SpriteSystem();
         PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
         // TODO: why is the bomb factory has to be passed in argument?
@@ -212,6 +211,8 @@ public class GameScreen extends BasicView {
         for (IEntityFactory factory : factoryMap.values()) {
             factory.setWorld(world);
         }
+        // TODO: should be done in first place into the root constructor
+        // TODO: SET UP ECS should not be done in the interface
         controller = GameController.getInstance(bombHunt, playerSystem);
     }
 

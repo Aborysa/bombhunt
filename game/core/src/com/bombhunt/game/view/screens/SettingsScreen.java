@@ -24,7 +24,6 @@ public class SettingsScreen extends MovingBackgroundScreen {
     private SettingsController controller;
 
     public SettingsScreen(BombHunt bombHunt) {
-        super(bombHunt);
         controller = SettingsController.getInstance(bombHunt);
         String theme_song = "unfinishedBusiness.mp3";
         controller.setNewThemeSong(theme_song);

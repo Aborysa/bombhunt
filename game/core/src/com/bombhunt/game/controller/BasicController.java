@@ -74,4 +74,8 @@ public class BasicController {
         bombHunt.audioPlayer.setNewThemeSong(theme_song);
     }
 
+    public BombHunt getBombHunt() {
+        return bombHunt;
+    }
+
 }
