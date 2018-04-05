@@ -6,7 +6,7 @@ import com.bombhunt.game.BombHunt;
  * Created by samuel on 29/03/18.
  */
 
-public class SettingsController extends BasicController {
+public class SettingsController extends BasicSettingsController {
 
     private static SettingsController instance;
 
@@ -21,19 +21,4 @@ public class SettingsController extends BasicController {
         return instance;
     }
 
-    public float getVolumeMusic() {
-        return bombHunt.audioPlayer.getVolumeThemeSong();
-    }
-
-    public float getVolumeSound() {
-        return bombHunt.audioPlayer.getVolumeSoundFX();
-    }
-
-    public void setVolumeMusic(float volume) {
-        bombHunt.audioPlayer.setVolumeThemeSong(volume);
-    }
-
-    public void setVolumeSoundFX(float volume) {
-        bombHunt.audioPlayer.setVolumeSoundFX(volume);
-    }
 }

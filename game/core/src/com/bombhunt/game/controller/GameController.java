@@ -34,24 +34,4 @@ public class GameController extends BasicController {
         playerSystem.plantBomb();
     }
 
-    public void backToMainMenu() {changeView(new MainMenuScreen(bombHunt));}
-
-    // TODO: DUPLICATE CODE BETWEEN SETTING SCREEN AND IN GAME SETTING
-    // TODO: should find a way to combine functionnalities together
-    public float getVolumeMusic() {
-        return bombHunt.audioPlayer.getVolumeThemeSong();
-    }
-
-    public float getVolumeSound() {
-        return bombHunt.audioPlayer.getVolumeSoundFX();
-    }
-
-    public void setVolumeMusic(float volume) {
-        bombHunt.audioPlayer.setVolumeThemeSong(volume);
-    }
-
-    public void setVolumeSoundFX(float volume) {
-        bombHunt.audioPlayer.setVolumeSoundFX(volume);
-    }
-
 }

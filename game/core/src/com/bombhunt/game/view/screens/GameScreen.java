@@ -11,7 +11,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -43,7 +42,7 @@ import com.bombhunt.game.model.ecs.systems.TimerSystem;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
-import com.bombhunt.game.view.InGameMenu;
+import com.bombhunt.game.view.InGameSettings;
 import com.bombhunt.game.view.controls.BombButton;
 import com.bombhunt.game.view.controls.Joystick;
 import com.bombhunt.game.view.controls.SettingsButton;
@@ -173,8 +172,8 @@ public class GameScreen extends BasicView {
         settingsButton.getImageButton().addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                InGameMenu inGameMenu = new InGameMenu("Settings", skin, controller);
-                inGameMenu.show(stage);
+                InGameSettings inGameSettings = new InGameSettings("Settings", skin, bombHunt);
+                inGameSettings.show(stage);
             }
         });
     }
