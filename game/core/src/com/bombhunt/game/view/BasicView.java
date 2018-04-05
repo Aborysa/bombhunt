@@ -34,9 +34,13 @@ public abstract class BasicView extends InputAdapter {
         return null;
     }
 
-    protected void clearBackground() {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+    protected void changeBackground(float red, float green, float blue, float alpha) {
+        Gdx.gl.glClearColor(red, green, blue, alpha);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+
+    protected void clearBackground() {
+        changeBackground(0,0,0,0);
     }
 
     protected TextButton createButton(String text, ChangeListener listener) {

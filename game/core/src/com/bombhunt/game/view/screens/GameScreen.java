@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -301,6 +302,7 @@ public class GameScreen extends BasicView {
 
     @Override
     public void render() {
+        changeBackground(0.3f, 0.3f, 0.3f, 0f);
         renderEntities();
         flushAllSprites();
         stage.draw();

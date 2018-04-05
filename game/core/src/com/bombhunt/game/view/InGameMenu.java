@@ -32,6 +32,7 @@ public class InGameMenu extends Dialog {
         Slider slider_music = createMusicSlider();
         Label label_slider_music = new Label("Music", skin, "default");
         Table buttonTable = getButtonTable();
+        buttonTable.pad(50);
         buttonTable.add(label_slider_music);
         buttonTable.add(slider_music);
         buttonTable.row();
