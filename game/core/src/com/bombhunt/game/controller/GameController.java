@@ -33,4 +33,20 @@ public class GameController extends BasicController {
         playerSystem.plantBomb();
     }
 
+    public float getVolumeMusic() {
+        return bombHunt.audioPlayer.getVolumeThemeSong();
+    }
+
+    public float getVolumeSound() {
+        return bombHunt.audioPlayer.getVolumeSoundFX();
+    }
+
+    public void setVolumeMusic(float volume) {
+        bombHunt.audioPlayer.setVolumeThemeSong(volume);
+    }
+
+    public void setVolumeSoundFX(float volume) {
+        bombHunt.audioPlayer.setVolumeSoundFX(volume);
+    }
+
 }
