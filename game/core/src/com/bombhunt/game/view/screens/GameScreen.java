@@ -45,8 +45,10 @@ import com.bombhunt.game.model.ecs.systems.TimerSystem;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
+import com.bombhunt.game.view.InGameMenu;
 import com.bombhunt.game.view.controls.BombButton;
 import com.bombhunt.game.view.controls.Joystick;
+import com.bombhunt.game.view.controls.SettingsButton;
 
 import java.util.HashMap;
 
@@ -83,6 +85,7 @@ public class GameScreen extends BasicView {
 
     private Joystick joystick;
     private BombButton bombButton;
+    private SettingsButton settingsButton;
     private Stage stage;
 
     public GameScreen(BombHunt bombHunt) {
@@ -135,6 +138,7 @@ public class GameScreen extends BasicView {
     private void setUpControls() {
         setUpJoystick();
         setUpBombButton();
+        setUpSettingsButton();
         Table table = feedControlsTable();
         table = addControlsToTable(table);
         stage = new Stage();
@@ -165,6 +169,17 @@ public class GameScreen extends BasicView {
         });
     }
 
+    private void setUpSettingsButton() {
+        int size = (int) (Gdx.graphics.getWidth() * RATIO_WIDTH_CONTROLS/2);
+        settingsButton = new SettingsButton(size);
+        settingsButton.getImageButton().addListener(new ChangeListener(){
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                new InGameMenu("test", skin);
+            }
+        });
+    }
+
     private Table feedControlsTable() {
         Table table = new Table();
         table.setDebug(true);
@@ -174,6 +189,7 @@ public class GameScreen extends BasicView {
     }
 
     private Table addControlsToTable(Table table) {
+        table.add(settingsButton.getImageButton()).colspan(2).expand().right().top().row();
         table.bottom();
         table.add(joystick.getTouchpad()).left().expandX();
         table.add(bombButton.getImageButton()).right();
