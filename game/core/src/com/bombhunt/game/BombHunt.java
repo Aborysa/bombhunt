@@ -23,6 +23,10 @@ public class BombHunt extends ApplicationAdapter {
         audioPlayer = new AudioPlayer();
     }
 
+    public BasicView getCurrentView() {
+        return currentView;
+    }
+
     public void setCurrentView(BasicView view) {
         Gdx.input.setInputProcessor(view.getInputProcessor());
         currentView = view;

@@ -83,7 +83,7 @@ public class CreditsScreen extends MovingBackgroundScreen {
     }
 
     private void addButtons(Table table) {
-        ChangeListener listener = controller.createViewTransitionWithSoundListener(this, MainMenuScreen.class);
+        ChangeListener listener = controller.createViewTransitionWithSoundListener(MainMenuScreen.class);
         addReturnButton(table, listener, 1);
     }
 

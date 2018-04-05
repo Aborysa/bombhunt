@@ -30,14 +30,14 @@ public class BasicController {
         return listener;
     }
 
-    public ChangeListener createViewTransitionListener(BasicView current_view, Class new_view_class) {
+    public ChangeListener createViewTransitionListener(Class new_view_class) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 try {
                     Constructor<?> cons = new_view_class.getConstructor(BombHunt.class);
                     BasicView new_view = (BasicView) cons.newInstance(bombHunt);
-                    changeView(current_view, (BasicView) new_view);
+                    changeView((BasicView) new_view);
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -47,8 +47,8 @@ public class BasicController {
         return listener;
     }
 
-    public ChangeListener createViewTransitionWithSoundListener(BasicView current_view, Class new_view_class) {
-        ChangeListener listener = createViewTransitionListener(current_view, new_view_class);
+    public ChangeListener createViewTransitionWithSoundListener(Class new_view_class) {
+        ChangeListener listener = createViewTransitionListener(new_view_class);
         ChangeListener bonified_listener = bonifySoundListener(listener);
         return bonified_listener;
     }
@@ -64,7 +64,8 @@ public class BasicController {
         return bonified_listener;
     }
 
-    protected void changeView(BasicView current_view, BasicView new_view) {
+    protected void changeView(BasicView new_view) {
+        BasicView current_view = bombHunt.getCurrentView();
         bombHunt.setCurrentView(new_view);
         current_view.dispose();
     }

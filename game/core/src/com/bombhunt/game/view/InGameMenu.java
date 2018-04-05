@@ -46,16 +46,6 @@ public class InGameMenu extends Dialog {
             }
         });
         buttonTable.add(leaveButton).colspan(2);
-        /*
-        Button closeButton = new TextButton("X", skin, "default");
-        closeButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                result("CLOSE");
-            }
-        });
-        getTitleTable().add(closeButton).size(60, 40).padRight(-30).padTop(-20);
-        */
         setModal(true);
         addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -81,21 +71,12 @@ public class InGameMenu extends Dialog {
                 @Override
                 protected void result(Object object) {
                     if ((Boolean) object) {
-                        // TODO: CHANGE TO RETURN TO MAIN MENU INSTEAD
-                        // TODO: call controller
-                        Gdx.app.exit();
+                        controller.backToMainMenu();
                     }
                 }
             };
             dialog.show(getStage());
         }
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        setClip(true);
-        super.draw(batch, parentAlpha);
-        setClip(false);
     }
 
     private Slider createMusicSlider() {

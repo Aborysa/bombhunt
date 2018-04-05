@@ -3,6 +3,7 @@ package com.bombhunt.game.controller;
 import com.badlogic.gdx.math.Vector2;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.model.ecs.systems.PlayerSystem;
+import com.bombhunt.game.view.screens.MainMenuScreen;
 
 /**
  * Created by samuel on 29/03/18.
@@ -33,6 +34,7 @@ public class GameController extends BasicController {
         playerSystem.plantBomb();
     }
 
+    public void backToMainMenu() {changeView(new MainMenuScreen(bombHunt));}
 
     // TODO: DUPLICATE CODE BETWEEN SETTING SCREEN AND IN GAME SETTING
     // TODO: should find a way to combine functionnalities together

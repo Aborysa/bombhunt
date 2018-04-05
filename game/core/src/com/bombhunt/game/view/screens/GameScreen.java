@@ -172,7 +172,7 @@ public class GameScreen extends BasicView {
         settingsButton.getImageButton().addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                InGameMenu inGameMenu = new InGameMenu("test", skin, controller);
+                InGameMenu inGameMenu = new InGameMenu("Settings", skin, controller);
                 inGameMenu.show(stage);
             }
         });
