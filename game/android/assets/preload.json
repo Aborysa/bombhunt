@@ -6,6 +6,8 @@
   {"file": "textures/analogForeground.png", "type": "com.badlogic.gdx.graphics.Texture"},
   {"file": "textures/bombButtonUp.png", "type": "com.badlogic.gdx.graphics.Texture"},
   {"file": "textures/bombButtonDown.png", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "textures/settingsButtonUp.png", "type": "com.badlogic.gdx.graphics.Texture"},
+  {"file": "textures/settingsButtonDown.png", "type": "com.badlogic.gdx.graphics.Texture"},
   {"file": "colorbomb/colorbomb.pack", "type": "com.badlogic.gdx.graphics.g2d.TextureAtlas"},
   {"file": "angryBombsBackground.png", "type": "com.badlogic.gdx.graphics.Texture"},
   {"file": "dynamitesBackground.png", "type": "com.badlogic.gdx.graphics.Texture"},

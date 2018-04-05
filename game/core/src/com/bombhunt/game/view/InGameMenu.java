@@ -1,11 +1,8 @@
 package com.bombhunt.game.view;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -48,8 +45,8 @@ public class InGameMenu extends Dialog {
         buttonTable.add(leaveButton).colspan(2);
         setModal(true);
         addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if (x < 0 || x > getWidth() || y < 0 || y > getHeight()){
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (x < 0 || x > getWidth() || y < 0 || y > getHeight()) {
                     hide();
                     return true;
                 }
