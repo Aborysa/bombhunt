@@ -33,6 +33,9 @@ public class GameController extends BasicController {
         playerSystem.plantBomb();
     }
 
+
+    // TODO: DUPLICATE CODE BETWEEN SETTING SCREEN AND IN GAME SETTING
+    // TODO: should find a way to combine functionnalities together
     public float getVolumeMusic() {
         return bombHunt.audioPlayer.getVolumeThemeSong();
     }
