@@ -21,7 +21,7 @@ public class CreditsScreen extends MovingBackgroundScreen {
     private CreditsController controller;
 
     public CreditsScreen(BombHunt bombHunt) {
-        controller = CreditsController.getInstance(bombHunt);
+        controller = new CreditsController(bombHunt);
         String theme_song = "onMyWay.wav";
         controller.setNewThemeSong(theme_song);
         Texture background = Assets.getInstance().get("angryBombsBackground.png", Texture.class);

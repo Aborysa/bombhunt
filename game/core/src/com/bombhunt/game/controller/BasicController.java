@@ -17,7 +17,7 @@ public class BasicController {
 
     protected BombHunt bombHunt;
 
-    protected BasicController(BombHunt bombHunt) {
+    BasicController(BombHunt bombHunt) {
         this.bombHunt = bombHunt;
     }
 

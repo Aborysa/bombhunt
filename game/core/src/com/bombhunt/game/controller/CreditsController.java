@@ -7,17 +7,7 @@ import com.bombhunt.game.BombHunt;
  */
 
 public class CreditsController extends BasicController {
-
-    private static CreditsController instance;
-
-    private CreditsController(BombHunt bombHunt) {
+    public CreditsController(BombHunt bombHunt) {
         super(bombHunt);
-    }
-
-    public static CreditsController getInstance(BombHunt bombHunt) {
-        if (instance == null) {
-            instance = new CreditsController(bombHunt);
-        }
-        return instance;
     }
 }

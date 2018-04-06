@@ -44,7 +44,7 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     Sprite sprite;
 
     public MainMenuScreen(BombHunt bombHunt) {
-        controller = MainMenuController.getInstance(bombHunt);
+        controller = new MainMenuController(bombHunt);
         String theme_song = "heroism.ogg";
         controller.setNewThemeSong(theme_song);
         atlas = Assets.getInstance().get("colorbomb/colorbomb.pack", TextureAtlas.class);

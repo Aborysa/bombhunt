@@ -37,7 +37,7 @@ public class InGameSettings extends Dialog {
 
     public InGameSettings(Skin skin, BombHunt bombHunt) {
         super(SETTINGS_DIALOG_TITLE, skin);
-        this.controller = InGameSettingsController.getInstance(bombHunt);
+        this.controller = new InGameSettingsController(bombHunt);
         this.skin = skin;
         feedMainTable();
         addExternalClickLeaveOption();

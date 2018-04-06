@@ -11,19 +11,11 @@ import com.bombhunt.game.view.screens.MainMenuScreen;
 
 public class GameController extends BasicController {
 
-    private static GameController instance;
     private PlayerSystem playerSystem;
 
-    private GameController(BombHunt bombHunt, PlayerSystem playerSystem) {
+    public GameController(BombHunt bombHunt, PlayerSystem playerSystem) {
         super(bombHunt);
         this.playerSystem = playerSystem;
-    }
-
-    public static GameController getInstance(BombHunt bombHunt, PlayerSystem playerSystem) {
-        if (instance == null) {
-            instance = new GameController(bombHunt, playerSystem);
-        }
-        return instance;
     }
 
     public void playerMove(Vector2 orientation) {

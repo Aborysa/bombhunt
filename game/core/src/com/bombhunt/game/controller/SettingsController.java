@@ -7,18 +7,8 @@ import com.bombhunt.game.BombHunt;
  */
 
 public class SettingsController extends BasicSettingsController {
-
-    private static SettingsController instance;
-
-    private SettingsController(BombHunt bombHunt) {
+    public SettingsController(BombHunt bombHunt) {
         super(bombHunt);
-    }
-
-    public static SettingsController getInstance(BombHunt bombHunt) {
-        if (instance == null) {
-            instance = new SettingsController(bombHunt);
-        }
-        return instance;
     }
 
 }

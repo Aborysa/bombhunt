@@ -217,7 +217,7 @@ public class GameScreen extends BasicView {
         }
         // TODO: should be done in first place into the root constructor
         // TODO: SET UP ECS should not be done in the interface
-        controller = GameController.getInstance(bombHunt, playerSystem);
+        controller = new GameController(bombHunt, playerSystem);
     }
 
     private void setUpComponentMappers() {
