@@ -69,7 +69,6 @@ public class GameScreen extends BasicView {
 
     EntitySubscription subscription;
     private DecalBatch batch;
-    private SpriteBatch batch2;
     private InputMultiplexer inputMux;
     private OrthographicCamera currentCamera;
 
@@ -125,7 +124,6 @@ public class GameScreen extends BasicView {
 
     private void setUpBatching() {
         batch = new DecalBatch(4096, new CameraGroupStrategy(currentCamera));
-        batch2 = new SpriteBatch(4096);
     }
 
     private void setUpWorld() {
@@ -299,13 +297,11 @@ public class GameScreen extends BasicView {
     }
 
     private void renderEntities() {
-        batch2.setTransformMatrix(currentCamera.combined);
         IntBag entities = subscription.getEntities();
         for (int i = 0; i < entities.size(); i++) {
             int e = entities.get(i);
             SpriteComponent spriteComponent = mapSprite.get(e);
             batch.add(spriteComponent.sprite);
-            batch2.draw(spriteComponent.sprite.getTextureRegion(),0,0);
         }
         for(Decal d : mapDecals){
             batch.add(d);
@@ -315,7 +311,6 @@ public class GameScreen extends BasicView {
 
     private void flushAllSprites() {
         batch.flush();
-        batch2.flush();
         box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
     }
 
