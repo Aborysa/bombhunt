@@ -1,5 +1,6 @@
 package com.bombhunt.game.view;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -15,13 +16,12 @@ public class BasicSettingsView {
         float current_volume_music = controller.getVolumeMusic();
         slider_music.setValue(current_volume_music*100);
         slider_music.getStyle().knob.setMinHeight(100);
-        Runnable runnable_music = new Runnable() {
+        ChangeListener listener_volume_music = new ChangeListener() {
             @Override
-            public void run() {
+            public void changed(ChangeEvent event, Actor actor) {
                 controller.setVolumeMusic(slider_music.getValue()/100);
             }
         };
-        ChangeListener listener_volume_music = controller.createChangeListener(runnable_music);
         slider_music.addListener(listener_volume_music);
         return slider_music;
     }
@@ -31,13 +31,12 @@ public class BasicSettingsView {
         float current_volume_sound = controller.getVolumeSound();
         slider_soundFX.setValue(current_volume_sound*100);
         slider_soundFX.getStyle().knob.setMinHeight(100);
-        Runnable runnable_sound = new Runnable() {
+        ChangeListener listener_volume_sound = new ChangeListener() {
             @Override
-            public void run() {
+            public void changed(ChangeEvent event, Actor actor) {
                 controller.setVolumeSoundFX(slider_soundFX.getValue()/100);
             }
         };
-        ChangeListener listener_volume_sound = controller.createChangeListener(runnable_sound);
         slider_soundFX.addListener(listener_volume_sound);
         return slider_soundFX;
     }

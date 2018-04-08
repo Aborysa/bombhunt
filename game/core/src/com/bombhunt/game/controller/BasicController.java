@@ -21,20 +21,10 @@ public class BasicController {
         this.bombHunt = bombHunt;
     }
 
-    public ChangeListener createChangeListener(Runnable runnable) {
+    public ChangeListener createViewTransitionListener(Class<? extends BasicView> new_view_class) {
         ChangeListener listener = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            runnable.run();
-            }
-        };
-        return listener;
-    }
-
-    public ChangeListener createViewTransitionListener(Class new_view_class) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
                 try {
                     Constructor<?> cons = new_view_class.getConstructor(BombHunt.class);
                     BasicView new_view = (BasicView) cons.newInstance(bombHunt);
@@ -44,11 +34,10 @@ public class BasicController {
                 }
             }
         };
-        ChangeListener listener = createChangeListener(runnable);
         return listener;
     }
 
-    public ChangeListener createViewTransitionWithSoundListener(Class new_view_class) {
+    public ChangeListener createViewTransitionWithSoundListener(Class<? extends BasicView> new_view_class) {
         ChangeListener listener = createViewTransitionListener(new_view_class);
         ChangeListener bonified_listener = bonifySoundListener(listener);
         return bonified_listener;
