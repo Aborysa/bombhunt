@@ -39,6 +39,9 @@ public class BombHunt extends ApplicationAdapter {
 
     @Override
     public void render() {
+        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         loadMainMenuScreen();
         float dt = Gdx.graphics.getDeltaTime();
         currentView.update(dt);
@@ -62,11 +65,6 @@ public class BombHunt extends ApplicationAdapter {
     }
 
     private boolean isAssetsLoaded() {
-        if (assetsLoaded) {
-            return true;
-        } else {
-            assetsLoaded = Assets.getInstance().update();
-            return assetsLoaded;
-        }
+        return Assets.getInstance().update();
     }
 }
