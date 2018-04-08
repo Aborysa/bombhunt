@@ -13,6 +13,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -68,6 +69,7 @@ public class GameScreen extends BasicView {
 
     EntitySubscription subscription;
     private DecalBatch batch;
+    private SpriteBatch batch2;
     private InputMultiplexer inputMux;
     private OrthographicCamera currentCamera;
 
@@ -105,9 +107,9 @@ public class GameScreen extends BasicView {
     }
 
     private void feedFactoryMap() {
-        String crateFactoryName = CrateFactory.class.getSimpleName();
-        String playerFactoryName = PlayerFactory.class.getSimpleName();
-        String bombFactoryName = BombFactory.class.getSimpleName();
+        final String crateFactoryName = CrateFactory.class.getSimpleName();
+        final String playerFactoryName = PlayerFactory.class.getSimpleName();
+        final String bombFactoryName = BombFactory.class.getSimpleName();
         factoryMap = new HashMap<String, IEntityFactory>() {{
             put(crateFactoryName, new CrateFactory());
             put(playerFactoryName, new PlayerFactory());
@@ -118,11 +120,12 @@ public class GameScreen extends BasicView {
     private void setUpCamera() {
         currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         currentCamera.position.set(new Vector3(0, 0, 0f));
-        currentCamera.far = 1000000f;
+        currentCamera.far = 10000f;
     }
 
     private void setUpBatching() {
-        batch = new DecalBatch(100000, new CameraGroupStrategy(currentCamera));
+        batch = new DecalBatch(4096, new CameraGroupStrategy(currentCamera));
+        batch2 = new SpriteBatch(4096);
     }
 
     private void setUpWorld() {
@@ -296,11 +299,13 @@ public class GameScreen extends BasicView {
     }
 
     private void renderEntities() {
+        batch2.setTransformMatrix(currentCamera.combined);
         IntBag entities = subscription.getEntities();
         for (int i = 0; i < entities.size(); i++) {
             int e = entities.get(i);
             SpriteComponent spriteComponent = mapSprite.get(e);
             batch.add(spriteComponent.sprite);
+            batch2.draw(spriteComponent.sprite.getTextureRegion(),0,0);
         }
         for(Decal d : mapDecals){
             batch.add(d);
@@ -310,6 +315,7 @@ public class GameScreen extends BasicView {
 
     private void flushAllSprites() {
         batch.flush();
+        batch2.flush();
         box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
     }
 
