@@ -12,6 +12,9 @@
   </data>
  </layer>
  <layer name="crates" width="20" height="20">
+  <properties>
+   <property name="entity_factory" value="CrateFactory"/>
+  </properties>
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAA2NgoB04Syc9A2EHPdxJC3CWRDwKRjYYCellqJQHg7E8BQD2FbPRQAYAAA==
   </data>
@@ -48,13 +51,28 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="127" x="16" y="304" width="288" height="16"/>
-  <object id="132" x="304" y="0" width="16" height="320"/>
-  <object id="143" x="16" y="0" width="288" height="16"/>
+  <object id="127" x="16" y="304" width="288" height="16">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="132" x="304" y="0" width="16" height="320">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="143" x="16" y="0" width="288" height="16">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
   <object id="144" x="48" y="32">
    <polygon points="0,0 0,16 -16,16 -16,32 0,32 16,32 16,0"/>
   </object>
   <object id="146" x="144" y="128">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
    <polygon points="0,0 0,16 -16,16 -16,48 0,48 0,64 32,64 32,48 48,48 48,16 32,16 32,0"/>
   </object>
   <object id="147" x="256" y="32">
