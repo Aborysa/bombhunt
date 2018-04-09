@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.CreditsController;
 import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.view.BasicView;
 
 /**
  * Created by samuel on 27/03/18.
@@ -21,8 +22,7 @@ public class CreditsScreen extends MovingBackgroundScreen {
     private CreditsController controller;
 
     public CreditsScreen(BombHunt bombHunt) {
-        super(bombHunt);
-        controller = CreditsController.getInstance(bombHunt);
+        controller = new CreditsController(bombHunt);
         String theme_song = "onMyWay.wav";
         controller.setNewThemeSong(theme_song);
         Texture background = Assets.getInstance().get("angryBombsBackground.png", Texture.class);
@@ -83,7 +83,7 @@ public class CreditsScreen extends MovingBackgroundScreen {
     }
 
     private void addButtons(Table table) {
-        ChangeListener listener = controller.createViewTransitionWithSoundListener(this, MainMenuScreen.class);
+        ChangeListener listener = controller.createViewTransitionWithSoundListener(MainMenuScreen.class);
         addReturnButton(table, listener, 1);
     }
 

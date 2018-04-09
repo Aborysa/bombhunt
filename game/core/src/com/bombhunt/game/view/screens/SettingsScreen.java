@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.SettingsController;
 import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.view.BasicSettingsView;
 
 /**
  * Created by samuel on 27/03/18.
@@ -23,8 +24,7 @@ public class SettingsScreen extends MovingBackgroundScreen {
     private SettingsController controller;
 
     public SettingsScreen(BombHunt bombHunt) {
-        super(bombHunt);
-        controller = SettingsController.getInstance(bombHunt);
+        controller = new SettingsController(bombHunt);
         String theme_song = "unfinishedBusiness.mp3";
         controller.setNewThemeSong(theme_song);
         Texture background = Assets.getInstance().get("dynamitesBackground.png", Texture.class);
@@ -84,52 +84,20 @@ public class SettingsScreen extends MovingBackgroundScreen {
 
     private void addSliderMusic(Table table) {
         Label label_music = new Label("Music", skin, "default");
-        Slider slider_music = createMusicSlider();
+        Slider slider_music = BasicSettingsView.createMusicSlider(controller, skin);
         table.add(label_music).right().expandX();
         table.add(slider_music).left().padLeft(25).expandX().padBottom(10).row();
     }
 
     private void addSliderSoundFX(Table table) {
         Label label_soundFX = new Label("Sound FX", skin, "default");
-        Slider slider_soundFX = createSoundFXSlider();
+        Slider slider_soundFX = BasicSettingsView.createSoundFXSlider(controller, skin);
         table.add(label_soundFX).right().expandX();
         table.add(slider_soundFX).left().padLeft(25).expandX().padBottom(10).row();
     }
 
-    private Slider createMusicSlider() {
-        Slider slider_music = new Slider(0, 100, 1, false, skin);
-        float current_volume_music = controller.getVolumeMusic();
-        slider_music.setValue(current_volume_music*100);
-        slider_music.getStyle().knob.setMinHeight(100);
-        Runnable runnable_music = new Runnable() {
-            @Override
-            public void run() {
-                controller.setVolumeMusic(slider_music.getValue()/100);
-            }
-        };
-        ChangeListener listener_volume_music = controller.createChangeListener(runnable_music);
-        slider_music.addListener(listener_volume_music);
-        return slider_music;
-    }
-
-    private Slider createSoundFXSlider() {
-        Slider slider_soundFX = new Slider(0, 100, 1, false, skin);
-        float current_volume_sound = controller.getVolumeSound();
-        slider_soundFX.setValue(current_volume_sound*100);
-        slider_soundFX.getStyle().knob.setMinHeight(100);
-        Runnable runnable_sound = new Runnable() {
-            @Override
-            public void run() {
-                controller.setVolumeSoundFX(slider_soundFX.getValue()/100);
-            }
-        };
-        ChangeListener listener_volume_sound = controller.createChangeListener(runnable_sound);
-        slider_soundFX.addListener(listener_volume_sound);
-        return slider_soundFX;
-    }
-
     private void addButtons(Table table) {
-        ChangeListener listener = controller.createViewTransitionWithSoundListener(this, MainMenuScreen.class);
+        ChangeListener listener = controller.createViewTransitionWithSoundListener(MainMenuScreen.class);
         addReturnButton(table, listener,4);
     }
 

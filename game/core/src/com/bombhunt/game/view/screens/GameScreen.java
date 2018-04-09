@@ -11,7 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -21,8 +21,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -45,8 +43,10 @@ import com.bombhunt.game.model.ecs.systems.TimerSystem;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
+import com.bombhunt.game.view.InGameSettings;
 import com.bombhunt.game.view.controls.BombButton;
 import com.bombhunt.game.view.controls.Joystick;
+import com.bombhunt.game.view.controls.SettingsButton;
 
 import java.util.HashMap;
 
@@ -83,16 +83,16 @@ public class GameScreen extends BasicView {
 
     private Joystick joystick;
     private BombButton bombButton;
+    private SettingsButton settingsButton;
     private Stage stage;
 
     public GameScreen(BombHunt bombHunt) {
-        super(bombHunt);
         feedFactoryMap();
         setUpCamera();
         setUpBatching();
         setUpWorld();
         setUpControls();
-        setUpECS();
+        setUpECS(bombHunt);
         setUpComponentMappers();
         setUpAspectSubscription();
         setUpInputProcessor();
@@ -135,6 +135,7 @@ public class GameScreen extends BasicView {
     private void setUpControls() {
         setUpJoystick();
         setUpBombButton();
+        setUpSettingsButton();
         Table table = feedControlsTable();
         table = addControlsToTable(table);
         stage = new Stage();
@@ -165,6 +166,21 @@ public class GameScreen extends BasicView {
         });
     }
 
+    private void setUpSettingsButton() {
+        int size = (int) (Gdx.graphics.getWidth() * RATIO_WIDTH_CONTROLS/2);
+        settingsButton = new SettingsButton(size);
+        settingsButton.getImageButton().addListener(new ChangeListener(){
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                InGameSettings inGameSettings = new InGameSettings(skin, controller.getBombHunt());
+                inGameSettings.show(stage);
+                Assets asset_manager = Assets.getInstance();
+                Sound popUpSound = asset_manager.get("popUp.wav", Sound.class);
+                controller.playSound(popUpSound, 1);
+            }
+        });
+    }
+
     private Table feedControlsTable() {
         Table table = new Table();
         table.setDebug(true);
@@ -174,13 +190,14 @@ public class GameScreen extends BasicView {
     }
 
     private Table addControlsToTable(Table table) {
+        table.add(settingsButton.getImageButton()).colspan(2).expand().right().top().row();
         table.bottom();
         table.add(joystick.getTouchpad()).left().expandX();
         table.add(bombButton.getImageButton()).right();
         return table;
     }
 
-    private void setUpECS() {
+    private void setUpECS(BombHunt bombHunt) {
         SpriteSystem spriteSystem = new SpriteSystem();
         PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
         // TODO: why is the bomb factory has to be passed in argument?
@@ -198,7 +215,9 @@ public class GameScreen extends BasicView {
         for (IEntityFactory factory : factoryMap.values()) {
             factory.setWorld(world);
         }
-        controller = GameController.getInstance(bombHunt, playerSystem);
+        // TODO: should be done in first place into the root constructor
+        // TODO: SET UP ECS should not be done in the interface
+        controller = new GameController(bombHunt, playerSystem);
     }
 
     private void setUpComponentMappers() {
@@ -287,6 +306,7 @@ public class GameScreen extends BasicView {
 
     @Override
     public void render() {
+        changeBackground(0.3f, 0.3f, 0.3f, 0f);
         renderEntities();
         flushAllSprites();
         stage.draw();

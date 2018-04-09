@@ -11,17 +11,8 @@ import com.bombhunt.game.view.BasicView;
 
 public class MainMenuController extends BasicController {
 
-    private static MainMenuController instance;
-
-    private MainMenuController(BombHunt bombHunt) {
+    public MainMenuController(BombHunt bombHunt) {
         super(bombHunt);
-    }
-
-    public static MainMenuController getInstance(BombHunt bombHunt) {
-        if (instance == null) {
-            instance = new MainMenuController(bombHunt);
-        }
-        return instance;
     }
 
     public ChangeListener createQuitListener(BasicView current_view) {

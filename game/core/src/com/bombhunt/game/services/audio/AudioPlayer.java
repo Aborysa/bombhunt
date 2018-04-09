@@ -30,8 +30,17 @@ public class AudioPlayer {
 
     private Music current_theme_song;
 
-    public AudioPlayer() {
+    private static AudioPlayer instance = null;
+
+    private AudioPlayer() {
         current_theme_song = null;
+    }
+
+    public static AudioPlayer getInstance() {
+        if (instance == null) {
+            instance = new AudioPlayer();
+        }
+        return instance;
     }
 
     public void dispose() {
@@ -45,7 +54,7 @@ public class AudioPlayer {
     public void setVolumeThemeSong(float volume) {
         app_volume = volume;
         current_theme_song.setVolume(volume);
-        interuptFadeIn();
+        interruptFadeIn();
         // IMPORTANT: not needed for thread_fade_out (will vanish anyway)
     }
 
@@ -59,18 +68,20 @@ public class AudioPlayer {
 
     public void setNewThemeSong(String new_theme_song_path) {
         Music new_theme_song = Assets.getInstance().get(new_theme_song_path, Music.class);
-        new_theme_song.setLooping(true);
-        if (current_theme_song != null) {
-            fadeOut(current_theme_song);
-            fadeIn(new_theme_song);
-        } else {
-            fadeIn(new_theme_song);
+        if (current_theme_song != new_theme_song) {
+            new_theme_song.setLooping(true);
+            if (current_theme_song != null) {
+                fadeOut(current_theme_song);
+                fadeIn(new_theme_song);
+            } else {
+                fadeIn(new_theme_song);
+            }
+            current_theme_song = new_theme_song;
         }
-        current_theme_song = new_theme_song;
     }
 
     private void fadeIn(Music music) {
-        interuptFadeIn();
+        interruptFadeIn();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -100,7 +111,7 @@ public class AudioPlayer {
     }
 
     private void fadeOut(Music music) {
-        interuptFadeOut();
+        interruptFadeOut();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -129,25 +140,33 @@ public class AudioPlayer {
         thread_fade_out.start();
     }
 
-    public void playButtonSound() {
-        Sound sound = Assets.getInstance().get("digitalButton.mp3", Sound.class);
-        sound.play(app_sound);
+    private void interruptFadeIn() {
+        interruptThread(thread_fade_in);
     }
 
-    private void interuptFadeIn() {
-        interuptThread(thread_fade_in);
+    private void interruptFadeOut() {
+        interruptThread(thread_fade_out);
     }
 
-    private void interuptFadeOut() {
-        interuptThread(thread_fade_out);
-    }
-
-    private void interuptThread(Thread thread) {
+    private void interruptThread(Thread thread) {
         if (thread != null) {
             if (thread.isAlive()) {
                 thread.interrupt();
             }
         }
+    }
+
+    public void playButtonSound() {
+        Sound sound = Assets.getInstance().get("digitalButton.mp3", Sound.class);
+        playSound(sound);
+    }
+
+    public void playSound(Sound sound) {
+        playSoundWithFactor(sound, 1);
+    }
+
+    public void playSoundWithFactor(Sound sound, float factor) {
+        sound.play(app_sound*factor);
     }
 
 }
