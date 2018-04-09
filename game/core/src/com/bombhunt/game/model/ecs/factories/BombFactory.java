@@ -6,7 +6,6 @@ import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -68,24 +67,12 @@ public class BombFactory implements IEntityFactory {
 
     public void explodeBomb(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
-        BombComponent bombComponent = mapBomb.get(e);
         createExplosion(transformComponent.position, TIMER_EXPLOSION);
-
-        Vector3[] dirs = {new Vector3(0,1,0), new Vector3(0,1,0),
-                          new Vector3(0,1,0), new Vector3(0,1,0)};
-        for (Vector3 dir: dirs) {
-            chainExplosion(transformComponent.position, dir, TIMER_EXPLOSION, bombComponent.range);
-        }
+        createExplosion(transformComponent.position.add(0,1,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.add(1,0,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.add(0,-1,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.add(-1,0,0), TIMER_EXPLOSION);
         world.delete(e);
-    }
-
-    public void chainExplosion(Vector3 pos, Vector3 direction, float timer, int range) {
-        Vector3 newPos = pos.add(direction);
-        createExplosion(newPos, timer);
-        range -= 1;
-        if (range > 0 ) { // TODO also check if not hit a solid
-            chainExplosion(newPos, direction, timer, range);
-        }
     }
 
     public int createExplosion(Vector3 pos, float timer) {
