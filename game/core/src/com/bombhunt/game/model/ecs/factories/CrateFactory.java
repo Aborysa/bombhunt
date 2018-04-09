@@ -15,10 +15,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bombhunt.game.services.physic.Collision;
+import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.DestroyableComponent;
+import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.model.ecs.systems.GridSystem;
 
 public class CrateFactory implements IEntityFactory {
   
@@ -30,15 +33,16 @@ public class CrateFactory implements IEntityFactory {
   private ComponentMapper<TransformComponent> mapTransform; 
   private ComponentMapper<SpriteComponent> mapSprite;
   private ComponentMapper<DestroyableComponent> mapDestroyable;
+  private ComponentMapper<GridPositionComponent> gridComponentMapper;
   private ComponentMapper<Box2dComponent> mapBox2d;
 
+  private static Grid grid = new Grid(16, 16, 16);
  
   public int createFromTile(Cell cell, TiledMapTileLayer layer, int x, int y, int depth){
     TiledMapTile tile = cell.getTile();
     TextureRegion tex = tile.getTextureRegion();
     float rotation = 90*cell.getRotation();
 
-    //
     Decal decal = Decal.newDecal(tex, true);
 
 
@@ -53,6 +57,8 @@ public class CrateFactory implements IEntityFactory {
     //NOTE: box2d has a hardcoded max speed of 120 units per second
     mapBox2d.get(e).body.setLinearVelocity(veloc);
 
+    gridComponentMapper.get(e).grid = grid;
+
 
     return e;
   }
@@ -65,13 +71,14 @@ public class CrateFactory implements IEntityFactory {
     mapSprite = world.getMapper(SpriteComponent.class);
     mapDestroyable = world.getMapper(DestroyableComponent.class);
     mapBox2d = world.getMapper(Box2dComponent.class);
-
+    gridComponentMapper = world.getMapper(GridPositionComponent.class);
 
     crateArchtype = new ArchetypeBuilder()
         .add(TransformComponent.class)
         .add(SpriteComponent.class)
         .add(DestroyableComponent.class)
         .add(Box2dComponent.class)
+        .add(GridPositionComponent.class)
       .build(world);
     
     

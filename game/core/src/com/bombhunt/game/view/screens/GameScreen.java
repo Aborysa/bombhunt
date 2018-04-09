@@ -11,12 +11,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -40,6 +43,7 @@ import com.bombhunt.game.model.ecs.factories.IEntityFactory;
 import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.model.ecs.systems.BombSystem;
 import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
+import com.bombhunt.game.model.ecs.systems.GridSystem;
 import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.model.ecs.systems.PlayerSystem;
 import com.bombhunt.game.model.ecs.systems.SpriteSystem;
@@ -65,7 +69,9 @@ public class GameScreen extends BasicView {
     private World world;
     private GameController controller;
     private com.badlogic.gdx.physics.box2d.World box2d;
+
     private Box2DDebugRenderer box2DDebugRenderer;
+    private ShapeRenderer ecsDebugRenderer;
 
     EntitySubscription subscription;
     private DecalBatch batch;
@@ -74,7 +80,11 @@ public class GameScreen extends BasicView {
 
     // TODO: Temporary map for factories, may want to use injection in the future with @Wire
     private HashMap<String, IEntityFactory> factoryMap;
+    
     private ComponentMapper<SpriteComponent> mapSprite;
+    private ComponentMapper<TransformComponent> mapTransform;
+
+
     private Level level;
     // TODO: clean those... will this be necessary ?
     private OrthogonalTiledMapRenderer mapRenderer;
@@ -132,6 +142,8 @@ public class GameScreen extends BasicView {
         box2d.setGravity(new Vector2(0, 0));
         box2DDebugRenderer = new Box2DDebugRenderer(true, false, false,
                 false, false, true);
+
+        ecsDebugRenderer = new ShapeRenderer();
         Collision.world = box2d;
     }
 
@@ -170,7 +182,6 @@ public class GameScreen extends BasicView {
 
     private Table feedControlsTable() {
         Table table = new Table();
-        table.setDebug(true);
         table.setFillParent(true);
         table.pad(PADDING_TABLE_CONTROLS);
         return table;
@@ -194,8 +205,11 @@ public class GameScreen extends BasicView {
         BombSystem bombSystem = new BombSystem(bombFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem();
         TimerSystem timerSystem = new TimerSystem();
+        GridSystem gridSystem = new GridSystem();
+
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem, physicsSystem, playerSystem, bombSystem, explosionSystem, timerSystem)
+                .with(gridSystem)
                 .build();
         world = new World(config);
         for (IEntityFactory factory : factoryMap.values()) {
@@ -206,6 +220,7 @@ public class GameScreen extends BasicView {
 
     private void setUpComponentMappers() {
         mapSprite = world.getMapper(SpriteComponent.class);
+        mapTransform = world.getMapper(TransformComponent.class);
     }
 
     private void setUpAspectSubscription() {
@@ -293,25 +308,35 @@ public class GameScreen extends BasicView {
     public void render() {
         renderEntities();
         flushAllSprites();
+        
+        box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
         stage.draw();
     }
 
     private void renderEntities() {
+        ecsDebugRenderer.setTransformMatrix(currentCamera.combined);
+        ecsDebugRenderer.begin(ShapeType.Filled);
+        ecsDebugRenderer.setColor(Color.ORANGE);
         IntBag entities = subscription.getEntities();
         for (int i = 0; i < entities.size(); i++) {
             int e = entities.get(i);
             SpriteComponent spriteComponent = mapSprite.get(e);
             batch.add(spriteComponent.sprite);
+            if(mapTransform.has(e)){
+                Vector3 pos = mapTransform.get(e).position;
+                ecsDebugRenderer.circle(pos.x, pos.y, 8);
+            }
         }
         for(Decal d : mapDecals){
             batch.add(d);
         }
 
+        ecsDebugRenderer.end();
+
     }
 
     private void flushAllSprites() {
         batch.flush();
-        box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
     }
 
     @Override
