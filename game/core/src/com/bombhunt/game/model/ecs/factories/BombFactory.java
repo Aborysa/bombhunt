@@ -59,12 +59,20 @@ public class BombFactory implements IEntityFactory {
         timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
-                TransformComponent transformComponent = mapTransform.get(e);
-                createExplosion(transformComponent.position, TIMER_EXPLOSION);
-                world.delete(e);
+                explodeBomb(e);
                 return true;
             }
         };
+    }
+
+    public void explodeBomb(int e) {
+        TransformComponent transformComponent = mapTransform.get(e);
+        createExplosion(transformComponent.position, TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.add(0,1,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.add(1,0,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.add(0,-1,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.add(-1,0,0), TIMER_EXPLOSION);
+        world.delete(e);
     }
 
     public int createExplosion(Vector3 pos, float timer) {
