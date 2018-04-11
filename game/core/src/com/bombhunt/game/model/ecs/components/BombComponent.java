@@ -7,4 +7,5 @@ import com.artemis.Component;
  */
 
 public class BombComponent extends Component{
+    public int range = 5;
 }
