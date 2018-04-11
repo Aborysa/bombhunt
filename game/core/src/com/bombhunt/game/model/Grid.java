@@ -84,8 +84,11 @@ public class Grid {
     }
 
     public IntBag raycast(Vector2 pos, Vector2 line, boolean includeFirst, Aspect.Builder aspectFilter){
-        return  raycast(pos, line, includeFirst, (int e) -> {
-            return world.getAspectSubscriptionManager().get(aspectFilter).getEntities().contains(e);
+        return  raycast(pos, line, includeFirst, new EntityFilter(){
+            @Override
+            public boolean filter(int e) {
+                return world.getAspectSubscriptionManager().get(aspectFilter).getEntities().contains(e);
+            }
         });
     }
 
