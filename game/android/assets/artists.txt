@@ -1,6 +1,15 @@
+Application Icon - Pin Art (CrazyTryTeam)
 Main Menu Song - Edward J. Blakeley
 Settings Song - Pugly
 Credits Song - DeltaBreaker
 Button Sound -  Dusty Room
 Colored Spinning Bomb - Code Inferno Games
 Features Skin - Raymond "Raeleus" Buckley
+
+-- FreeSound.com --
+Access Denied Sound - phatkatz4
+Pop Up Sound - Quistard
+Bomb Drop Sound - bertiehs
+In Game Button Click Sound - suntemple
+Explosion Sound - fridobeck
+

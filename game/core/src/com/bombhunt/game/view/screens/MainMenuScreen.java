@@ -44,8 +44,7 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     Sprite sprite;
 
     public MainMenuScreen(BombHunt bombHunt) {
-        super(bombHunt);
-        controller = MainMenuController.getInstance(bombHunt);
+        controller = new MainMenuController(bombHunt);
         String theme_song = "heroism.ogg";
         controller.setNewThemeSong(theme_song);
         atlas = Assets.getInstance().get("colorbomb/colorbomb.pack", TextureAtlas.class);
@@ -94,11 +93,11 @@ public class MainMenuScreen extends MovingBackgroundScreen {
 
     private void addButtons(Table table) {
         ChangeListener listener;
-        listener = controller.createViewTransitionWithSoundListener(this, GameScreen.class);
+        listener = controller.createViewTransitionWithSoundListener(GameScreen.class);
         TextButton btnPlay = createButton("Play", listener);
-        listener = controller.createViewTransitionWithSoundListener(this, SettingsScreen.class);
+        listener = controller.createViewTransitionWithSoundListener(SettingsScreen.class);
         TextButton btnSettings = createButton("Settings", listener);
-        listener = controller.createViewTransitionWithSoundListener(this, CreditsScreen.class);
+        listener = controller.createViewTransitionWithSoundListener(CreditsScreen.class);
         TextButton btnCredits = createButton("Credits", listener);
         listener = controller.createQuitWithSoundListener(this);
         TextButton btnQuit = createButton("Quit", listener);

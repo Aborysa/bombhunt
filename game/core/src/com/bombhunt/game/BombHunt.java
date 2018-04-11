@@ -20,7 +20,11 @@ public class BombHunt extends ApplicationAdapter {
     public BombHunt(IPlayServices playServices) {
         this.playServices = playServices;
         playServices.signIn();
-        audioPlayer = new AudioPlayer();
+        audioPlayer = AudioPlayer.getInstance();
+    }
+
+    public BasicView getCurrentView() {
+        return currentView;
     }
 
     public void setCurrentView(BasicView view) {
@@ -39,12 +43,11 @@ public class BombHunt extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         loadMainMenuScreen();
         float dt = Gdx.graphics.getDeltaTime();
         currentView.update(dt);
+        clearScreen();
         currentView.render();
     }
 
@@ -66,5 +69,11 @@ public class BombHunt extends ApplicationAdapter {
 
     private boolean isAssetsLoaded() {
         return Assets.getInstance().update();
+    }
+
+    private void clearScreen() {
+        // reference: https://github.com/libgdx/libgdx/wiki/Clearing-the-screen
+        Gdx.gl.glClearColor(0.2f, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
     }
 }
