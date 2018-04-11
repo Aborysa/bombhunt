@@ -42,6 +42,8 @@ public class BombHunt extends ApplicationAdapter {
         loadMainMenuScreen();
         float dt = Gdx.graphics.getDeltaTime();
         currentView.update(dt);
+        Gdx.gl.glClearColor(0.2f,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         currentView.render();
     }
 

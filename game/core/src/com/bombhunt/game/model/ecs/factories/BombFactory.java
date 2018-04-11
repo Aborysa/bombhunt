@@ -68,10 +68,10 @@ public class BombFactory implements IEntityFactory {
     public void explodeBomb(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
         createExplosion(transformComponent.position, TIMER_EXPLOSION);
-        createExplosion(transformComponent.position.add(0,1,0), TIMER_EXPLOSION);
-        createExplosion(transformComponent.position.add(1,0,0), TIMER_EXPLOSION);
-        createExplosion(transformComponent.position.add(0,-1,0), TIMER_EXPLOSION);
-        createExplosion(transformComponent.position.add(-1,0,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.cpy().add(0,100,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.cpy().add(100,0,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.cpy().add(0,-100,0), TIMER_EXPLOSION);
+        createExplosion(transformComponent.position.cpy().add(-100,0,0), TIMER_EXPLOSION);
         world.delete(e);
     }
 
