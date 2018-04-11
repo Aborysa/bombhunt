@@ -26,82 +26,75 @@ import com.bombhunt.game.model.ecs.systems.GridSystem;
 public class CrateFactory implements IEntityFactory {
   
 
-  private World world;
-  public Archetype crateArchtype; 
-  
+      private World world;
+      public Archetype crateArchtype;
 
-  private ComponentMapper<TransformComponent> mapTransform; 
-  private ComponentMapper<SpriteComponent> mapSprite;
-  private ComponentMapper<DestroyableComponent> mapDestroyable;
-  private ComponentMapper<GridPositionComponent> gridComponentMapper;
-  private ComponentMapper<Box2dComponent> mapBox2d;
 
-  private static Grid grid = new Grid(16, 16, 16);
+      private ComponentMapper<TransformComponent> mapTransform;
+      private ComponentMapper<SpriteComponent> mapSprite;
+      private ComponentMapper<DestroyableComponent> mapDestroyable;
+      private ComponentMapper<Box2dComponent> mapBox2d;
+
  
-  public int createFromTile(Cell cell, TiledMapTileLayer layer, int x, int y, int depth){
-    TiledMapTile tile = cell.getTile();
-    TextureRegion tex = tile.getTextureRegion();
-    float rotation = 90*cell.getRotation();
+      public int createFromTile(Cell cell, TiledMapTileLayer layer, int x, int y, int depth){
+            TiledMapTile tile = cell.getTile();
+            TextureRegion tex = tile.getTextureRegion();
+            float rotation = 90*cell.getRotation();
 
-    Decal decal = Decal.newDecal(tex, true);
-
-
-    Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y, depth).add(new Vector3(layer.getTileWidth()/2f, layer.getTileHeight()/2f, 0));
-    int e = createCrate(pos, decal, 1);
-
-    mapTransform.get(e).rotation = rotation;
-
-    MapProperties props = layer.getProperties();
-    Vector2 veloc = new Vector2(props.get("velocity", 0.0f, Float.class),0f);
-
-    //NOTE: box2d has a hardcoded max speed of 120 units per second
-    mapBox2d.get(e).body.setLinearVelocity(veloc);
-
-    gridComponentMapper.get(e).grid = grid;
+            Decal decal = Decal.newDecal(tex, true);
 
 
-    return e;
-  }
+            Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y, depth).add(new Vector3(layer.getTileWidth()/2f, layer.getTileHeight()/2f, 0));
+            int e = createCrate(pos, decal, 1);
+
+            mapTransform.get(e).rotation = rotation;
+
+            MapProperties props = layer.getProperties();
+            Vector2 veloc = new Vector2(props.get("velocity", 0.0f, Float.class),0f);
+
+            //NOTE: box2d has a hardcoded max speed of 120 units per second
+            mapBox2d.get(e).body.setLinearVelocity(veloc);
+
+            return e;
+      }
 
 
   public void setWorld(World world){
-    this.world = world;
+        this.world = world;
 
-    mapTransform = world.getMapper(TransformComponent.class);
-    mapSprite = world.getMapper(SpriteComponent.class);
-    mapDestroyable = world.getMapper(DestroyableComponent.class);
-    mapBox2d = world.getMapper(Box2dComponent.class);
-    gridComponentMapper = world.getMapper(GridPositionComponent.class);
+        mapTransform = world.getMapper(TransformComponent.class);
+        mapSprite = world.getMapper(SpriteComponent.class);
+        mapDestroyable = world.getMapper(DestroyableComponent.class);
+        mapBox2d = world.getMapper(Box2dComponent.class);
 
-    crateArchtype = new ArchetypeBuilder()
-        .add(TransformComponent.class)
-        .add(SpriteComponent.class)
-        .add(DestroyableComponent.class)
-        .add(Box2dComponent.class)
-        .add(GridPositionComponent.class)
-      .build(world);
+        crateArchtype = new ArchetypeBuilder()
+                .add(TransformComponent.class)
+                .add(SpriteComponent.class)
+                .add(DestroyableComponent.class)
+                .add(Box2dComponent.class)
+                .build(world);
     
     
   }
 
-  public int createCrate(Vector3 position, Decal sprite, int health){
-    int e = world.create(crateArchtype);
+    public int createCrate(Vector3 position, Decal sprite, int health){
+        int e = world.create(crateArchtype);
 
 
-    mapSprite.get(e).sprite = sprite;
-    mapTransform.get(e).position.set(position);
-    mapDestroyable.get(e).health = health;
+        mapSprite.get(e).sprite = sprite;
+        mapTransform.get(e).position.set(position);
+        mapDestroyable.get(e).health = health;
 
-    Body body = Collision.createBody(Collision.dynamicDef, Collision.wallFixture);
-    PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
-    shape.setAsBox((sprite.getWidth()/2f -0.2f) * Collision.worldTobox2d, (sprite.getHeight()/2f -0.2f) * Collision.worldTobox2d);
-    body.setTransform(new Vector2(position.x, position.y).scl(Collision.worldTobox2d), 0);
+        Body body = Collision.createBody(Collision.dynamicDef, Collision.wallFixture);
+        PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
+        shape.setAsBox((sprite.getWidth()/2f -0.2f) * Collision.worldTobox2d, (sprite.getHeight()/2f -0.2f) * Collision.worldTobox2d);
+        body.setTransform(new Vector2(position.x, position.y).scl(Collision.worldTobox2d), 0);
 
-    //Vector2 rveloc = new Vector2((float)Math.random() -0.5f , (float)Math.random() -0.5f).nor().scl((float)Math.random()*100f + 40f);
+        //Vector2 rveloc = new Vector2((float)Math.random() -0.5f , (float)Math.random() -0.5f).nor().scl((float)Math.random()*100f + 40f);
 
-    //body.setLinearVelocity(rveloc);
-    mapBox2d.get(e).body = body;
+        //body.setLinearVelocity(rveloc);
+        mapBox2d.get(e).body = body;
 
-    return e;
-  }
+        return e;
+    }
 }
