@@ -9,6 +9,8 @@ import android.view.WindowManager;
 
 import com.bombhunt.game.AndroidLauncher;
 import com.bombhunt.game.services.networking.IPlayServices;
+import com.bombhunt.game.services.networking.Message;
+import com.bombhunt.game.services.networking.RealtimeListener;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -341,13 +343,19 @@ public class GoogleCommunication implements IPlayServices {
                 }
             };
 
+
+
+    private RealtimeListener listener;
+    @Override
+    public void setRealTimeListener(RealtimeListener listener){
+        this.listener = listener;
+    }
     private OnRealTimeMessageReceivedListener mMessageReceivedHandler =
             new OnRealTimeMessageReceivedListener() {
                 @Override
                 public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
-                    // Handle messages received here.
-                    byte[] message = realTimeMessage.getMessageData();
-                    // process message contents...
+                    Message message = new Message(realTimeMessage.getMessageData(), realTimeMessage.getSenderParticipantId(), realTimeMessage.describeContents());
+                    listener.handleDataRecieved(message);
                 }
             };
 
