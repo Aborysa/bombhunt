@@ -9,7 +9,7 @@ import com.artemis.injection.CachedClass;
  * Created by erlin on 22.03.2018.
  */
 
-public class ChanneledSender {
+public class ChanneledSender implements IPlayServices{
     private IPlayServices playServices;
     private int channel;
 
@@ -33,6 +33,9 @@ public class ChanneledSender {
         this.playServices.sendToAllReliably(appendChannel(message));
     }
 
+    public void sendToOneReliably(byte[] message, String userID){
+        this.playServices.sendToOneReliably(appendChannel(message), userID);
+    }
     public void setRealTimeListener(RealtimeListener listener){
     }
 }
