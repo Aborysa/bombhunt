@@ -4,18 +4,14 @@ package com.bombhunt.game.model.ecs.systems;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.badlogic.gdx.maps.MapGroupLayer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
-import com.bombhunt.game.model.ecs.components.VelocityComponent;
 
 
 
