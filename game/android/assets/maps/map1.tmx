@@ -11,6 +11,14 @@
    H4sIAAAAAAAAA5NkZGDgohKWhGJqAXTzyDEbXT+MD3MzqQBZH639O2oe9dVJMqJiSs1DTveE0hOx/iA2bQ6X+B0M5m1lIL98wVUebCXDTcjxTgv/Uqush2EAu9VSPkAGAAA=
   </data>
  </layer>
+ <layer name="player" width="64" height="42">
+   <properties>
+    <property name="entity_factory" value="PlayerFactory"/>
+   </properties>
+   <data encoding="base64" compression="gzip">
+    H4sIAAAAAAAACu3OAQkAAAgDsL9/aVOIIFuCJQDAhvZ6AAAAAAAAAADAVwM0FN7JACoAAA==
+   </data>
+ </layer>
  <layer name="crates" width="20" height="20">
   <properties>
    <property name="entity_factory" value="CrateFactory"/>
