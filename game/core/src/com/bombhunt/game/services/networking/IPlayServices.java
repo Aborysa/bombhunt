@@ -10,5 +10,6 @@ public interface IPlayServices {
     public void startMatchMaking();
     public boolean isSignedIn();
     public void sendToAllReliably(byte[] message);
+    public void sendToOneReliably(byte[] message, String userID);
     public void setRealTimeListener(RealtimeListener listener);
 }

@@ -18,7 +18,7 @@ public class Message {
     }
 
     // TODO: make getters to get specific data from the message. i.e. get x pos (byte[2] - byte[6]) -> float xpos
-    private byte getByte() {
+    public byte getByte() {
         return data[seeker++];
     }
 
@@ -35,7 +35,7 @@ public class Message {
     }
 
     public int getInt() {
-        return (int) getByte();
+        return (getByte() & 0xFF);
     }
 
     public static byte[] floatToByteArray (float value) {

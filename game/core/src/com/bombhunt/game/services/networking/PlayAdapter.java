@@ -7,5 +7,6 @@ public class PlayAdapter implements IPlayServices {
     public void startMatchMaking(){}
     public boolean isSignedIn(){return false;}
     public void sendToAllReliably(byte[] message){}
+    public void sendToOneReliably(byte[] message, String userID){}
     public void setRealTimeListener(RealtimeListener listener){}
 }

@@ -326,6 +326,25 @@ public class GoogleCommunication implements IPlayServices {
         }
     }
 
+    // send data to specific user ID
+    @Override
+    public void sendToOneReliably(byte[] message, String userID){
+        for(String uID : mRoom.getParticipantIds()) {
+            if(uID == userID) {
+                Task<Integer> task = Games.
+                        getRealTimeMultiplayerClient(androidLauncher, GoogleSignIn.getLastSignedInAccount(androidLauncher))
+                        .sendReliableMessage(message, mRoom.getRoomId(), userID,
+                                handleMessageSentCallback).addOnCompleteListener(new OnCompleteListener<Integer>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Integer> task) {
+                                // Keep track of which messages are sent, if desired.
+                                recordMessageToken(task.getResult());
+                            }
+                        });
+            }
+        }
+    }
+
     HashSet<Integer> pendingMessageSet = new HashSet<>();
 
     synchronized void recordMessageToken(int tokenId) {
@@ -355,7 +374,7 @@ public class GoogleCommunication implements IPlayServices {
                 @Override
                 public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
                     Message message = new Message(realTimeMessage.getMessageData(), realTimeMessage.getSenderParticipantId(), realTimeMessage.describeContents());
-                    listener.handleDataRecieved(message);
+                    listener.handleDataReceived(message);
                 }
             };
 
