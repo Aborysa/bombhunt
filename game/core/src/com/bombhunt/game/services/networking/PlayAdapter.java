@@ -9,4 +9,5 @@ public class PlayAdapter implements IPlayServices {
     public void sendToAllReliably(byte[] message){}
     public void sendToOneReliably(byte[] message, String userID){}
     public void setRealTimeListener(RealtimeListener listener){}
+    public String getLocalID(){return "";}
 }
