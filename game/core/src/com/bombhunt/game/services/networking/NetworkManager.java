@@ -11,7 +11,7 @@ public class NetworkManager implements RealtimeListener{
     }
 
     @Override
-    public void handleDataRecieved(Message message) {
+    public void handleDataReceived(Message message) {
 
     }
 
