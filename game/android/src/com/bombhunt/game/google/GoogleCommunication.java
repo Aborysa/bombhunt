@@ -408,4 +408,9 @@ public class GoogleCommunication implements IPlayServices {
         return GoogleSignIn.getLastSignedInAccount(androidLauncher) != null;
     }
 
+    @Override
+    public String getLocalID() {
+        return mMyParticipantId;
+    }
+
 }

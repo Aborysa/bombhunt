@@ -21,6 +21,7 @@ public class ChanneledSender implements IPlayServices{
     public void signOut(){this.playServices.signOut();}
     public void startMatchMaking(){this.playServices.startMatchMaking();}
     public boolean isSignedIn(){return this.playServices.isSignedIn();}
+    public String getLocalID(){return this.playServices.getLocalID();}
 
     private byte[] appendChannel(byte[] message){
         byte[] nMessage = new byte[message.length + 1];
