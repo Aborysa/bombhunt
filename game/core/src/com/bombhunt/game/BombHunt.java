@@ -43,6 +43,7 @@ public class BombHunt extends ApplicationAdapter {
 
     @Override
     public void render() {
+
         loadMainMenuScreen();
         float dt = Gdx.graphics.getDeltaTime();
         currentView.update(dt);
@@ -67,12 +68,7 @@ public class BombHunt extends ApplicationAdapter {
     }
 
     private boolean isAssetsLoaded() {
-        if (assetsLoaded) {
-            return true;
-        } else {
-            assetsLoaded = Assets.getInstance().update();
-            return assetsLoaded;
-        }
+        return Assets.getInstance().update();
     }
 
     private void clearScreen() {
