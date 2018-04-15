@@ -246,4 +246,15 @@ public class Level {
         return map;
     }
 
+    public List<Vector2> getSpawnPoints() {
+        List<Vector2> spawns = new ArrayList<Vector2>(4);
+        for (MapObject object : metaObjects.get("spawnpoint")) {
+            if(object instanceof RectangleMapObject){
+                RectangleMapObject rect = (RectangleMapObject) object;
+                Vector2 pos = rect.getRectangle().getPosition(new Vector2());
+                spawns.add(pos);
+            }
+        }
+        return spawns;
+    }
 }
