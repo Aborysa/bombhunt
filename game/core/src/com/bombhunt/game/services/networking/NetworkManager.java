@@ -8,9 +8,9 @@ public class NetworkManager implements RealtimeListener{
 
     private static NetworkManager instance;
     public NetworkManager(){
-        if(instance != null){
+        /*if(instance != null){
             throw new RuntimeException("Singleton already instantiated");
-        }
+        }*/
         listeners = new HashMap<Integer, RealtimeListener>(255);
         instance = this;
     }
@@ -37,4 +37,5 @@ public class NetworkManager implements RealtimeListener{
     public static NetworkManager getInstance(){
         return instance;
     }
+
 }
