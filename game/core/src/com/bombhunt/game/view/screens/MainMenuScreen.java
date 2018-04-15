@@ -93,8 +93,8 @@ public class MainMenuScreen extends MovingBackgroundScreen {
 
     private void addButtons(Table table) {
         ChangeListener listener;
-        listener = controller.createViewTransitionWithSoundListener(GameScreen.class);
-        TextButton btnPlay = createButton("Play", listener);
+        listener = controller.createViewTransitionWithSoundListener(WaitingRoomScreen.class);
+        TextButton btnPlay = createButton("Find game", listener);
         listener = controller.createViewTransitionWithSoundListener(SettingsScreen.class);
         TextButton btnSettings = createButton("Settings", listener);
         listener = controller.createViewTransitionWithSoundListener(CreditsScreen.class);
