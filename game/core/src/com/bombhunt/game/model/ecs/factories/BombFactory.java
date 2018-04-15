@@ -104,7 +104,7 @@ public class BombFactory implements IEntityFactory {
         boolean hasSolid = false;
 
         if (range > 0 ) { // TODO also check if not hit a solid
-            IntBag entities = grid.getEntities(grid.getCellIndex(new Vector2(newPos.x,newPos.y)));
+            IntBag entities = grid.getEntities(grid.getCellIndex(newPos));
             for (int e: entities.getData()) {
                 if (mapSolid.has(e)) {
                     hasSolid = true;
@@ -140,7 +140,7 @@ public class BombFactory implements IEntityFactory {
     }
 
     private void explosionDamage(Vector3 pos) {
-        IntBag entities = grid.getEntities(grid.getCellIndex(new Vector2(pos.x,pos.y)));
+        IntBag entities = grid.getEntities(grid.getCellIndex(pos));
         for (int e: entities.getData()) {
             if (mapDestroyable.has(e)) {
                 mapDestroyable.get(e).health -= 1;
