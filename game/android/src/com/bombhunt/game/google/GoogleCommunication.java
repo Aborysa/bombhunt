@@ -173,6 +173,7 @@ public class GoogleCommunication implements IPlayServices {
         @Override
         public void onLeftRoom(int code, @NonNull String roomId) {
             System.out.println("Left room" + roomId);
+            roomListener.leftRoom();
         }
 
         @Override

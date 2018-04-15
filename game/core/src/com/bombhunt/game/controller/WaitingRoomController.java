@@ -8,6 +8,7 @@ import com.bombhunt.game.services.networking.RealtimeListener;
 import com.bombhunt.game.services.networking.RoomListener;
 import com.bombhunt.game.view.screens.GameScreen;
 import com.bombhunt.game.view.screens.MainMenuScreen;
+import com.bombhunt.game.view.screens.WaitingRoomScreen;
 
 import java.util.Random;
 
@@ -18,7 +19,11 @@ import java.util.Random;
 public class WaitingRoomController extends BasicController implements RoomListener, RealtimeListener{
 
     private IPlayServices sender;
-    public WaitingRoomController(BombHunt bombHunt){ super(bombHunt); }
+    private WaitingRoomScreen waitingRoomScreen;
+    public WaitingRoomController(BombHunt bombHunt, WaitingRoomScreen waitingRoomScreen){
+        super(bombHunt);
+        this.waitingRoomScreen = waitingRoomScreen;
+    }
 
     public void backToMainMenu() {changeView(new MainMenuScreen(bombHunt));}
     public void enterGameScreen() {changeView(new GameScreen(bombHunt));}
@@ -37,6 +42,11 @@ public class WaitingRoomController extends BasicController implements RoomListen
         bombHunt.getPlayServices().setRealTimeListener(networkManager);
         networkManager.openChannel(this, 10);
         pingRemote();
+    }
+
+    @Override
+    public void leftRoom(){
+        waitingRoomScreen.leftRoom = true;
     }
 
     @Override

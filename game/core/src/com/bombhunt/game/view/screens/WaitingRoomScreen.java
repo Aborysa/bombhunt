@@ -16,15 +16,18 @@ import com.bombhunt.game.view.BasicView;
 public class WaitingRoomScreen extends BasicView {
 
     private boolean created = false;
+    public boolean leftRoom = false;
+    public boolean joinedRoom = false;
     private WaitingRoomController controller;
     public WaitingRoomScreen(BombHunt bombHunt) {
-        controller = new WaitingRoomController(bombHunt);
+        controller = new WaitingRoomController(bombHunt, this);
         controller.setSender(bombHunt.getPlayServices());
 
     }
 
     @Override
     public void update(float dt) {
+
 
     }
 
@@ -34,6 +37,12 @@ public class WaitingRoomScreen extends BasicView {
         if(!created){
             createRoom();
             created = true;
+        }
+        if(leftRoom){
+            controller.backToMainMenu();
+        }
+        if(joinedRoom){
+            // change to main game scene etc
         }
     }
 

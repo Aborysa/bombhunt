@@ -6,4 +6,5 @@ package com.bombhunt.game.services.networking;
 
 public interface RoomListener {
     public void roomConnected();
+    public void leftRoom();
 }
