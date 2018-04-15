@@ -11,14 +11,6 @@
    H4sIAAAAAAAAA5NkZGDgohKWhGJqAXTzyDEbXT+MD3MzqQBZH639O2oe9dVJMqJiSs1DTveE0hOx/iA2bQ6X+B0M5m1lIL98wVUebCXDTcjxTgv/Uqush2EAu9VSPkAGAAA=
   </data>
  </layer>
- <layer name="player" width="64" height="42">
-  <properties>
-   <property name="entity_factory" value="PlayerFactory"/>
-  </properties>
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+3OIQEAAAgDsNO/NOIFcJgtwRIAAE7mOwAAAAAAAAAAUAtxUjMQACoAAA==
-  </data>
- </layer>
  <layer name="crates" width="20" height="20">
   <properties>
    <property name="entity_factory" value="CrateFactory"/>
@@ -30,25 +22,28 @@
  <objectgroup name="spawns">
   <object id="117" x="22.6667" y="26.6667">
    <properties>
-    <property name="spawn" type="bool" value="true"/>
+    <property name="spawnpoint" type="bool" value="true"/>
    </properties>
    <point/>
   </object>
   <object id="119" x="24.6667" y="298.667">
    <properties>
     <property name="spawn" type="bool" value="true"/>
+    <property name="spawnpoint" type="bool" value="true"/>
    </properties>
    <point/>
   </object>
   <object id="120" x="296.667" y="298">
    <properties>
     <property name="spawn" type="bool" value="true"/>
+    <property name="spawnpoint" type="bool" value="true"/>
    </properties>
    <point/>
   </object>
   <object id="121" x="296.667" y="26.6667">
    <properties>
     <property name="spawn" type="bool" value="true"/>
+    <property name="spawnpoint" type="bool" value="true"/>
    </properties>
    <point/>
   </object>
