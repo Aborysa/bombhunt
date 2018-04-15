@@ -42,6 +42,7 @@ public class BombFactory implements IEntityFactory {
     private ComponentMapper<AnimationComponent> mapAnimation;
     private ComponentMapper<ExplosionComponent> mapExplosion;
     private ComponentMapper<GridPositionComponent> mapGrid;
+    private ComponentMapper<SolidComponent> mapSolid;
 
     private Archetype bombArchetype;
     private Archetype explosionArchetype;
@@ -102,11 +103,12 @@ public class BombFactory implements IEntityFactory {
 
         if (range > 0 ) { // TODO also check if not hit a solid
             IntBag entities = grid.getEntities(grid.getCellIndex(new Vector2(newPos.x,newPos.y)));
-//            for (int e: entities.getData()) {
-//                if (Aspect.all(SolidComponent.class).build(world).isInterested(e)) {
-//                    hasSolid = true;
-//                    break;
-//                }
+            for (int e: entities.getData()) {
+                if (mapSolid.has(e)) {
+                    hasSolid = true;
+                    break;
+                }
+            }
             if (!hasSolid) {
                 chainExplosion(newPos, direction, timer, range);
             }
