@@ -4,6 +4,7 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
+import com.artemis.utils.IntBag;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -82,10 +83,9 @@ public class BombFactory implements IEntityFactory {
         BombComponent bombComponent = mapBomb.get(e);
         createExplosion(transformComponent.position, TIMER_EXPLOSION);
         SpriteComponent spriteComponent = mapSprite.get(e);
-        float distance = spriteComponent.sprite.getHeight();
 
-        Vector3[] dirs = {new Vector3(0,distance,0), new Vector3(distance,0,0),
-                          new Vector3(0,-distance,0), new Vector3(-distance,0,0)};
+        Vector3[] dirs = {new Vector3(0,grid.getCellSize(),0), new Vector3(grid.getCellSize(),0,0),
+                          new Vector3(0,-grid.getCellSize(),0), new Vector3(-grid.getCellSize(),0,0)};
         for (Vector3 dir: dirs) {
             chainExplosion(transformComponent.position, dir, TIMER_EXPLOSION, bombComponent.range);
         }
