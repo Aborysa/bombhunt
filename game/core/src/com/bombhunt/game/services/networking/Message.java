@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Transform;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.NetworkComponent;
+import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 
 import java.lang.reflect.Array;
@@ -42,7 +43,7 @@ public class Message {
     }
 
 
-    public String getString(ByteBuffer buffer){
+    public String getString(){
         byte[] chars = new byte[128];
         byte next = buffer.get();
         int idx = 0;
@@ -79,7 +80,7 @@ public class Message {
         buffer.putFloat(t.getPosition().y);
     }
 
-    public Box2dComponent getComponent(Box2dComponent component){
+    public Box2dComponent getBox2d(Box2dComponent component){
         Transform t = component.body.getTransform();
         component.body.setLinearVelocity(buffer.getFloat(), buffer.getFloat());
         component.body.setTransform(buffer.getFloat(), buffer.getFloat(), t.getRotation());
@@ -93,5 +94,18 @@ public class Message {
     public NetworkComponent getNetwork(NetworkComponent component){
         component.remoteTurn = buffer.getInt();
         return component;
+    }
+
+    public TimerComponent getTimer(TimerComponent component){
+        component.timer = buffer.getFloat();
+        return component;
+    }
+
+    public void putTimer(TimerComponent component){
+        buffer.putFloat(component.timer);
+    }
+
+    public String getSender(){
+        return senderID;
     }
 }

@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
+import com.bombhunt.game.services.networking.Message;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
@@ -116,4 +117,9 @@ public class PlayerFactory implements IEntityFactory {
 
 
     }
+
+    public int createFromNetwork(Message message){
+        return 0;
+    }
+
 }

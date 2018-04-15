@@ -6,7 +6,7 @@ import com.bombhunt.game.model.Grid;
 
 
 public class NetworkComponent extends Component {
-  public String owner = "NONE";
+  public String owner = "LOCAL";
   public int localTurn = 0;
   public int remoteTurn = 0;
   public int sequenceNumber = 0;

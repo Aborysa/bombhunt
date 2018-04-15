@@ -14,12 +14,14 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
+import com.bombhunt.game.model.ecs.components.NetworkComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
+import com.bombhunt.game.services.networking.Message;
 
 /**
  * Created by erlin on 27.03.2018.
@@ -35,11 +37,28 @@ public class BombFactory implements IEntityFactory {
     private ComponentMapper<TimerComponent> mapTimer;
     private ComponentMapper<AnimationComponent> mapAnimation;
     private ComponentMapper<ExplosionComponent> mapExplosion;
+    private ComponentMapper<NetworkComponent> mapNetwork;
 
     private Archetype bombArchetype;
     private Archetype explosionArchetype;
 
     private World world;
+
+
+    public int createFromNetwork(Message message){
+
+        int bomb = createBomb(Vector3.Zero, 100);
+
+        NetworkComponent networkComponent = mapNetwork.get(bomb);
+
+        message.getNetwork(networkComponent);
+        message.getTransform(mapTransform.get(bomb));
+        message.getTimer(mapTimer.get(bomb));
+
+        networkComponent.owner = message.getSender();
+
+        return bomb;
+    }
 
     public int createBomb(Vector3 position, float timer) {
         final int e = world.create(bombArchetype);
@@ -53,9 +72,9 @@ public class BombFactory implements IEntityFactory {
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         setUpTimerBomb(e, timer);
-        Sound sound = asset_manager.get("drop.wav", Sound.class);
-        AudioPlayer audioPlayer = AudioPlayer.getInstance();
-        audioPlayer.playSound(sound);
+        //Sound sound = asset_manager.get("drop.wav", Sound.class);
+        //AudioPlayer audioPlayer = AudioPlayer.getInstance();
+        //audioPlayer.playSound(sound);
         return e;
     }
 
@@ -121,6 +140,7 @@ public class BombFactory implements IEntityFactory {
         mapBomb = world.getMapper(BombComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
         mapExplosion = world.getMapper(ExplosionComponent.class);
+        mapNetwork = world.getMapper(NetworkComponent.class);
 
         bombArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
@@ -128,6 +148,7 @@ public class BombFactory implements IEntityFactory {
                 .add(AnimationComponent.class)
                 .add(BombComponent.class)
                 .add(TimerComponent.class)
+                .add(NetworkComponent.class)
                 .build(world);
 
         explosionArchetype = new ArchetypeBuilder()
