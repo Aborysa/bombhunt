@@ -2,6 +2,7 @@ package com.bombhunt.game.model.ecs.factories;
 
 import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
+import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.artemis.utils.IntBag;
@@ -18,6 +19,7 @@ import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
+import com.bombhunt.game.model.ecs.components.SolidComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
@@ -81,14 +83,14 @@ public class BombFactory implements IEntityFactory {
     public void explodeBomb(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
         BombComponent bombComponent = mapBomb.get(e);
-        createExplosion(transformComponent.position, TIMER_EXPLOSION);
-        SpriteComponent spriteComponent = mapSprite.get(e);
 
+        createExplosion(transformComponent.position, TIMER_EXPLOSION);
         Vector3[] dirs = {new Vector3(0,grid.getCellSize(),0), new Vector3(grid.getCellSize(),0,0),
                           new Vector3(0,-grid.getCellSize(),0), new Vector3(-grid.getCellSize(),0,0)};
         for (Vector3 dir: dirs) {
             chainExplosion(transformComponent.position, dir, TIMER_EXPLOSION, bombComponent.range);
         }
+
         world.delete(e);
     }
 
@@ -96,8 +98,18 @@ public class BombFactory implements IEntityFactory {
         Vector3 newPos = pos.cpy().add(direction);
         createExplosion(newPos, timer);
         range -= 1;
+        boolean hasSolid = false;
+
         if (range > 0 ) { // TODO also check if not hit a solid
-            chainExplosion(newPos, direction, timer, range);
+            IntBag entities = grid.getEntities(grid.getCellIndex(new Vector2(newPos.x,newPos.y)));
+//            for (int e: entities.getData()) {
+//                if (Aspect.all(SolidComponent.class).build(world).isInterested(e)) {
+//                    hasSolid = true;
+//                    break;
+//                }
+            if (!hasSolid) {
+                chainExplosion(newPos, direction, timer, range);
+            }
         }
     }
 

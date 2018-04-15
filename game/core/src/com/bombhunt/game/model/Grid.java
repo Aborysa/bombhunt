@@ -4,6 +4,7 @@ import com.artemis.Aspect;
 import com.artemis.World;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class Grid {
 
@@ -50,6 +51,10 @@ public class Grid {
     }
 
     public int getCellIndex(Vector2 position){
+        return getCellIndex((int) (position.x / cellSize),(int) (position.y / cellSize));
+    }
+
+    public int getCellIndex(Vector3 position) {
         return getCellIndex((int) (position.x / cellSize),(int) (position.y / cellSize));
     }
 
