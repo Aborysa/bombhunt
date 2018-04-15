@@ -85,7 +85,7 @@ public class CrateFactory implements IEntityFactory {
         mapTransform.get(e).position.set(position);
         mapDestroyable.get(e).health = health;
 
-        Body body = Collision.createBody(Collision.dynamicDef, Collision.wallFixture);
+        Body body = Collision.createBody(Collision.saticDef, Collision.wallFixture);
         PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
         shape.setAsBox((sprite.getWidth()/2f -0.2f) * Collision.worldTobox2d, (sprite.getHeight()/2f -0.2f) * Collision.worldTobox2d);
         body.setTransform(new Vector2(position.x, position.y).scl(Collision.worldTobox2d), 0);
