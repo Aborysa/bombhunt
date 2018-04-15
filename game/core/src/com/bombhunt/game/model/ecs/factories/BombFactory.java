@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
+import com.bombhunt.game.model.ecs.components.DestroyableComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.SolidComponent;
@@ -43,6 +44,7 @@ public class BombFactory implements IEntityFactory {
     private ComponentMapper<ExplosionComponent> mapExplosion;
     private ComponentMapper<GridPositionComponent> mapGrid;
     private ComponentMapper<SolidComponent> mapSolid;
+    private ComponentMapper<DestroyableComponent> mapDestroyable;
 
     private Archetype bombArchetype;
     private Archetype explosionArchetype;
@@ -133,7 +135,17 @@ public class BombFactory implements IEntityFactory {
         AudioPlayer audioPlayer = AudioPlayer.getInstance();
         Sound sound = asset_manager.get("explosion.wav", Sound.class);
         audioPlayer.playSound(sound);
+        explosionDamage(pos);
         return e;
+    }
+
+    private void explosionDamage(Vector3 pos) {
+        IntBag entities = grid.getEntities(grid.getCellIndex(new Vector2(pos.x,pos.y)));
+        for (int e: entities.getData()) {
+            if (mapDestroyable.has(e)) {
+                world.delete(e);
+            } //TODO else if (hasHealth) {health -= damage}
+        }
     }
 
     private void setUpTimerExplosion(int e, float timer) {
@@ -166,6 +178,7 @@ public class BombFactory implements IEntityFactory {
         mapExplosion = world.getMapper(ExplosionComponent.class);
         mapGrid = world.getMapper(GridPositionComponent.class);
         mapSolid = world.getMapper(SolidComponent.class);
+        mapDestroyable = world.getMapper((DestroyableComponent.class));
 
         bombArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
