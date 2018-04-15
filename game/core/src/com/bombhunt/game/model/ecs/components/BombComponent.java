@@ -8,4 +8,5 @@ import com.artemis.Component;
 
 public class BombComponent extends Component{
     public int range = 5;
+    public int damage = 10;
 }
