@@ -14,7 +14,7 @@ public class BombHunt extends ApplicationAdapter {
     private BasicView currentView;
     private boolean assetsLoaded = false;
     private boolean viewLoaded = false;
-    IPlayServices playServices;
+    private IPlayServices playServices;
     public AudioPlayer audioPlayer;
 
     public BombHunt(IPlayServices playServices) {
@@ -32,6 +32,9 @@ public class BombHunt extends ApplicationAdapter {
         currentView = view;
     }
 
+    public IPlayServices getPlayServices(){
+        return playServices;
+    }
     @Override
     public void create() {
         Box2D.init();

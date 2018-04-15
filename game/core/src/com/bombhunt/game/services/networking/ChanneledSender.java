@@ -1,6 +1,7 @@
 package com.bombhunt.game.services.networking;
 
 import java.io.Console;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.artemis.injection.CachedClass;
@@ -22,6 +23,12 @@ public class ChanneledSender implements IPlayServices{
     public void startMatchMaking(){this.playServices.startMatchMaking();}
     public boolean isSignedIn(){return this.playServices.isSignedIn();}
     public String getLocalID(){return this.playServices.getLocalID();}
+    public ArrayList<String> getRemotePlayers(){return new ArrayList<String>();}
+
+    @Override
+    public void setRoomListener(RoomListener listener) {
+        this.playServices.setRoomListener(listener);
+    }
 
     private byte[] appendChannel(byte[] message){
         byte[] nMessage = new byte[message.length + 1];

@@ -1,6 +1,7 @@
 package com.bombhunt.game.google;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import com.bombhunt.game.AndroidLauncher;
 import com.bombhunt.game.services.networking.IPlayServices;
 import com.bombhunt.game.services.networking.Message;
 import com.bombhunt.game.services.networking.RealtimeListener;
+import com.bombhunt.game.services.networking.RoomListener;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,6 +34,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -121,7 +124,7 @@ public class GoogleCommunication implements IPlayServices {
                         .build();
 
         // prevent screen from sleeping during handshake
-        androidLauncher.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //androidLauncher.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Save the roomConfig so we can use it if we call leave().
         mJoinedRoomConfig = roomConfig;
@@ -142,6 +145,10 @@ public class GoogleCommunication implements IPlayServices {
                 showWaitingRoom(room, 4);
             } else {
                 System.out.println("Error creating room: " + code);
+                String message = "google play service is dead :)";
+                new AlertDialog.Builder(androidLauncher).setMessage(message)
+                        .setNeutralButton(android.R.string.ok, null).show();
+
                 // let screen go to sleep
                 androidLauncher.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -257,6 +264,7 @@ public class GoogleCommunication implements IPlayServices {
                 @Override
                 public void onSuccess(String playerId) {
                     mMyParticipantId = mRoom.getParticipantId(playerId);
+                    roomListener.roomConnected();
                 }
             });
         }
@@ -365,20 +373,26 @@ public class GoogleCommunication implements IPlayServices {
 
 
 
-    private RealtimeListener listener;
+    private RealtimeListener liveListener;
+    private RoomListener roomListener;
     @Override
     public void setRealTimeListener(RealtimeListener listener){
-        this.listener = listener;
+        this.liveListener = listener;
+        listener.setSender(this);
     }
     private OnRealTimeMessageReceivedListener mMessageReceivedHandler =
             new OnRealTimeMessageReceivedListener() {
                 @Override
                 public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
                     Message message = new Message(realTimeMessage.getMessageData(), realTimeMessage.getSenderParticipantId(), realTimeMessage.describeContents());
-                    listener.handleDataReceived(message);
+                    liveListener.handleDataReceived(message);
                 }
             };
 
+    @Override
+    public void setRoomListener(RoomListener listener) {
+        this.roomListener = listener;
+    }
     @Override
     public void signIn() {
 
@@ -412,6 +426,18 @@ public class GoogleCommunication implements IPlayServices {
     @Override
     public String getLocalID() {
         return mMyParticipantId;
+    }
+
+    @Override
+    public ArrayList<String> getRemotePlayers() {
+        ArrayList<String> participants = new ArrayList<String>(mRoom.getParticipantIds());
+        String localID = getLocalID();
+        for(String s : participants) {
+            if(s == localID) {
+                participants.remove(s);
+            }
+        }
+        return participants;
     }
 
 }

@@ -108,4 +108,7 @@ public class Message {
     public String getSender(){
         return senderID;
     }
+    public byte[] getData(){
+        return data;
+    }
 }

@@ -14,9 +14,13 @@ import com.bombhunt.game.view.BasicView;
 
 
 public class WaitingRoomScreen extends BasicView {
+
+    private boolean created = false;
     private WaitingRoomController controller;
     public WaitingRoomScreen(BombHunt bombHunt) {
         controller = new WaitingRoomController(bombHunt);
+        controller.setSender(bombHunt.getPlayServices());
+
     }
 
     @Override
@@ -27,5 +31,15 @@ public class WaitingRoomScreen extends BasicView {
     @Override
     public void render() {
         clearBackground();
+        if(!created){
+            createRoom();
+            created = true;
+        }
+    }
+
+    private void createRoom(){
+
+        controller.getBombHunt().getPlayServices().setRoomListener(controller);
+        controller.getBombHunt().getPlayServices().startMatchMaking();
     }
 }
