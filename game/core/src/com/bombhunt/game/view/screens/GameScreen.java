@@ -14,6 +14,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -48,6 +50,7 @@ import com.bombhunt.game.model.ecs.systems.PlayerSystem;
 import com.bombhunt.game.model.ecs.systems.SpriteSystem;
 import com.bombhunt.game.model.ecs.systems.TimerSystem;
 import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.services.graphics.SpriteHelper;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
 import com.bombhunt.game.view.InGameSettings;
@@ -55,8 +58,8 @@ import com.bombhunt.game.view.controls.BombButton;
 import com.bombhunt.game.view.controls.Joystick;
 import com.bombhunt.game.view.controls.SettingsButton;
 
-import java.awt.List;
 import java.util.HashMap;
+import java.util.List;
 
 public class GameScreen extends BasicView {
     private static final int TPS = 64;
@@ -88,6 +91,7 @@ public class GameScreen extends BasicView {
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<TransformComponent> mapTransform;
 
+    private List<Vector2> spawnPoints;
 
     private Level level;
 
@@ -101,6 +105,19 @@ public class GameScreen extends BasicView {
     private Stage stage;
 
     private Decal mapDecals[];
+
+    private int playerIndex;
+
+
+    public void spawnPlayer(int index){
+        Vector2 pos = spawnPoints.get(index);
+        PlayerFactory factory = (PlayerFactory)factoryMap.get(PlayerFactory.class.getSimpleName());
+        // 1, 17
+        Decal sprite = Decal.newDecal(SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
+                TextureAtlas.class).findRegion("bomb_party_v4"),
+                16, 1, 17, 1).get(0), true);
+        int player = factory.createPlayer(new Vector3(pos, -10), sprite);
+    }
 
     public GameScreen(BombHunt bombHunt) {
         feedFactoryMap();
@@ -142,6 +159,7 @@ public class GameScreen extends BasicView {
 
     private void setUpWorld() {
         level = Assets.getInstance().get("maps/map1.tmx", Level.class);
+        this.spawnPoints = level.getSpawnPoints();
         box2d = new com.badlogic.gdx.physics.box2d.World(level.getDim(), true);
         box2d.setGravity(new Vector2(0, 0));
         box2DDebugRenderer = new Box2DDebugRenderer(true, false, false,
@@ -271,6 +289,7 @@ public class GameScreen extends BasicView {
         PlayerFactory playerFactory = (PlayerFactory) factoryMap.get(playerFactoryName);
         playerFactory.createPlayer(0, 0, Decal.newDecal(textureRegion));
         */
+        spawnPlayer(0);
     }
 
     private void initialUpdateCamera() {
