@@ -165,6 +165,7 @@ public class BombFactory implements IEntityFactory {
         mapTimer = world.getMapper(TimerComponent.class);
         mapExplosion = world.getMapper(ExplosionComponent.class);
         mapGrid = world.getMapper(GridPositionComponent.class);
+        mapSolid = world.getMapper(SolidComponent.class);
 
         bombArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
