@@ -143,7 +143,7 @@ public class BombFactory implements IEntityFactory {
         IntBag entities = grid.getEntities(grid.getCellIndex(new Vector2(pos.x,pos.y)));
         for (int e: entities.getData()) {
             if (mapDestroyable.has(e)) {
-                world.delete(e);
+                mapDestroyable.get(e).health -= 1;
             } //TODO else if (hasHealth) {health -= damage}
         }
     }
