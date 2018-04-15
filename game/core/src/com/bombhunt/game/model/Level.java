@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -153,6 +154,9 @@ public class Level {
                     Cell cell = decalLayer.getCell(x, y);
                     if (cell != null) {
                         Decal decal = Decal.newDecal(cell.getTile().getTextureRegion(), true);
+                        Vector3 pos = new Vector3(decalLayer.getTileWidth() * x, decalLayer.getTileHeight() * y, depth).add(new Vector3(decalLayer.getTileWidth()/2f, decalLayer.getTileHeight()/2f, 0));
+                        decal.setPosition(pos );
+                        decals.add(decal);
                     }
                 }
             }

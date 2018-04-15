@@ -28,6 +28,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.GameController;
 import com.bombhunt.game.model.Grid;
@@ -76,7 +78,10 @@ public class GameScreen extends BasicView {
     EntitySubscription subscription;
     private DecalBatch batch;
     private InputMultiplexer inputMux;
+
+
     private OrthographicCamera currentCamera;
+    private Viewport viewport;
 
     // TODO: Temporary map for factories, may want to use injection in the future with @Wire
     private HashMap<String, IEntityFactory> factoryMap;
@@ -86,9 +91,8 @@ public class GameScreen extends BasicView {
 
 
     private Level level;
-    // TODO: clean those... will this be necessary ?
-    private OrthogonalTiledMapRenderer mapRenderer;
-    private TiledMap testMap;
+
+
 
     private HashMap<Integer, Boolean> keysDown = new HashMap<>(20);
 
@@ -130,6 +134,7 @@ public class GameScreen extends BasicView {
         currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         currentCamera.position.set(new Vector3(0, 0, 0f));
         currentCamera.far = 10000f;
+        viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), currentCamera);
     }
 
     private void setUpBatching() {
@@ -329,11 +334,12 @@ public class GameScreen extends BasicView {
 
     @Override
     public void render() {
-        changeBackground(0.3f, 0.3f, 0.3f, 0f);
+        //viewport.apply();
+        //changeBackground(0.3f, 0.3f, 0.3f, 0f);
         renderEntities();
         flushAllSprites();
         
-        box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
+        //box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
         stage.draw();
     }
 

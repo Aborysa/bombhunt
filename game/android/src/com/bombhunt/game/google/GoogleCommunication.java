@@ -9,6 +9,8 @@ import android.view.WindowManager;
 
 import com.bombhunt.game.AndroidLauncher;
 import com.bombhunt.game.services.networking.IPlayServices;
+import com.bombhunt.game.services.networking.Message;
+import com.bombhunt.game.services.networking.RealtimeListener;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -45,6 +47,7 @@ public class GoogleCommunication implements IPlayServices {
     public InvitationsClient invitationsClient;
 
     private AndroidLauncher androidLauncher;
+    private Activity thisActivity;
 
 
 
@@ -55,6 +58,7 @@ public class GoogleCommunication implements IPlayServices {
         // create client to sign in.
 
         this.androidLauncher = androidLauncher;
+        this.thisActivity = androidLauncher;
         googleSignInClient = GoogleSignIn.getClient(this.androidLauncher, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
     }
 
@@ -182,7 +186,6 @@ public class GoogleCommunication implements IPlayServices {
 
     // at least 2 players required for our game
     final static int MIN_PLAYERS = 2;
-    private Activity thisActivity = androidLauncher;
     private String mMyParticipantId;
 
     // returns whether there are enough players to start the game
@@ -324,6 +327,25 @@ public class GoogleCommunication implements IPlayServices {
         }
     }
 
+    // send data to specific user ID
+    @Override
+    public void sendToOneReliably(byte[] message, String userID){
+        for(String uID : mRoom.getParticipantIds()) {
+            if(uID == userID) {
+                Task<Integer> task = Games.
+                        getRealTimeMultiplayerClient(androidLauncher, GoogleSignIn.getLastSignedInAccount(androidLauncher))
+                        .sendReliableMessage(message, mRoom.getRoomId(), userID,
+                                handleMessageSentCallback).addOnCompleteListener(new OnCompleteListener<Integer>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Integer> task) {
+                                // Keep track of which messages are sent, if desired.
+                                recordMessageToken(task.getResult());
+                            }
+                        });
+            }
+        }
+    }
+
     HashSet<Integer> pendingMessageSet = new HashSet<>();
 
     synchronized void recordMessageToken(int tokenId) {
@@ -341,13 +363,19 @@ public class GoogleCommunication implements IPlayServices {
                 }
             };
 
+
+
+    private RealtimeListener listener;
+    @Override
+    public void setRealTimeListener(RealtimeListener listener){
+        this.listener = listener;
+    }
     private OnRealTimeMessageReceivedListener mMessageReceivedHandler =
             new OnRealTimeMessageReceivedListener() {
                 @Override
                 public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
-                    // Handle messages received here.
-                    byte[] message = realTimeMessage.getMessageData();
-                    // process message contents...
+                    Message message = new Message(realTimeMessage.getMessageData(), realTimeMessage.getSenderParticipantId(), realTimeMessage.describeContents());
+                    listener.handleDataReceived(message);
                 }
             };
 
@@ -379,6 +407,11 @@ public class GoogleCommunication implements IPlayServices {
     @Override
     public boolean isSignedIn() {
         return GoogleSignIn.getLastSignedInAccount(androidLauncher) != null;
+    }
+
+    @Override
+    public String getLocalID() {
+        return mMyParticipantId;
     }
 
 }
