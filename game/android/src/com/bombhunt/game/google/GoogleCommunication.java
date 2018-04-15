@@ -47,6 +47,7 @@ public class GoogleCommunication implements IPlayServices {
     public InvitationsClient invitationsClient;
 
     private AndroidLauncher androidLauncher;
+    private Activity thisActivity;
 
 
 
@@ -57,6 +58,7 @@ public class GoogleCommunication implements IPlayServices {
         // create client to sign in.
 
         this.androidLauncher = androidLauncher;
+        this.thisActivity = androidLauncher;
         googleSignInClient = GoogleSignIn.getClient(this.androidLauncher, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
     }
 
@@ -184,7 +186,6 @@ public class GoogleCommunication implements IPlayServices {
 
     // at least 2 players required for our game
     final static int MIN_PLAYERS = 2;
-    private Activity thisActivity = androidLauncher;
     private String mMyParticipantId;
 
     // returns whether there are enough players to start the game
