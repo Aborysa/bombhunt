@@ -28,6 +28,7 @@ public class CrateFactory implements IEntityFactory {
 
       private World world;
       public Archetype crateArchtype;
+      private Grid grid;
 
 
       private ComponentMapper<TransformComponent> mapTransform;
@@ -100,6 +101,6 @@ public class CrateFactory implements IEntityFactory {
 
     @Override
     public void setGrid(Grid grid) {
-
+        this.grid = grid;
     }
 }

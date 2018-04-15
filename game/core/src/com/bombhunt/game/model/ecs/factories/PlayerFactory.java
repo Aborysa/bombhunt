@@ -27,6 +27,7 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
 public class PlayerFactory implements IEntityFactory {
     private World world;
     public Archetype playerArchtype;
+    private Grid grid;
 
     ComponentMapper<TransformComponent> mapTransform;
     ComponentMapper<SpriteComponent> mapSprite;
@@ -120,6 +121,6 @@ public class PlayerFactory implements IEntityFactory {
 
     @Override
     public void setGrid(Grid grid) {
-
+        this.grid = grid;
     }
 }
