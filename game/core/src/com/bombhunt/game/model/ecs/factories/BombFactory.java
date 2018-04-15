@@ -12,9 +12,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
+import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
@@ -36,11 +38,13 @@ public class BombFactory implements IEntityFactory {
     private ComponentMapper<TimerComponent> mapTimer;
     private ComponentMapper<AnimationComponent> mapAnimation;
     private ComponentMapper<ExplosionComponent> mapExplosion;
+    private ComponentMapper<GridPositionComponent> mapGrid;
 
     private Archetype bombArchetype;
     private Archetype explosionArchetype;
 
     private World world;
+    private Grid grid;
 
     public int createBomb(Vector3 position, float timer) {
         final int e = world.create(bombArchetype);
@@ -53,6 +57,7 @@ public class BombFactory implements IEntityFactory {
                 6 / timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
+        mapGrid.get(e).grid = this.grid;
         setUpTimerBomb(e, timer);
         Sound sound = asset_manager.get("drop.wav", Sound.class);
         AudioPlayer audioPlayer = AudioPlayer.getInstance();
@@ -76,9 +81,11 @@ public class BombFactory implements IEntityFactory {
         TransformComponent transformComponent = mapTransform.get(e);
         BombComponent bombComponent = mapBomb.get(e);
         createExplosion(transformComponent.position, TIMER_EXPLOSION);
+        SpriteComponent spriteComponent = mapSprite.get(e);
+        float distance = spriteComponent.sprite.getHeight();
 
-        Vector3[] dirs = {new Vector3(0,50,0), new Vector3(50,0,0),
-                          new Vector3(0,-50,0), new Vector3(-50,0,0)};
+        Vector3[] dirs = {new Vector3(0,distance,0), new Vector3(distance,0,0),
+                          new Vector3(0,-distance,0), new Vector3(-distance,0,0)};
         for (Vector3 dir: dirs) {
             chainExplosion(transformComponent.position, dir, TIMER_EXPLOSION, bombComponent.range);
         }
@@ -105,7 +112,8 @@ public class BombFactory implements IEntityFactory {
                         16, 4, 13, 3),
                 3 / timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
-        mapTransform.get(e).scale = new Vector2(5f, 5f);
+        mapTransform.get(e).scale = new Vector2(1f, 1f);
+        mapGrid.get(e).grid = this.grid;
         setUpTimerExplosion(e, timer);
         // TODO: clean sounds effects
         AudioPlayer audioPlayer = AudioPlayer.getInstance();
@@ -142,6 +150,7 @@ public class BombFactory implements IEntityFactory {
         mapBomb = world.getMapper(BombComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
         mapExplosion = world.getMapper(ExplosionComponent.class);
+        mapGrid = world.getMapper(GridPositionComponent.class);
 
         bombArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
@@ -149,6 +158,7 @@ public class BombFactory implements IEntityFactory {
                 .add(AnimationComponent.class)
                 .add(BombComponent.class)
                 .add(TimerComponent.class)
+                .add(GridPositionComponent.class)
                 .build(world);
 
         explosionArchetype = new ArchetypeBuilder()
@@ -157,6 +167,12 @@ public class BombFactory implements IEntityFactory {
                 .add(AnimationComponent.class)
                 .add(ExplosionComponent.class)
                 .add(TimerComponent.class)
+                .add(GridPositionComponent.class)
                 .build(world);
+    }
+
+    @Override
+    public void setGrid(Grid grid) {
+        this.grid = grid;
     }
 }

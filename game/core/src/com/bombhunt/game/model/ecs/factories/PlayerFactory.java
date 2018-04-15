@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.services.physic.Collision;
@@ -114,6 +115,11 @@ public class PlayerFactory implements IEntityFactory {
                 .add(TimerComponent.class)
                 .build(world);
 
+
+    }
+
+    @Override
+    public void setGrid(Grid grid) {
 
     }
 }

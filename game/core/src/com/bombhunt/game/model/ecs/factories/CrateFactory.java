@@ -97,4 +97,9 @@ public class CrateFactory implements IEntityFactory {
 
         return e;
     }
+
+    @Override
+    public void setGrid(Grid grid) {
+
+    }
 }

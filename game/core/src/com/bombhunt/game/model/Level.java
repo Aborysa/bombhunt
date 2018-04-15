@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import com.artemis.World;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.maps.MapLayer;
@@ -123,7 +124,6 @@ public class Level {
         for (TiledMapTileLayer entityLayer : tileEntityLayers) {
             MapProperties props = entityLayer.getProperties();
             IEntityFactory factory = factories.get(props.get("entity_factory"));
-
             int depth = props.get("depth", Integer.class);
             for (int x = 0; x < entityLayer.getWidth(); x++) {
                 for (int y = 0; y < entityLayer.getHeight(); y++) {
@@ -137,6 +137,10 @@ public class Level {
 
         }
         return bag;
+    }
+
+    public Grid createGrid(World world) {
+        return new Grid(world, 50, 50, 16);
     }
 
     // Create decals from tiledDecalLayers

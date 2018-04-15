@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.GameController;
+import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.Level;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
@@ -144,6 +145,10 @@ public class GameScreen extends BasicView {
 
         ecsDebugRenderer = new ShapeRenderer();
         Collision.world = box2d;
+        Grid grid = level.createGrid(world);
+        for(IEntityFactory factory : factoryMap.values()) {
+            factory.setGrid(grid);
+        }
     }
 
     private void setUpControls() {
