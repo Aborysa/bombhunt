@@ -47,8 +47,6 @@ public class AndroidLauncher extends AndroidApplication {
         // signed up, set the realtimemultiplayerclient
         googleCommunication.realTimeMultiplayerClient = Games.getRealTimeMultiplayerClient(this, googleCommunication.googleSignInAccount);
 
-        googleCommunication.startMatchMaking();
-
       } else {
         String message = result.getStatus().getStatusMessage();
         if (message == null || message.isEmpty()) {
