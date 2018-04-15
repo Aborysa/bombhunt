@@ -38,9 +38,9 @@ public class GridSystem extends IteratingSystem {
     Grid grid = gridPositionComponent.grid;
     Vector3 position = transformComponent.position;
 
-    Vector2 pos2d = new Vector2(position.x, position.y).add(grid.getCellSize()/2, grid.getCellSize()/2);
+    Vector2 pos2d = new Vector2(position.x, position.y).sub(grid.getCellSize()/2, grid.getCellSize()/2);
 
-    Vector2 gridPosition = grid.getSnappedPosition(pos2d);
+    Vector2 gridPosition = grid.getSnappedPosition(pos2d.cpy().add(grid.getCellSize()/2, grid.getCellSize()/2));
     int cellIndex = grid.getCellIndex(gridPosition);
     if(cellIndex != gridPositionComponent.cellIndex){
       if(!grid.isOutOfBounds(gridPositionComponent.cellIndex)){
@@ -69,7 +69,7 @@ public class GridSystem extends IteratingSystem {
           System.out.println("Acc overflow");
         }
       }
-      position.sub(grid.getCellSize()/2, grid.getCellSize()/2, 0);
+      position.add(grid.getCellSize()/2, grid.getCellSize()/2, 0);
     }
     if(mapBox2d.has(e)){
       Body body = mapBox2d.get(e).body;
