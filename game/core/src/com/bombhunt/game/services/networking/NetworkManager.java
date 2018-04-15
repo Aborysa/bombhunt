@@ -17,7 +17,7 @@ public class NetworkManager implements RealtimeListener{
 
     @Override
     public void handleDataReceived(Message message) {
-        int channel = message.getInt();
+        int channel = message.getBuffer().getInt();
         if(listeners.containsKey(channel)){
             listeners.get(channel).handleDataReceived(message.copy());
         }
@@ -27,4 +27,6 @@ public class NetworkManager implements RealtimeListener{
     public void setSender(IPlayServices playServices) {
         this.sender = playServices;
     }
+
+
 }
