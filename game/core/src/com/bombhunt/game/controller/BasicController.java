@@ -1,5 +1,6 @@
 package com.bombhunt.game.controller;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
@@ -16,39 +17,28 @@ public class BasicController {
 
     protected BombHunt bombHunt;
 
-    protected BasicController(BombHunt bombHunt) {
+    BasicController(BombHunt bombHunt) {
         this.bombHunt = bombHunt;
     }
 
-    public ChangeListener createChangeListener(Runnable runnable) {
+    public ChangeListener createViewTransitionListener(Class<? extends BasicView> new_view_class) {
         ChangeListener listener = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            runnable.run();
-            }
-        };
-        return listener;
-    }
-
-    public ChangeListener createViewTransitionListener(BasicView current_view, Class new_view_class) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
                 try {
                     Constructor<?> cons = new_view_class.getConstructor(BombHunt.class);
                     BasicView new_view = (BasicView) cons.newInstance(bombHunt);
-                    changeView(current_view, (BasicView) new_view);
+                    changeView((BasicView) new_view);
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }
         };
-        ChangeListener listener = createChangeListener(runnable);
         return listener;
     }
 
-    public ChangeListener createViewTransitionWithSoundListener(BasicView current_view, Class new_view_class) {
-        ChangeListener listener = createViewTransitionListener(current_view, new_view_class);
+    public ChangeListener createViewTransitionWithSoundListener(Class<? extends BasicView> new_view_class) {
+        ChangeListener listener = createViewTransitionListener(new_view_class);
         ChangeListener bonified_listener = bonifySoundListener(listener);
         return bonified_listener;
     }
@@ -64,7 +54,8 @@ public class BasicController {
         return bonified_listener;
     }
 
-    protected void changeView(BasicView current_view, BasicView new_view) {
+    protected void changeView(BasicView new_view) {
+        BasicView current_view = bombHunt.getCurrentView();
         bombHunt.setCurrentView(new_view);
         current_view.dispose();
     }
@@ -73,4 +64,11 @@ public class BasicController {
         bombHunt.audioPlayer.setNewThemeSong(theme_song);
     }
 
+    public BombHunt getBombHunt() {
+        return bombHunt;
+    }
+
+    public void playSound(Sound sound, float factor) {
+        bombHunt.audioPlayer.playSoundWithFactor(sound, factor);
+    }
 }

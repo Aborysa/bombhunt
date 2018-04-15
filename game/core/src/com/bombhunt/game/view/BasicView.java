@@ -8,17 +8,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.bombhunt.game.BombHunt;
 
 public abstract class BasicView extends InputAdapter {
-
-    protected BombHunt bombHunt;
 
     private final String SKIN_PATH = "skin/craftacular-ui.json";
     protected Skin skin;
 
-    public BasicView(BombHunt bombHunt) {
-        this.bombHunt = bombHunt;
+    public BasicView() {
         skin = new Skin(Gdx.files.internal(SKIN_PATH));
     }
 
@@ -34,9 +30,13 @@ public abstract class BasicView extends InputAdapter {
         return null;
     }
 
-    protected void clearBackground() {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+    protected void changeBackground(float red, float green, float blue, float alpha) {
+        Gdx.gl.glClearColor(red, green, blue, alpha);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+
+    protected void clearBackground() {
+        changeBackground(0,0,0,0);
     }
 
     protected TextButton createButton(String text, ChangeListener listener) {

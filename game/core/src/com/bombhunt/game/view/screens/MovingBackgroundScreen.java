@@ -32,8 +32,7 @@ public abstract class MovingBackgroundScreen extends BasicView {
     protected int offsetBackgroundX = 0;
     protected int offsetBackgroundY = 0;
 
-    public MovingBackgroundScreen(BombHunt bombHunt) {
-        super(bombHunt);
+    public MovingBackgroundScreen() {
         camera = new OrthographicCamera(SCALE,
                 SCALE * (Gdx.graphics.getHeight() / (float) Gdx.graphics.getWidth()));
         stage = new Stage(new StretchViewport(camera.viewportWidth, camera.viewportHeight));
