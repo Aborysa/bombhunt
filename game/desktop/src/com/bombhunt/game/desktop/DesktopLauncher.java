@@ -16,6 +16,6 @@ public class DesktopLauncher {
 
 
 
-    new LwjglApplication(new BombHunt(new PlayAdapter()), config);
+    new LwjglApplication(new BombHunt(new MockplayService()), config);
   }
 }
