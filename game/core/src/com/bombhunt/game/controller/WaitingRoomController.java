@@ -1,15 +1,23 @@
 package com.bombhunt.game.controller;
 
+import com.artemis.utils.Sort;
 import com.bombhunt.game.BombHunt;
+import com.bombhunt.game.model.Player;
 import com.bombhunt.game.services.networking.IPlayServices;
 import com.bombhunt.game.services.networking.Message;
 import com.bombhunt.game.services.networking.NetworkManager;
+import com.bombhunt.game.services.networking.PlayerInfo;
 import com.bombhunt.game.services.networking.RealtimeListener;
 import com.bombhunt.game.services.networking.RoomListener;
 import com.bombhunt.game.view.screens.GameScreen;
 import com.bombhunt.game.view.screens.MainMenuScreen;
 import com.bombhunt.game.view.screens.WaitingRoomScreen;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -20,27 +28,64 @@ public class WaitingRoomController extends BasicController implements RoomListen
 
     private IPlayServices sender;
     private WaitingRoomScreen waitingRoomScreen;
+    private HashMap<String, PlayerInfo> playerInfo = new HashMap<String, PlayerInfo>(4);
+    int leftToReady = 4;
+    private PlayerInfo localPlayer;
+
+
     public WaitingRoomController(BombHunt bombHunt, WaitingRoomScreen waitingRoomScreen){
         super(bombHunt);
         this.waitingRoomScreen = waitingRoomScreen;
     }
 
     public void backToMainMenu() {changeView(new MainMenuScreen(bombHunt));}
-    public void enterGameScreen() {changeView(new GameScreen(bombHunt));}
+    public void enterGameScreen() {
+
+        PlayerInfo[] players = playerInfo.values().toArray(new PlayerInfo[playerInfo.size()]);
+        Sort.instance().sort(players, new Comparator<PlayerInfo>() {
+            @Override
+            public int compare(PlayerInfo p1, PlayerInfo p2) {
+                return p1.randomNumber - p2.randomNumber;
+            }
+        });
+
+        changeView(new GameScreen(bombHunt, Arrays.asList(players)));
+    }
+
+
     public void pingRemote() {
         Message message = new Message(new byte[512],"",0);
         Random random = new Random();
-        message.getBuffer().putInt(random.nextInt(100000000));
+        int randomNumber = random.nextInt();
+        message.putString("RAN_NUM");
+        message.getBuffer().putInt(randomNumber);
         sender.sendToAllReliably(message.getData());
         System.out.println("Sending to others");
+        System.out.println("Random number");
+
+        localPlayer.randomNumber = randomNumber;
     }
 
     @Override
     public void roomConnected() {
         System.out.println("roomconnected callback in waiting room controller");
+        IPlayServices playServices = bombHunt.getPlayServices();
+
+        leftToReady = playServices.getRemotePlayers().size();
+
         NetworkManager networkManager = new NetworkManager();
-        bombHunt.getPlayServices().setRealTimeListener(networkManager);
+        playServices.setRealTimeListener(networkManager);
+
+        for(String playerId : playServices.getRemotePlayers()){
+            playerInfo.put(playerId, new PlayerInfo(playerId, false));
+        }
+        PlayerInfo localPlayer = new PlayerInfo(playServices.getLocalID(), true);
+        playerInfo.put(localPlayer.playerId, localPlayer);
+
         networkManager.openChannel(this, 10);
+
+
+
         pingRemote();
     }
 
@@ -51,12 +96,37 @@ public class WaitingRoomController extends BasicController implements RoomListen
 
     @Override
     public void handleDataReceived(Message message) {
-        int num = message.getBuffer().getInt();
-        System.out.println("Got number");
-        System.out.println(num);
-        System.out.println(message.getSender());
+        String type = message.getString();
+        if(type == "RAN_NUM") {
+            int num = message.getBuffer().getInt();
+            System.out.println("Got number");
+            System.out.println(num);
+            System.out.println(message.getSender());
 
+            PlayerInfo player = playerInfo.get(message.getSender());
+            player.randomNumber = num;
+
+            // Do a check to see if ready
+            boolean gotall = true;
+            for (PlayerInfo p : playerInfo.values()) {
+                if (p.randomNumber <= 0) {
+                    gotall = false;
+                }
+            }
+            if (gotall) {
+                Message readyMessage = new Message(new byte[512], "", 0);
+                readyMessage.putString("READY");
+                sender.sendToAllReliably(message.getData());
+            }
+        } else if(type == "READY"){
+            System.out.println("Player is ready " + message.getSender());
+            leftToReady--;
+            if(leftToReady <= 0){
+                enterGameScreen();
+            }
+        }
     }
+
 
     @Override
     public void setSender(IPlayServices playServices) {

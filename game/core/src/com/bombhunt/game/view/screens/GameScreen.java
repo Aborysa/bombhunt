@@ -51,6 +51,7 @@ import com.bombhunt.game.model.ecs.systems.SpriteSystem;
 import com.bombhunt.game.model.ecs.systems.TimerSystem;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.graphics.SpriteHelper;
+import com.bombhunt.game.services.networking.PlayerInfo;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
 import com.bombhunt.game.view.InGameSettings;
@@ -108,6 +109,7 @@ public class GameScreen extends BasicView {
 
     private int playerIndex;
 
+    private List<PlayerInfo> players;
 
     public void spawnPlayer(int index){
         Vector2 pos = spawnPoints.get(index);
@@ -119,7 +121,9 @@ public class GameScreen extends BasicView {
         int player = factory.createPlayer(new Vector3(pos, -10), sprite);
     }
 
-    public GameScreen(BombHunt bombHunt) {
+    public GameScreen(BombHunt bombHunt, List<PlayerInfo> players) {
+        this.players = players;
+
         feedFactoryMap();
         setUpCamera();
         setUpBatching();
