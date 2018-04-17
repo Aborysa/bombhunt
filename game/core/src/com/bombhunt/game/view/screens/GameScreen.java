@@ -110,9 +110,9 @@ public class GameScreen extends BasicView {
 
     public GameScreen(BombHunt bombHunt) {
         feedFactoryMap();
+        setUpWorld();
         setUpCamera();
         setUpBatching();
-        setUpWorld();
         setUpControls();
         setUpECS(bombHunt);
         setUpComponentMappers();
@@ -135,17 +135,6 @@ public class GameScreen extends BasicView {
         }};
     }
 
-    private void setUpCamera() {
-        currentCamera = new OrthographicCamera(Gdx.graphics.getWidth()/10, Gdx.graphics.getHeight()/10);
-        currentCamera.position.set(new Vector3(0, 0, 0f));
-        currentCamera.far = 10000f;
-        viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), currentCamera);
-    }
-
-    private void setUpBatching() {
-        batch = new DecalBatch(4096, new CameraGroupStrategy(currentCamera));
-    }
-
     private void setUpWorld() {
         level = Assets.getInstance().get("maps/map1.tmx", Level.class);
         box2d = new com.badlogic.gdx.physics.box2d.World(level.getDim(), true);
@@ -159,6 +148,23 @@ public class GameScreen extends BasicView {
         for(IEntityFactory factory : factoryMap.values()) {
             factory.setGrid(grid);
         }
+    }
+
+    private void setUpCamera() {
+        MapProperties mapProperties = level.getMap().getProperties();
+        int tilePixelWidth = mapProperties.get("tilewidth", Integer.class);
+        int tilePixelHeight = mapProperties.get("tileheight", Integer.class);
+        int x_tile_desired = 10;
+        int y_tile_desired = 6;
+        currentCamera = new OrthographicCamera(x_tile_desired*tilePixelWidth,
+                y_tile_desired*tilePixelHeight);
+        currentCamera.position.set(new Vector3(0, 0, 0f));
+        currentCamera.far = 10000f;
+        viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), currentCamera);
+    }
+
+    private void setUpBatching() {
+        batch = new DecalBatch(4096, new CameraGroupStrategy(currentCamera));
     }
 
     private void setUpControls() {
@@ -350,7 +356,6 @@ public class GameScreen extends BasicView {
         //changeBackground(0.3f, 0.3f, 0.3f, 0f);
         renderEntities();
         flushAllSprites();
-        
         //box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
         stage.draw();
     }
