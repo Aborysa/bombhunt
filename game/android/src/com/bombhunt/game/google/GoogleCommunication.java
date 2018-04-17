@@ -386,6 +386,9 @@ public class GoogleCommunication implements IPlayServices {
                 @Override
                 public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
                     Message message = new Message(realTimeMessage.getMessageData(), realTimeMessage.getSenderParticipantId(), realTimeMessage.describeContents());
+                    System.out.println("new message");
+                    System.out.println("message content");
+                    System.out.println(message.getString());
                     liveListener.handleDataReceived(message);
                 }
             };
@@ -431,11 +434,11 @@ public class GoogleCommunication implements IPlayServices {
 
     @Override
     public ArrayList<String> getRemotePlayers() {
-        ArrayList<String> participants = new ArrayList<String>(mRoom.getParticipantIds());
+        ArrayList<String> participants = new ArrayList<>();
         String localID = getLocalID();
-        for(String s : participants) {
-            if(s == localID) {
-                participants.remove(s);
+        for(String s : mRoom.getParticipantIds()) {
+            if(s != localID) {
+                participants.add(s);
             }
         }
         return participants;

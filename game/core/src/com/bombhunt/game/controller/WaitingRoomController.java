@@ -79,7 +79,7 @@ public class WaitingRoomController extends BasicController implements RoomListen
         for(String playerId : playServices.getRemotePlayers()){
             playerInfo.put(playerId, new PlayerInfo(playerId, false));
         }
-        PlayerInfo localPlayer = new PlayerInfo(playServices.getLocalID(), true);
+        localPlayer = new PlayerInfo(playServices.getLocalID(), true);
         playerInfo.put(localPlayer.playerId, localPlayer);
 
         networkManager.openChannel(this, 10);
