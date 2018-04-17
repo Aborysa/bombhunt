@@ -1,6 +1,7 @@
 package com.bombhunt.game.controller;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.model.ecs.systems.PlayerSystem;
 import com.bombhunt.game.view.screens.MainMenuScreen;
@@ -24,6 +25,10 @@ public class GameController extends BasicController {
 
     public void playerPlantBomb() {
         playerSystem.plantBomb();
+    }
+
+    public Vector3 getPlayerPosition() {
+        return playerSystem.getPosition();
     }
 
 }

@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -59,9 +60,13 @@ import com.bombhunt.game.view.controls.SettingsButton;
 import java.awt.List;
 import java.util.HashMap;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
+
 public class GameScreen extends BasicView {
     private static final int TPS = 64;
-    private float zoom = 1;
+    private float zoom = 1f;
     private int tick = 0;
     private float accTime = 0;
     private float gameTime = 0;
@@ -131,7 +136,7 @@ public class GameScreen extends BasicView {
     }
 
     private void setUpCamera() {
-        currentCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        currentCamera = new OrthographicCamera(Gdx.graphics.getWidth()/10, Gdx.graphics.getHeight()/10);
         currentCamera.position.set(new Vector3(0, 0, 0f));
         currentCamera.far = 10000f;
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), currentCamera);
@@ -293,7 +298,7 @@ public class GameScreen extends BasicView {
 
     private void updateClock(float dt) {
         accTime += dt;
-        accTime = Math.min(accTime, 1);
+        accTime = min(accTime, 1);
         world.setDelta((1f / TPS));
     }
 
@@ -311,25 +316,32 @@ public class GameScreen extends BasicView {
     }
 
     private void updateCamera(float dt) {
-        Vector3 camVec = new Vector3(0, 0, 0);
-        Vector3 rot = new Vector3(0, 0, 0);
-        if (keysDown.getOrDefault(Input.Keys.RIGHT, false)) {
-            camVec.x += 1;
-        }
-        if (keysDown.getOrDefault(Input.Keys.LEFT, false)) {
-            camVec.x -= 1;
-        }
-        if (keysDown.getOrDefault(Input.Keys.UP, false)) {
-            camVec.y += 1;
-        }
-        if (keysDown.getOrDefault(Input.Keys.DOWN, false)) {
-            camVec.y -= 1;
-        }
-        camVec.nor();
-        rot.nor();
-        currentCamera.translate(camVec.scl(300 * dt));
-        currentCamera.zoom = zoom;
+        currentCamera.position.set(moveCameraWithPlayer());
+        //TODO: update zoom as the game time expire
+        //currentCamera.zoom += dt/100;
         currentCamera.update();
+    }
+
+    private Vector3 moveCameraWithPlayer() {
+        Vector3 mapDimensions = getMapDimensions();
+        float min_x = currentCamera.viewportWidth/2;
+        float min_y = currentCamera.viewportHeight/2;
+        float max_x = mapDimensions.x-currentCamera.viewportWidth/2;
+        float max_y = mapDimensions.y-currentCamera.viewportHeight/2;
+        Vector3 currentPosition = controller.getPlayerPosition();
+        currentPosition.x = round(min(max(currentPosition.x, min_x), max_x));
+        currentPosition.y = round(min(max(currentPosition.y, min_y), max_y));
+        currentPosition.z = 0;
+        return currentPosition;
+    }
+
+    private Vector3 getMapDimensions() {
+        MapProperties prop = level.getMap().getProperties();
+        int mapWidth = prop.get("width", Integer.class);
+        int mapHeight = prop.get("height", Integer.class);
+        int tilePixelWidth = prop.get("tilewidth", Integer.class);
+        int tilePixelHeight = prop.get("tileheight", Integer.class);
+        return new Vector3(mapWidth*tilePixelWidth, mapHeight*tilePixelHeight, 0);
     }
 
     @Override

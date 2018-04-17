@@ -28,6 +28,7 @@ public class PlayerSystem extends IteratingSystem {
     //private ComponentMapper<VelocityComponent> mapVelocity;
 
     private BombFactory bombFactory;
+    private Vector3 last_position = new Vector3();
     private Vector2 last_orientation = new Vector2();
     private Boolean coolDownBomb = false;
     private Boolean bombPlanted = false;
@@ -54,6 +55,8 @@ public class PlayerSystem extends IteratingSystem {
         Body body = box2dComponent.body;
         Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
         body.setLinearVelocity(velocity);
+
+        last_position = transformComponent.position.cpy();
 
         if (bombPlanted) {
             float position_x = transformComponent.position.x;
@@ -91,4 +94,7 @@ public class PlayerSystem extends IteratingSystem {
         coolDownBomb = false;
     }
 
+    public Vector3 getPosition() {
+        return last_position;
+    }
 }
