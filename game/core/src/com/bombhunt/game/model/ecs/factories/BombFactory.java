@@ -2,14 +2,12 @@ package com.bombhunt.game.model.ecs.factories;
 
 import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
-import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -34,7 +32,7 @@ import com.bombhunt.game.services.graphics.SpriteHelper;
 
 public class BombFactory implements IEntityFactory {
 
-    private final float TIMER_EXPLOSION = 0.5f;
+    private final float DURATION_EXPLOSION = 0.5f;
 
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<SpriteComponent> mapSprite;
@@ -52,120 +50,6 @@ public class BombFactory implements IEntityFactory {
     private World world;
     private Grid grid;
 
-    public int createBomb(Vector3 position, float timer) {
-        final int e = world.create(bombArchetype);
-        mapTransform.get(e).position = position;
-        Assets asset_manager = Assets.getInstance();
-        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(asset_manager.get("textures/tilemap1.atlas",
-                        TextureAtlas.class).findRegion("bomb_party_v4"),
-                        16, 4, 18, 6),
-                6 / timer);
-        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
-        mapTransform.get(e).scale = new Vector2(1f, 1f);
-        mapGrid.get(e).grid = this.grid;
-        setUpTimerBomb(e, timer);
-        Sound sound = asset_manager.get("drop.wav", Sound.class);
-        AudioPlayer audioPlayer = AudioPlayer.getInstance();
-        audioPlayer.playSound(sound);
-        return e;
-    }
-
-    private void setUpTimerBomb(int e, float timer) {
-        TimerComponent timerComponent = mapTimer.get(e);
-        timerComponent.timer = timer;
-        timerComponent.listener = new EventListener() {
-            @Override
-            public boolean handle(Event event) {
-                explodeBomb(e);
-                return true;
-            }
-        };
-    }
-
-    public void explodeBomb(int e) {
-        TransformComponent transformComponent = mapTransform.get(e);
-        BombComponent bombComponent = mapBomb.get(e);
-
-        createExplosion(transformComponent.position, TIMER_EXPLOSION);
-        Vector3[] dirs = {new Vector3(0,grid.getCellSize(),0), new Vector3(grid.getCellSize(),0,0),
-                          new Vector3(0,-grid.getCellSize(),0), new Vector3(-grid.getCellSize(),0,0)};
-        for (Vector3 dir: dirs) {
-            chainExplosion(transformComponent.position, dir, TIMER_EXPLOSION, bombComponent.range);
-        }
-
-        world.delete(e);
-    }
-
-    public void chainExplosion(Vector3 pos, Vector3 direction, float timer, int range) {
-        Vector3 newPos = pos.cpy().add(direction);
-        createExplosion(newPos, timer);
-        range -= 1;
-        boolean hasSolid = false;
-
-        if (range > 0 ) { // TODO also check if not hit a solid
-            IntBag entities = grid.getEntities(grid.getCellIndex(newPos));
-            for (int e: entities.getData()) {
-                if (mapSolid.has(e)) {
-                    hasSolid = true;
-                    break;
-                }
-            }
-            if (!hasSolid) {
-                chainExplosion(newPos, direction, timer, range);
-            }
-        }
-    }
-
-    public int createExplosion(Vector3 pos, float timer) {
-        final int e = world.create(explosionArchetype);
-        mapTransform.get(e).position = pos;
-        mapTransform.get(e).rotation = 90f * (float) Math.random();
-        Assets asset_manager = Assets.getInstance();
-        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(asset_manager.get("textures/tilemap1.atlas",
-                        TextureAtlas.class).findRegion("bomb_party_v4"),
-                        16, 4, 13, 3),
-                3 / timer);
-        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
-        mapTransform.get(e).scale = new Vector2(1f, 1f);
-        mapGrid.get(e).grid = this.grid;
-        setUpTimerExplosion(e, timer);
-        // TODO: clean sounds effects
-        AudioPlayer audioPlayer = AudioPlayer.getInstance();
-        Sound sound = asset_manager.get("explosion.wav", Sound.class);
-        audioPlayer.playSound(sound);
-        explosionDamage(pos);
-        return e;
-    }
-
-    private void explosionDamage(Vector3 pos) {
-        IntBag entities = grid.getEntities(grid.getCellIndex(pos));
-        for (int e: entities.getData()) {
-            if (mapDestroyable.has(e)) {
-                mapDestroyable.get(e).health -= 1;
-            } //TODO else if (hasHealth) {health -= damage}
-        }
-    }
-
-    private void setUpTimerExplosion(int e, float timer) {
-        TimerComponent timerComponent = mapTimer.get(e);
-        timerComponent.timer = timer;
-        timerComponent.listener = new EventListener() {
-            @Override
-            public boolean handle(Event event) {
-                world.delete(e);
-                return true;
-            }
-        };
-    }
-
-    // dunno if we can use this in some way fancy to create new bombs as the map loads or something
-    @Override
-    public int createFromTile(TiledMapTileLayer.Cell cell, TiledMapTileLayer layer, int x, int y, int depth) {
-        return 0;
-    }
-
     @Override
     public void setWorld(World world) {
         this.world = world;
@@ -178,7 +62,7 @@ public class BombFactory implements IEntityFactory {
         mapExplosion = world.getMapper(ExplosionComponent.class);
         mapGrid = world.getMapper(GridPositionComponent.class);
         mapSolid = world.getMapper(SolidComponent.class);
-        mapDestroyable = world.getMapper((DestroyableComponent.class));
+        mapDestroyable = world.getMapper(DestroyableComponent.class);
 
         bombArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
@@ -202,5 +86,146 @@ public class BombFactory implements IEntityFactory {
     @Override
     public void setGrid(Grid grid) {
         this.grid = grid;
+    }
+
+
+    @Override
+    public int createFromTile(TiledMapTileLayer.Cell cell, TiledMapTileLayer layer, int x, int y, int depth) {
+        return 0;
+    }
+
+    public int createBomb(Vector3 position, float timer) {
+        final int e = world.create(bombArchetype);
+        mapTransform.get(e).position = position;
+        Assets asset_manager = Assets.getInstance();
+        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
+                SpriteHelper.createSprites(asset_manager.get("textures/tilemap1.atlas",
+                        TextureAtlas.class).findRegion("bomb_party_v4"),
+                        16, 4, 18, 6),
+                6 / timer);
+        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
+        mapTransform.get(e).scale = new Vector2(1f, 1f);
+        mapGrid.get(e).grid = grid;
+        setUpTimerBomb(e, timer);
+        playSoundDropBomb();
+        return e;
+    }
+
+    private void setUpTimerBomb(int e, float timer) {
+        TimerComponent timerComponent = mapTimer.get(e);
+        timerComponent.timer = timer;
+        timerComponent.listener = new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                explodeBomb(e);
+                return true;
+            }
+        };
+    }
+
+    private void explodeBomb(int e) {
+        TransformComponent transformComponent = mapTransform.get(e);
+        BombComponent bombComponent = mapBomb.get(e);
+        int explosionEntity = createExplosion(transformComponent.position, DURATION_EXPLOSION);
+        decadeBomb(explosionEntity, bombComponent.range);
+        world.delete(e);
+    }
+
+    private void decadeBomb(int e, int range) {
+        TransformComponent transformComponent = mapTransform.get(e);
+        TimerComponent timerComponent = mapTimer.get(e);
+        timerComponent.timer = DURATION_EXPLOSION/5;
+        timerComponent.listener = new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                Vector3[] dirs = {new Vector3(0,1,0),
+                        new Vector3(1,0,0),
+                        new Vector3(0,-1,0),
+                        new Vector3(-1,0,0)};
+                for (Vector3 dir: dirs) {
+                    chainExplosion(transformComponent.position, dir, range);
+                }
+                world.delete(e);
+                return true;
+            }
+        };
+    }
+
+    private void chainExplosion(Vector3 pos, Vector3 direction, int range) {
+        Vector3 offset = direction.cpy().scl(grid.getCellSize());
+        Vector3 newPos = pos.cpy().add(offset);
+        boolean hasSolid = false;
+        if (range > 0 ) {
+            IntBag entities = grid.getEntities(grid.getCellIndex(newPos));
+            for (int e: entities.getData()) {
+                System.out.print("entity");
+                System.out.println(e);
+                if (mapSolid.has(e)) {
+                    hasSolid = true;
+                    break;
+                }
+            }
+        }
+        if(!hasSolid) {
+            int explosionEntity = createExplosion(newPos, DURATION_EXPLOSION*(1-range/25));
+            range -= 1;
+            boolean finalHasSolid = hasSolid;
+            int finalRange = range;
+            TimerComponent timerComponent = mapTimer.get(explosionEntity);
+            timerComponent.timer = DURATION_EXPLOSION/5;
+            timerComponent.listener = new EventListener() {
+                @Override
+                public boolean handle(Event event) {
+                    if (finalRange > 0 && !finalHasSolid) {
+                        chainExplosion(newPos, direction, finalRange);
+                    }
+                    world.delete(explosionEntity);
+                    return true;
+                }
+            };
+        }
+    }
+
+    private int createExplosion(Vector3 pos, float duration) {
+        int e = world.create(explosionArchetype);
+        mapTransform.get(e).position = pos;
+        mapTransform.get(e).rotation = 90f * (float) Math.random();
+        Assets asset_manager = Assets.getInstance();
+        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
+                SpriteHelper.createSprites(asset_manager.get("textures/tilemap1.atlas",
+                        TextureAtlas.class).findRegion("bomb_party_v4"),
+                        16, 4, 13, 3),
+                3 / duration);
+        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
+        mapTransform.get(e).scale = new Vector2(1f, 1f);
+        mapGrid.get(e).grid = grid;
+        //setUpDurationExplosion(e, duration);
+        // TODO: clean sounds effects
+        //playSoundExplosion();
+        //explosionDamage(pos);
+        return e;
+    }
+
+    private void playSoundExplosion() {
+        Assets asset_manager = Assets.getInstance();
+        AudioPlayer audioPlayer = AudioPlayer.getInstance();
+        Sound sound = asset_manager.get("explosion.wav", Sound.class);
+        audioPlayer.playSound(sound);
+    }
+
+    private void explosionDamage(Vector3 pos) {
+        IntBag entities = grid.getEntities(grid.getCellIndex(pos));
+        for (int e: entities.getData()) {
+            if (mapDestroyable.has(e)) {
+                mapDestroyable.get(e).health -= 1;
+            } //TODO else if (hasHealth) {health -= damage}
+        }
+    }
+
+    private void playSoundDropBomb() {
+        Assets asset_manager = Assets.getInstance();
+        Sound sound = asset_manager.get("drop.wav", Sound.class);
+        AudioPlayer audioPlayer = AudioPlayer.getInstance();
+        audioPlayer.playSound(sound);
     }
 }
