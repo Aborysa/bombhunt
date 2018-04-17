@@ -6,7 +6,7 @@ import com.bombhunt.game.model.Grid;
 
 
 public class NetworkComponent extends Component {
-  public String owner = null;
-  public int turn = 0;
-  public int netId = -1;
+    public String owner = null;
+    public int turn = 0;
+    public int netId = -1;
 }

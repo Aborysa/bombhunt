@@ -5,5 +5,5 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 
 public class Box2dComponent extends Component {
-  public Body body;
+    public Body body;
 }

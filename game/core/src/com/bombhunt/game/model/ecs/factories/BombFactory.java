@@ -134,15 +134,15 @@ public class BombFactory implements IEntityFactory {
     private void decadeBomb(int e, int range) {
         TransformComponent transformComponent = mapTransform.get(e);
         TimerComponent timerComponent = mapTimer.get(e);
-        timerComponent.timer = DURATION_EXPLOSION/5;
+        timerComponent.timer = DURATION_EXPLOSION / 5;
         timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
-                Vector3[] dirs = {new Vector3(0,1,0),
-                        new Vector3(1,0,0),
-                        new Vector3(0,-1,0),
-                        new Vector3(-1,0,0)};
-                for (Vector3 dir: dirs) {
+                Vector3[] dirs = {new Vector3(0, 1, 0),
+                        new Vector3(1, 0, 0),
+                        new Vector3(0, -1, 0),
+                        new Vector3(-1, 0, 0)};
+                for (Vector3 dir : dirs) {
                     chainExplosion(transformComponent.position, dir, range);
                 }
                 world.delete(e);
@@ -155,9 +155,9 @@ public class BombFactory implements IEntityFactory {
         Vector3 offset = direction.cpy().scl(grid.getCellSize());
         Vector3 newPos = pos.cpy().add(offset);
         boolean hasSolid = false;
-        if (range > 0 ) {
+        if (range > 0) {
             IntBag entities = grid.getEntities(grid.getCellIndex(newPos));
-            for (int e: entities.getData()) {
+            for (int e : entities.getData()) {
                 System.out.print("entity");
                 System.out.println(e);
                 if (mapSolid.has(e)) {
@@ -166,13 +166,13 @@ public class BombFactory implements IEntityFactory {
                 }
             }
         }
-        if(!hasSolid) {
-            int explosionEntity = createExplosion(newPos, DURATION_EXPLOSION*(1-range/25));
+        if (!hasSolid) {
+            int explosionEntity = createExplosion(newPos, DURATION_EXPLOSION * (1 - range / 25));
             range -= 1;
             boolean finalHasSolid = hasSolid;
             int finalRange = range;
             TimerComponent timerComponent = mapTimer.get(explosionEntity);
-            timerComponent.timer = DURATION_EXPLOSION/5;
+            timerComponent.timer = DURATION_EXPLOSION / 5;
             timerComponent.listener = new EventListener() {
                 @Override
                 public boolean handle(Event event) {
@@ -215,7 +215,7 @@ public class BombFactory implements IEntityFactory {
 
     private void explosionDamage(Vector3 pos) {
         IntBag entities = grid.getEntities(grid.getCellIndex(pos));
-        for (int e: entities.getData()) {
+        for (int e : entities.getData()) {
             if (mapDestroyable.has(e)) {
                 mapDestroyable.get(e).health -= 1;
             } //TODO else if (hasHealth) {health -= damage}

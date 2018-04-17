@@ -19,7 +19,7 @@ public class BombSystem extends IteratingSystem {
         super(Aspect.all(TransformComponent.class, BombComponent.class, TimerComponent.class));
         this.bombFactory = bombFactory;
     }
-    
+
     @Override
     protected void process(int e) {
     }

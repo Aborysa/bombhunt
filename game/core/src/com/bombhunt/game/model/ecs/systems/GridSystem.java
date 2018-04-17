@@ -14,65 +14,62 @@ import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 
 
-
 public class GridSystem extends IteratingSystem {
 
-  private ComponentMapper<TransformComponent> mapTransform;
-  private ComponentMapper<GridPositionComponent> mapGridPosition;
-  private ComponentMapper<Box2dComponent> mapBox2d;
-  
-
-  public GridSystem(){
-    super(Aspect.all(TransformComponent.class, GridPositionComponent.class));
-  }
+    private ComponentMapper<TransformComponent> mapTransform;
+    private ComponentMapper<GridPositionComponent> mapGridPosition;
+    private ComponentMapper<Box2dComponent> mapBox2d;
 
 
-
-  protected void process(int e){
-    TransformComponent transformComponent = mapTransform.get(e);
-    GridPositionComponent gridPositionComponent = mapGridPosition.get(e);
-    Grid grid = gridPositionComponent.grid;
-    Vector3 position = transformComponent.position;
-
-    Vector2 pos2d = new Vector2(position.x, position.y).sub(grid.getCellSize()/2, grid.getCellSize()/2);
-
-    Vector2 gridPosition = grid.getSnappedPosition(pos2d.cpy().add(grid.getCellSize()/2, grid.getCellSize()/2));
-    int cellIndex = grid.getCellIndex(gridPosition);
-    if(cellIndex != gridPositionComponent.cellIndex){
-      if(!grid.isOutOfBounds(gridPositionComponent.cellIndex)){
-        grid.removeEntity(e, gridPositionComponent.cellIndex);
-      }
-      if(!grid.isOutOfBounds(cellIndex)){
-        grid.addEntity(e, cellIndex);
-      }
-      gridPositionComponent.cellIndex = cellIndex;
+    public GridSystem() {
+        super(Aspect.all(TransformComponent.class, GridPositionComponent.class));
     }
-    
-    Vector2 diff = pos2d.cpy().sub(gridPosition);
-    if(gridPositionComponent.snapToGrid){
-      position.set(gridPosition, position.z);
-      if(gridPositionComponent.accumelate){
-        gridPositionComponent.accumelator.add(diff);
-        if(Math.abs(gridPositionComponent.accumelator.x) >= grid.getCellSize()){
-          float accumelated = Math.signum(gridPositionComponent.accumelator.x) * grid.getCellSize();
-          gridPositionComponent.accumelator.x -= accumelated;
-          position.x += accumelated;
+
+
+    protected void process(int e) {
+        TransformComponent transformComponent = mapTransform.get(e);
+        GridPositionComponent gridPositionComponent = mapGridPosition.get(e);
+        Grid grid = gridPositionComponent.grid;
+        Vector3 position = transformComponent.position;
+
+        Vector2 pos2d = new Vector2(position.x, position.y).sub(grid.getCellSize() / 2, grid.getCellSize() / 2);
+
+        Vector2 gridPosition = grid.getSnappedPosition(pos2d.cpy().add(grid.getCellSize() / 2, grid.getCellSize() / 2));
+        int cellIndex = grid.getCellIndex(gridPosition);
+        if (cellIndex != gridPositionComponent.cellIndex) {
+            if (!grid.isOutOfBounds(gridPositionComponent.cellIndex)) {
+                grid.removeEntity(e, gridPositionComponent.cellIndex);
+            }
+            if (!grid.isOutOfBounds(cellIndex)) {
+                grid.addEntity(e, cellIndex);
+            }
+            gridPositionComponent.cellIndex = cellIndex;
         }
-        if(Math.abs(gridPositionComponent.accumelator.y) >= grid.getCellSize()){
-          float accumelated = Math.signum(gridPositionComponent.accumelator.y) * grid.getCellSize();
-          gridPositionComponent.accumelator.y -= accumelated;
-          position.y += accumelated;
-          System.out.println("Acc overflow");
+
+        Vector2 diff = pos2d.cpy().sub(gridPosition);
+        if (gridPositionComponent.snapToGrid) {
+            position.set(gridPosition, position.z);
+            if (gridPositionComponent.accumelate) {
+                gridPositionComponent.accumelator.add(diff);
+                if (Math.abs(gridPositionComponent.accumelator.x) >= grid.getCellSize()) {
+                    float accumelated = Math.signum(gridPositionComponent.accumelator.x) * grid.getCellSize();
+                    gridPositionComponent.accumelator.x -= accumelated;
+                    position.x += accumelated;
+                }
+                if (Math.abs(gridPositionComponent.accumelator.y) >= grid.getCellSize()) {
+                    float accumelated = Math.signum(gridPositionComponent.accumelator.y) * grid.getCellSize();
+                    gridPositionComponent.accumelator.y -= accumelated;
+                    position.y += accumelated;
+                    System.out.println("Acc overflow");
+                }
+            }
+            position.add(grid.getCellSize() / 2, grid.getCellSize() / 2, 0);
         }
-      }
-      position.add(grid.getCellSize()/2, grid.getCellSize()/2, 0);
+        if (mapBox2d.has(e)) {
+            Body body = mapBox2d.get(e).body;
+            body.setTransform(position.x * Collision.worldTobox2d, position.y * Collision.worldTobox2d, body.getAngle());
+        }
+
+
     }
-    if(mapBox2d.has(e)){
-      Body body = mapBox2d.get(e).body;
-      body.setTransform(position.x * Collision.worldTobox2d, position.y * Collision.worldTobox2d, body.getAngle());
-    }
-
-
-
-  }
 }

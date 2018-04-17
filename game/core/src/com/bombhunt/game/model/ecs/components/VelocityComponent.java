@@ -8,11 +8,11 @@ public class VelocityComponent extends Component {
     public Vector2 velocity;
 
 
-    public VelocityComponent(Vector2 vec){
+    public VelocityComponent(Vector2 vec) {
         this.velocity = vec.cpy();
     }
 
-    public VelocityComponent(){
+    public VelocityComponent() {
         this(Vector2.Zero);
     }
 }
