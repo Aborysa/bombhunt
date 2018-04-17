@@ -32,7 +32,7 @@ import com.bombhunt.game.services.graphics.SpriteHelper;
 
 public class BombFactory implements IEntityFactory {
 
-    private final float DURATION_EXPLOSION = 0.5f;
+    private final float DURATION_EXPLOSION = 0.3f;
 
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<SpriteComponent> mapSprite;
@@ -134,7 +134,7 @@ public class BombFactory implements IEntityFactory {
     private void decadeBomb(int e, int range) {
         TransformComponent transformComponent = mapTransform.get(e);
         TimerComponent timerComponent = mapTimer.get(e);
-        timerComponent.timer = DURATION_EXPLOSION / 5;
+        timerComponent.timer = DURATION_EXPLOSION;
         timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
@@ -166,13 +166,13 @@ public class BombFactory implements IEntityFactory {
                 }
             }
         }
-        if (!hasSolid) {
-            int explosionEntity = createExplosion(newPos, DURATION_EXPLOSION * (1 - range / 25));
+        if(!hasSolid) {
+            int explosionEntity = createExplosion(newPos, DURATION_EXPLOSION);
             range -= 1;
             boolean finalHasSolid = hasSolid;
             int finalRange = range;
             TimerComponent timerComponent = mapTimer.get(explosionEntity);
-            timerComponent.timer = DURATION_EXPLOSION / 5;
+            timerComponent.timer = DURATION_EXPLOSION;
             timerComponent.listener = new EventListener() {
                 @Override
                 public boolean handle(Event event) {
