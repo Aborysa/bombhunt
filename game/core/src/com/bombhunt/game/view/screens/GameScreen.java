@@ -8,20 +8,16 @@ import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -35,7 +31,6 @@ import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.GameController;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.Level;
-import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
@@ -57,12 +52,10 @@ import com.bombhunt.game.view.controls.BombButton;
 import com.bombhunt.game.view.controls.Joystick;
 import com.bombhunt.game.view.controls.SettingsButton;
 
-import java.awt.List;
 import java.util.HashMap;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static java.lang.Math.round;
 
 public class GameScreen extends BasicView {
     private static final int TPS = 64;
