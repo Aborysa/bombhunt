@@ -335,8 +335,8 @@ public class GameScreen extends BasicView {
         float max_x = mapDimensions.x-currentCamera.viewportWidth/2;
         float max_y = mapDimensions.y-currentCamera.viewportHeight/2;
         Vector3 currentPosition = controller.getPlayerPosition();
-        currentPosition.x = round(min(max(currentPosition.x, min_x), max_x));
-        currentPosition.y = round(min(max(currentPosition.y, min_y), max_y));
+        currentPosition.x = min(max(currentPosition.x, min_x), max_x);
+        currentPosition.y = min(max(currentPosition.y, min_y), max_y);
         currentPosition.z = 0;
         return currentPosition;
     }
@@ -352,8 +352,6 @@ public class GameScreen extends BasicView {
 
     @Override
     public void render() {
-        //viewport.apply();
-        //changeBackground(0.3f, 0.3f, 0.3f, 0f);
         renderEntities();
         flushAllSprites();
         //box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
