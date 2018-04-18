@@ -39,6 +39,7 @@ import com.bombhunt.game.model.ecs.factories.IEntityFactory;
 import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.model.ecs.factories.WallFactory;
 import com.bombhunt.game.model.ecs.systems.BombSystem;
+import com.bombhunt.game.model.ecs.systems.DestroyableSystem;
 import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.model.ecs.systems.GridSystem;
 import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
@@ -239,10 +240,17 @@ public class GameScreen extends BasicView {
         ExplosionSystem explosionSystem = new ExplosionSystem();
         TimerSystem timerSystem = new TimerSystem();
         GridSystem gridSystem = new GridSystem();
+        DestroyableSystem destroyableSystem = new DestroyableSystem();
 
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(spriteSystem, physicsSystem, playerSystem, bombSystem, explosionSystem, timerSystem)
+                .with(spriteSystem)
+                .with(physicsSystem)
+                .with(playerSystem)
+                .with(bombSystem)
+                .with(explosionSystem)
+                .with(timerSystem)
                 .with(gridSystem)
+                .with(destroyableSystem)
                 .build();
         world = new World(config);
         for (IEntityFactory factory : factoryMap.values()) {
@@ -267,15 +275,7 @@ public class GameScreen extends BasicView {
     }
 
     private void createMapEntities() {
-        IntBag bag = level.createEntities(factoryMap);
-        System.out.println("NUMBER OF ENTITIES MAP");
-        int nb_entities = 0;
-        for (int e : bag.getData()) {
-            if (e != 0) {
-                nb_entities += 1;
-            }
-        }
-        System.out.println(nb_entities);
+        level.createEntities(factoryMap);
         java.util.List<Decal> decals = level.createDecals();
         mapDecals = decals.toArray(new Decal[decals.size()]);
     }
@@ -328,7 +328,7 @@ public class GameScreen extends BasicView {
     private void updateCamera(float dt) {
         currentCamera.position.set(moveCameraWithPlayer());
         //TODO: update zoom as the game time expire
-        //currentCamera.zoom += dt/100;
+        // currentCamera.zoom += dt/100;
         currentCamera.update();
     }
 

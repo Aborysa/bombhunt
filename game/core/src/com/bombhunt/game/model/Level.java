@@ -214,19 +214,15 @@ public class Level {
             if (object instanceof RectangleMapObject) {
                 box2dBody = Collision.createBody(box2d, Collision.saticDef, Collision.wallFixture);
                 PolygonShape shape = (PolygonShape) box2dBody.getFixtureList().get(0).getShape();
-
                 Rectangle rect = ((RectangleMapObject) object).getRectangle();
                 Vector2 dim = rect.getSize(new Vector2()).scl(0.5f).scl(Collision.worldTobox2d);
                 Vector2 pos = rect.getPosition(new Vector2()).scl(Collision.worldTobox2d);
-
                 shape.setAsBox(dim.x, dim.y, dim, 0f);
-
                 box2dBody.setTransform(pos, 0);
             } else if (object instanceof PolygonMapObject) {
                 Polygon poly = ((PolygonMapObject) object).getPolygon();
                 box2dBody = createBodyFromPolygon(box2d, poly);
             }
-
             bodies.add(box2dBody);
         }
         return bodies;

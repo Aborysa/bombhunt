@@ -155,33 +155,32 @@ public class BombFactory implements IEntityFactory {
         };
     }
 
-    private void chainExplosion(Vector3 pos, Vector3 direction, int range) {
+    private void chainExplosion(Vector3 prev_position, Vector3 direction, int range) {
         Vector3 offset = direction.cpy().scl(grid.getCellSize());
-        Vector3 newPos = pos.cpy().add(offset);
+        Vector3 position = prev_position.cpy().add(offset);
         boolean hasSolid = false;
         if (range > 0) {
-            hasSolid = detect(newPos, mapSolid);
+            hasSolid = detect(position, mapSolid);
         }
         if(!hasSolid) {
             boolean finalHasSolid = hasSolid;
             range -= 1;
             int finalRange = range;
-            int explosionEntity = createExplosion(newPos, DURATION_EXPLOSION);
+            int explosionEntity = createExplosion(position, DURATION_EXPLOSION);
             TimerComponent timerComponent = mapTimer.get(explosionEntity);
             timerComponent.timer = DURATION_EXPLOSION;
             timerComponent.listener = new EventListener() {
                 @Override
                 public boolean handle(Event event) {
                     if (finalRange > 0 && !finalHasSolid) {
-                        chainExplosion(newPos, direction, finalRange);
+                        chainExplosion(position, direction, finalRange);
                     }
                     world.delete(explosionEntity);
                     return true;
                 }
             };
         } else {
-            System.out.println("SOLID");
-            System.out.println(grid.getCellIndex(newPos));
+            destructionDamage(position);
         }
     }
 
@@ -198,9 +197,9 @@ public class BombFactory implements IEntityFactory {
         return false;
     }
 
-    private int createExplosion(Vector3 pos, float duration) {
+    private int createExplosion(Vector3 position, float duration) {
         int e = world.create(explosionArchetype);
-        mapTransform.get(e).position = pos;
+        mapTransform.get(e).position = position;
         mapTransform.get(e).rotation = 90f * (float) Math.random();
         Assets asset_manager = Assets.getInstance();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
@@ -211,7 +210,7 @@ public class BombFactory implements IEntityFactory {
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         mapGrid.get(e).grid = grid;
-        explosionDamage(pos);
+        // explosionDamage for playerHealth
         return e;
     }
 
@@ -222,7 +221,7 @@ public class BombFactory implements IEntityFactory {
         audioPlayer.playSound(sound);
     }
 
-    private void explosionDamage(Vector3 position) {
+    private void destructionDamage(Vector3 position) {
         IntBag destroyableEntities = filterEntities(position, mapDestroyable);
         for (int i = 0; i < destroyableEntities.size(); i++) {
             int e = destroyableEntities.get(i);
