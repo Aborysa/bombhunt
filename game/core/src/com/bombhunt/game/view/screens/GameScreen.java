@@ -37,6 +37,7 @@ import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.model.ecs.factories.CrateFactory;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
 import com.bombhunt.game.model.ecs.factories.PlayerFactory;
+import com.bombhunt.game.model.ecs.factories.WallFactory;
 import com.bombhunt.game.model.ecs.systems.BombSystem;
 import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.model.ecs.systems.GridSystem;
@@ -121,10 +122,12 @@ public class GameScreen extends BasicView {
         final String crateFactoryName = CrateFactory.class.getSimpleName();
         final String playerFactoryName = PlayerFactory.class.getSimpleName();
         final String bombFactoryName = BombFactory.class.getSimpleName();
+        final String wallFactoryName = WallFactory.class.getSimpleName();
         factoryMap = new HashMap<String, IEntityFactory>() {{
             put(crateFactoryName, new CrateFactory());
             put(playerFactoryName, new PlayerFactory());
             put(bombFactoryName, new BombFactory());
+            put(wallFactoryName, new WallFactory());
         }};
     }
 

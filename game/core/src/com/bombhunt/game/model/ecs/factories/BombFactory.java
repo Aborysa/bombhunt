@@ -128,6 +128,7 @@ public class BombFactory implements IEntityFactory {
         BombComponent bombComponent = mapBomb.get(e);
         int explosionEntity = createExplosion(transformComponent.position, DURATION_EXPLOSION);
         decadeBomb(explosionEntity, bombComponent.range);
+        playSoundExplosion();
         world.delete(e);
     }
 
@@ -158,9 +159,9 @@ public class BombFactory implements IEntityFactory {
         if (range > 0) {
             IntBag entities = grid.getEntities(grid.getCellIndex(newPos));
             for (int e : entities.getData()) {
-                System.out.print("entity");
-                System.out.println(e);
                 if (mapSolid.has(e)) {
+                    System.out.println("SOLID");
+                    System.out.println(grid.getCellIndex(newPos));
                     hasSolid = true;
                     break;
                 }
@@ -199,9 +200,6 @@ public class BombFactory implements IEntityFactory {
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         mapGrid.get(e).grid = grid;
-        //setUpDurationExplosion(e, duration);
-        // TODO: clean sounds effects
-        //playSoundExplosion();
         //explosionDamage(pos);
         return e;
     }
@@ -214,7 +212,8 @@ public class BombFactory implements IEntityFactory {
     }
 
     private void explosionDamage(Vector3 pos) {
-        IntBag entities = grid.getEntities(grid.getCellIndex(pos));
+        int cellIndex = grid.getCellIndex(pos);
+        IntBag entities = grid.getEntities(cellIndex);
         for (int e : entities.getData()) {
             if (mapDestroyable.has(e)) {
                 mapDestroyable.get(e).health -= 1;

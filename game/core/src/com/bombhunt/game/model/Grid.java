@@ -25,17 +25,15 @@ public class Grid {
         }
     }
 
-
     public Vector2 getSnappedPosition(Vector2 position) {
         Vector2 snapped = position.cpy();
-
         snapped.x = (int) (snapped.x / cellSize);
         snapped.y = (int) (snapped.y / cellSize);
         snapped.scl(cellSize);
         return snapped;
     }
 
-    public boolean isOutOfBounds(int x, int y){
+    private boolean isOutOfBounds(int x, int y){
         return x < 0 || x >= width || y < 0 || y >= height;
     }
 
@@ -43,7 +41,7 @@ public class Grid {
         return index < 0 || index >= gridCells.length;
     }
 
-    public int getCellIndex(int x, int y){
+    private int getCellIndex(int x, int y){
         if(isOutOfBounds(x, y)) {
             return -1;
         }

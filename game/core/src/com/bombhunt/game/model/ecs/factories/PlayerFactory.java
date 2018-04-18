@@ -82,7 +82,7 @@ public class PlayerFactory implements IEntityFactory {
 
 
     Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y, depth).add(new Vector3(layer.getTileWidth()/2f, layer.getTileHeight()/2f, 0));
-    int e = createCrate(pos, decal, 1);
+    int e = createWall(pos, decal, 1);
 
     mapTransform.get(e).rotation = rotation;
 

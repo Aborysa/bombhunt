@@ -1,10 +1,6 @@
 
 package com.bombhunt.game.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
 import com.artemis.World;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
@@ -16,22 +12,24 @@ import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-
-import java.util.List;
-
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.bombhunt.game.services.graphics.SpriteHelper;
-import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
+import com.bombhunt.game.model.ecs.factories.WallFactory;
+import com.bombhunt.game.services.physic.Collision;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 // Wrapper for TiledMap
 public class Level {
@@ -75,7 +73,6 @@ public class Level {
     private void parseMap() {
         System.out.println("Parsing map");
         MapLayers layers = map.getLayers();
-
         int depth = -(layers.getCount() * 100 + 1000);
         for (MapLayer layer : layers) {
             MapProperties props = layer.getProperties();
@@ -98,10 +95,8 @@ public class Level {
                 imageLayers.add((TiledMapImageLayer) layer);
             } else {
                 objectLayers.add(layer);
-
                 for (MapObject object : layer.getObjects()) {
                     MapProperties objectProps = object.getProperties();
-
           /*
             NOTE: May want to use a 'type' prop to identify what type the object is.
             i.e `type: collidable` instead of `collidable: true`
@@ -113,7 +108,6 @@ public class Level {
                     }
                 }
             }
-
             depth += 100;
         }
 
@@ -130,12 +124,14 @@ public class Level {
                 for (int y = 0; y < entityLayer.getHeight(); y++) {
                     Cell cell = entityLayer.getCell(x, y);
                     if (cell != null) {
+                        if(factory instanceof WallFactory) {
+                            System.out.println(cell.toString());
+                        }
                         int e = factory.createFromTile(cell, entityLayer, x, y, depth);
                         bag.add(e);
                     }
                 }
             }
-
         }
         return bag;
     }
@@ -172,11 +168,9 @@ public class Level {
 
         // Translate vertecies to box2d coords
         for (int i = 0; i < verticies.length; i++) {
-            // X-coord
             if (i % 2 == 0) {
                 verticies[i] -= pos.x;
             }
-            // Y-coord
             else {
                 verticies[i] -= pos.y;
             }

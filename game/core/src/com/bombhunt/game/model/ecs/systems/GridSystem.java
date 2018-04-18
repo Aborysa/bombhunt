@@ -52,14 +52,14 @@ public class GridSystem extends IteratingSystem {
             if (gridPositionComponent.accumelate) {
                 gridPositionComponent.accumelator.add(diff);
                 if (Math.abs(gridPositionComponent.accumelator.x) >= grid.getCellSize()) {
-                    float accumelated = Math.signum(gridPositionComponent.accumelator.x) * grid.getCellSize();
-                    gridPositionComponent.accumelator.x -= accumelated;
-                    position.x += accumelated;
+                    float accumulated = Math.signum(gridPositionComponent.accumelator.x) * grid.getCellSize();
+                    gridPositionComponent.accumelator.x -= accumulated;
+                    position.x += accumulated;
                 }
                 if (Math.abs(gridPositionComponent.accumelator.y) >= grid.getCellSize()) {
-                    float accumelated = Math.signum(gridPositionComponent.accumelator.y) * grid.getCellSize();
-                    gridPositionComponent.accumelator.y -= accumelated;
-                    position.y += accumelated;
+                    float accumulated = Math.signum(gridPositionComponent.accumelator.y) * grid.getCellSize();
+                    gridPositionComponent.accumelator.y -= accumulated;
+                    position.y += accumulated;
                     System.out.println("Acc overflow");
                 }
             }
@@ -69,7 +69,5 @@ public class GridSystem extends IteratingSystem {
             Body body = mapBox2d.get(e).body;
             body.setTransform(position.x * Collision.worldTobox2d, position.y * Collision.worldTobox2d, body.getAngle());
         }
-
-
     }
 }
