@@ -33,7 +33,6 @@ import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.Level;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
-import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.model.ecs.factories.CrateFactory;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
 import com.bombhunt.game.model.ecs.factories.PlayerFactory;
@@ -91,7 +90,7 @@ public class GameScreen extends BasicView {
 
 
     private Level level;
-
+    private Grid grid;
 
 
     private HashMap<Integer, Boolean> keysDown = new HashMap<>(20);
@@ -122,12 +121,10 @@ public class GameScreen extends BasicView {
     private void feedFactoryMap() {
         final String crateFactoryName = CrateFactory.class.getSimpleName();
         final String playerFactoryName = PlayerFactory.class.getSimpleName();
-        final String bombFactoryName = BombFactory.class.getSimpleName();
         final String wallFactoryName = WallFactory.class.getSimpleName();
         factoryMap = new HashMap<String, IEntityFactory>() {{
             put(crateFactoryName, new CrateFactory());
             put(playerFactoryName, new PlayerFactory());
-            put(bombFactoryName, new BombFactory());
             put(wallFactoryName, new WallFactory());
         }};
     }
@@ -141,7 +138,7 @@ public class GameScreen extends BasicView {
 
         ecsDebugRenderer = new ShapeRenderer();
         Collision.world = box2d;
-        Grid grid = level.createGrid(world);
+        grid = level.createGrid(world);
         for(IEntityFactory factory : factoryMap.values()) {
             factory.setGrid(grid);
         }
@@ -233,10 +230,8 @@ public class GameScreen extends BasicView {
         PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
         // TODO: why is the bomb factory has to be passed in argument?
         // TODO: cannot that be created into the constructor of each system respectively
-        String bombFactoryName = BombFactory.class.getSimpleName();
-        BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
-        PlayerSystem playerSystem = new PlayerSystem(box2d, bombFactory);
-        BombSystem bombSystem = new BombSystem(bombFactory);
+        PlayerSystem playerSystem = new PlayerSystem(box2d);
+        BombSystem bombSystem = new BombSystem();
         ExplosionSystem explosionSystem = new ExplosionSystem();
         TimerSystem timerSystem = new TimerSystem();
         GridSystem gridSystem = new GridSystem();
@@ -320,7 +315,7 @@ public class GameScreen extends BasicView {
             accTime -= 1f / TPS;
             tick++;
             if (tick % TPS == 0) {
-                System.out.println(Gdx.graphics.getFramesPerSecond() + " : " + tick + " : " + tick / gameTime);
+                //System.out.println(Gdx.graphics.getFramesPerSecond() + " : " + tick + " : " + tick / gameTime);
             }
         }
     }

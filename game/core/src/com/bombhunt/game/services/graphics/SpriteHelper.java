@@ -55,12 +55,12 @@ public class SpriteHelper {
     public static Array<Sprite> createSprites(TextureRegion region, int tileSize, int x, int y, int len) {
         TextureRegion[][] subregions = region.split(tileSize, tileSize);
         int tiles_x = region.getRegionWidth() / tileSize;
-        System.out.println(region.getRegionWidth());
-        System.out.println(tiles_x);
+        //System.out.println(region.getRegionWidth());
+        //System.out.println(tiles_x);
         Array<Sprite> sprites = new Array<Sprite>(len);
         for (int i = 0; i < len; i++) {
             TextureRegion subregion = subregions[y + (int) (i / tiles_x)][x + i % tiles_x];
-            System.out.println(subregion.getRegionWidth());
+            //System.out.println(subregion.getRegionWidth());
             sprites.add(new Sprite(subregion));
         }
     /*if(true){

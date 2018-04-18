@@ -50,16 +50,16 @@ public class GridSystem extends IteratingSystem {
         Vector2 diff = pos2d.cpy().sub(gridPosition);
         if (gridPositionComponent.snapToGrid) {
             position.set(gridPosition, position.z);
-            if (gridPositionComponent.accumelate) {
-                gridPositionComponent.accumelator.add(diff);
-                if (Math.abs(gridPositionComponent.accumelator.x) >= grid.getCellSize()) {
-                    float accumulated = Math.signum(gridPositionComponent.accumelator.x) * grid.getCellSize();
-                    gridPositionComponent.accumelator.x -= accumulated;
+            if (gridPositionComponent.accumulate) {
+                gridPositionComponent.accumulator.add(diff);
+                if (Math.abs(gridPositionComponent.accumulator.x) >= grid.getCellSize()) {
+                    float accumulated = Math.signum(gridPositionComponent.accumulator.x) * grid.getCellSize();
+                    gridPositionComponent.accumulator.x -= accumulated;
                     position.x += accumulated;
                 }
-                if (Math.abs(gridPositionComponent.accumelator.y) >= grid.getCellSize()) {
-                    float accumulated = Math.signum(gridPositionComponent.accumelator.y) * grid.getCellSize();
-                    gridPositionComponent.accumelator.y -= accumulated;
+                if (Math.abs(gridPositionComponent.accumulator.y) >= grid.getCellSize()) {
+                    float accumulated = Math.signum(gridPositionComponent.accumulator.y) * grid.getCellSize();
+                    gridPositionComponent.accumulator.y -= accumulated;
                     position.y += accumulated;
                     System.out.println("Acc overflow");
                 }

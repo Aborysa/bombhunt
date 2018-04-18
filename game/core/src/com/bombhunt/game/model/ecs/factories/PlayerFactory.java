@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
@@ -44,7 +45,7 @@ public class PlayerFactory implements IEntityFactory {
         mapTransform.get(e).position.set(pos);
         Body body = Collision.createBody(Collision.dynamicDef, Collision.wallFixture);
         PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
-        shape.setAsBox((sprite.getWidth() / 2 - 0.2f) * Collision.worldTobox2d, (sprite.getHeight() / 2f - 0.2f) * Collision.worldTobox2d);
+        shape.setAsBox((sprite.getWidth() / 2 - 0.3f) * Collision.worldTobox2d, (sprite.getHeight() / 2f - 0.3f) * Collision.worldTobox2d);
         body.setTransform(new Vector2(pos.x, pos.y).scl(Collision.worldTobox2d), 0);
 
         // prevents the player from rotating about when it collides with other objects.
