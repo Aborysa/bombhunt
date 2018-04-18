@@ -267,7 +267,15 @@ public class GameScreen extends BasicView {
     }
 
     private void createMapEntities() {
-        level.createEntities(factoryMap);
+        IntBag bag = level.createEntities(factoryMap);
+        System.out.println("NUMBER OF ENTITIES MAP");
+        int nb_entities = 0;
+        for (int e : bag.getData()) {
+            if (e != 0) {
+                nb_entities += 1;
+            }
+        }
+        System.out.println(nb_entities);
         java.util.List<Decal> decals = level.createDecals();
         mapDecals = decals.toArray(new Decal[decals.size()]);
     }

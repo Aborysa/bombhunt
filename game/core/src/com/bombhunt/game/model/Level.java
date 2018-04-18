@@ -23,7 +23,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
-import com.bombhunt.game.model.ecs.factories.WallFactory;
 import com.bombhunt.game.services.physic.Collision;
 
 import java.util.ArrayList;
@@ -124,9 +123,6 @@ public class Level {
                 for (int y = 0; y < entityLayer.getHeight(); y++) {
                     Cell cell = entityLayer.getCell(x, y);
                     if (cell != null) {
-                        if(factory instanceof WallFactory) {
-                            System.out.println(cell.toString());
-                        }
                         int e = factory.createFromTile(cell, entityLayer, x, y, depth);
                         bag.add(e);
                     }

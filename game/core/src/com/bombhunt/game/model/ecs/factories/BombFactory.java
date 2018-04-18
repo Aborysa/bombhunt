@@ -1,7 +1,10 @@
 package com.bombhunt.game.model.ecs.factories;
 
+import android.support.annotation.NonNull;
+
 import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
+import com.artemis.Component;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.artemis.utils.IntBag;
@@ -157,21 +160,13 @@ public class BombFactory implements IEntityFactory {
         Vector3 newPos = pos.cpy().add(offset);
         boolean hasSolid = false;
         if (range > 0) {
-            IntBag entities = grid.getEntities(grid.getCellIndex(newPos));
-            for (int e : entities.getData()) {
-                if (mapSolid.has(e)) {
-                    System.out.println("SOLID");
-                    System.out.println(grid.getCellIndex(newPos));
-                    hasSolid = true;
-                    break;
-                }
-            }
+            hasSolid = detect(newPos, mapSolid);
         }
         if(!hasSolid) {
-            int explosionEntity = createExplosion(newPos, DURATION_EXPLOSION);
-            range -= 1;
             boolean finalHasSolid = hasSolid;
+            range -= 1;
             int finalRange = range;
+            int explosionEntity = createExplosion(newPos, DURATION_EXPLOSION);
             TimerComponent timerComponent = mapTimer.get(explosionEntity);
             timerComponent.timer = DURATION_EXPLOSION;
             timerComponent.listener = new EventListener() {
@@ -184,7 +179,22 @@ public class BombFactory implements IEntityFactory {
                     return true;
                 }
             };
+        } else {
+            System.out.println("SOLID");
+            System.out.println(grid.getCellIndex(newPos));
         }
+    }
+
+    // TODO: Should be moved into grid class
+    @NonNull
+    private Boolean detect(Vector3 position, ComponentMapper<? extends Component> mapComponent) {
+        IntBag entities = grid.getEntities(grid.getCellIndex(position));
+        for (int e : entities.getData()) {
+            if (mapComponent.has(e)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int createExplosion(Vector3 pos, float duration) {
@@ -200,7 +210,7 @@ public class BombFactory implements IEntityFactory {
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         mapGrid.get(e).grid = grid;
-        //explosionDamage(pos);
+        explosionDamage(pos);
         return e;
     }
 
@@ -211,14 +221,27 @@ public class BombFactory implements IEntityFactory {
         audioPlayer.playSound(sound);
     }
 
-    private void explosionDamage(Vector3 pos) {
-        int cellIndex = grid.getCellIndex(pos);
-        IntBag entities = grid.getEntities(cellIndex);
-        for (int e : entities.getData()) {
-            if (mapDestroyable.has(e)) {
+    private void explosionDamage(Vector3 position) {
+        IntBag destroyableEntities = filterEntities(position, mapDestroyable);
+        for (int e: destroyableEntities.getData()) {
+            if (e != 0) {
                 mapDestroyable.get(e).health -= 1;
-            } //TODO else if (hasHealth) {health -= damage}
+                //TODO else if (hasHealth) {health -= damage}
+            }
         }
+    }
+
+    // TODO: to be moved into grid class
+    private IntBag filterEntities(Vector3 position, ComponentMapper<? extends Component> mapComponent) {
+        int cellIndex = grid.getCellIndex(position);
+        IntBag entities = grid.getEntities(cellIndex);
+        IntBag matchingEntities = new IntBag();
+        for (int e : entities.getData()) {
+            if (mapComponent.has(e)) {
+                matchingEntities.add(e);
+            }
+        }
+        return matchingEntities;
     }
 
     private void playSoundDropBomb() {
