@@ -159,6 +159,7 @@ public class BombFactory implements IEntityFactory {
         if (range > 0) {
             IntBag entities = grid.getEntities(grid.getCellIndex(newPos));
             for (int e : entities.getData()) {
+                if(e == 0){continue;} // It detects entity 0 on every getCellIndex call
                 if (mapSolid.has(e)) {
                     System.out.println("SOLID");
                     System.out.println(grid.getCellIndex(newPos));
