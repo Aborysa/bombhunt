@@ -36,8 +36,6 @@ import com.bombhunt.game.services.graphics.SpriteHelper;
 
 public class BombFactory implements IEntityFactory {
 
-    private final float DURATION_EXPLOSION = 0.3f;
-
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<BombComponent> mapBomb;
@@ -58,7 +56,7 @@ public class BombFactory implements IEntityFactory {
 
     public BombFactory() {
         Assets asset_manager = Assets.getInstance();
-        asset_manager.get("textures/tilemap1.atlas",
+        region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
     }
 
@@ -106,15 +104,16 @@ public class BombFactory implements IEntityFactory {
         return 0;
     }
 
-    public int createBomb(Vector3 position, float timer) {
+    public int createBomb(Vector3 position) {
         final int e = world.create(bombArchetype);
+        BombComponent bombComponent = mapBomb.get(e);
         mapTransform.get(e).position = position;
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(region, 16, 4, 18, 6), 6 / timer);
+                SpriteHelper.createSprites(region, 16, 4, 18, 6), 6 / bombComponent.timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         mapGrid.get(e).grid = grid;
-        setUpTimerBomb(e, timer);
+        setUpTimerBomb(e, bombComponent.timer);
         playSoundDropBomb();
         return e;
     }
@@ -134,16 +133,17 @@ public class BombFactory implements IEntityFactory {
     private void explodeBomb(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
         BombComponent bombComponent = mapBomb.get(e);
-        int explosionEntity = createMainExplosion(transformComponent.position, DURATION_EXPLOSION);
+        int explosionEntity = createMainExplosion(transformComponent.position);
         world.delete(e);
         decadeBomb(explosionEntity, bombComponent.range);
         playSoundExplosion();
     }
 
     private void decadeBomb(int e, int range) {
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
         TransformComponent transformComponent = mapTransform.get(e);
         TimerComponent timerComponent = mapTimer.get(e);
-        timerComponent.timer = DURATION_EXPLOSION;
+        timerComponent.timer = explosionComponent.time_between_decade;
         timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
@@ -171,9 +171,10 @@ public class BombFactory implements IEntityFactory {
             boolean finalHasSolid = hasSolid;
             range -= 1;
             int finalRange = range;
-            int explosionEntity = createSubExplosion(position, DURATION_EXPLOSION);
+            int explosionEntity = createSubExplosion(position);
+            ExplosionComponent explosionComponent = mapExplosion.get(explosionEntity);
             TimerComponent timerComponent = mapTimer.get(explosionEntity);
-            timerComponent.timer = DURATION_EXPLOSION;
+            timerComponent.timer = explosionComponent.time_between_decade;
             timerComponent.listener = new EventListener() {
                 @Override
                 public boolean handle(Event event) {
@@ -202,8 +203,10 @@ public class BombFactory implements IEntityFactory {
         return false;
     }
 
-    private int createMainExplosion(Vector3 position, float duration) {
+    private int createMainExplosion(Vector3 position) {
         int e = world.create(explosionArchetype);
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
+        float duration = explosionComponent.duration;
         mapTransform.get(e).position = position;
         mapTransform.get(e).rotation = 90f * (float) Math.random();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
@@ -214,8 +217,8 @@ public class BombFactory implements IEntityFactory {
         return e;
     }
 
-    private int createSubExplosion(Vector3 position, float duration) {
-        int e = createMainExplosion(position, duration);
+    private int createSubExplosion(Vector3 position) {
+        int e = createMainExplosion(position);
         explosionDamage(position);
         return e;
     }

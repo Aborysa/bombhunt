@@ -7,4 +7,6 @@ import com.artemis.Component;
  */
 
 public class ExplosionComponent extends Component {
+    public float duration = 0.3f;
+    public float time_between_decade = 0.2f;
 }

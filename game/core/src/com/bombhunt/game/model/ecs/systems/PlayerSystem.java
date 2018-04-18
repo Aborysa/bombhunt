@@ -17,9 +17,6 @@ import com.bombhunt.game.model.ecs.factories.BombFactory;
 
 public class PlayerSystem extends IteratingSystem {
 
-    private float COOLDOWN_BOMB = 1;
-    private float BOMB_TIMER = 3;
-
     private World box2d;
     private ComponentMapper<Box2dComponent> mapBox2D;
     private ComponentMapper<TransformComponent> mapTransform;
@@ -62,8 +59,8 @@ public class PlayerSystem extends IteratingSystem {
             float position_x = transformComponent.position.x;
             float position_y = transformComponent.position.y;
             Vector3 position = new Vector3(position_x, position_y, 0);
-            bombFactory.createBomb(position, BOMB_TIMER);
-            startCoolDownBomb(timerComponent);
+            bombFactory.createBomb(position);
+            startCoolDownBomb(timerComponent, playerComponent.cooldown_bomb);
             bombPlanted = false;
         }
     }
@@ -78,9 +75,9 @@ public class PlayerSystem extends IteratingSystem {
         }
     }
 
-    public void startCoolDownBomb(TimerComponent timerComponent) {
+    public void startCoolDownBomb(TimerComponent timerComponent, float timer) {
         coolDownBomb = true;
-        timerComponent.timer = COOLDOWN_BOMB;
+        timerComponent.timer = timer;
         timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
