@@ -189,7 +189,8 @@ public class BombFactory implements IEntityFactory {
     @NonNull
     private Boolean detect(Vector3 position, ComponentMapper<? extends Component> mapComponent) {
         IntBag entities = grid.getEntities(grid.getCellIndex(position));
-        for (int e : entities.getData()) {
+        for (int i = 0; i < entities.size(); i++) {
+            int e = entities.get(i);
             if (mapComponent.has(e)) {
                 return true;
             }
@@ -223,12 +224,11 @@ public class BombFactory implements IEntityFactory {
 
     private void explosionDamage(Vector3 position) {
         IntBag destroyableEntities = filterEntities(position, mapDestroyable);
-        for (int e: destroyableEntities.getData()) {
-            if (e != 0) {
-                mapDestroyable.get(e).health -= 1;
-                //TODO else if (hasHealth) {health -= damage}
-            }
+        for (int i = 0; i < destroyableEntities.size(); i++) {
+            int e = destroyableEntities.get(i);
+            mapDestroyable.get(e).health -= 1;
         }
+        //TODO else if (hasHealth) {health -= damage}
     }
 
     // TODO: to be moved into grid class

@@ -17,7 +17,7 @@ import com.bombhunt.game.model.ecs.factories.BombFactory;
 
 public class PlayerSystem extends IteratingSystem {
 
-    private float COOLDOWN_BOMB = 3;
+    private float COOLDOWN_BOMB = 1;
     private float BOMB_TIMER = 3;
 
     private World box2d;
