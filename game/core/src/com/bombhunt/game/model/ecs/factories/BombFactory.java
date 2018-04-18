@@ -10,6 +10,7 @@ import com.artemis.World;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -52,6 +53,14 @@ public class BombFactory implements IEntityFactory {
 
     private World world;
     private Grid grid;
+
+    private TextureRegion region;
+
+    public BombFactory() {
+        Assets asset_manager = Assets.getInstance();
+        asset_manager.get("textures/tilemap1.atlas",
+                TextureAtlas.class).findRegion("bomb_party_v4");
+    }
 
     @Override
     public void setWorld(World world) {
@@ -100,12 +109,8 @@ public class BombFactory implements IEntityFactory {
     public int createBomb(Vector3 position, float timer) {
         final int e = world.create(bombArchetype);
         mapTransform.get(e).position = position;
-        Assets asset_manager = Assets.getInstance();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(asset_manager.get("textures/tilemap1.atlas",
-                        TextureAtlas.class).findRegion("bomb_party_v4"),
-                        16, 4, 18, 6),
-                6 / timer);
+                SpriteHelper.createSprites(region, 16, 4, 18, 6), 6 / timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         mapGrid.get(e).grid = grid;
@@ -184,9 +189,9 @@ public class BombFactory implements IEntityFactory {
         }
     }
 
-    // TODO: Should be moved into grid class
     @NonNull
     private Boolean detect(Vector3 position, ComponentMapper<? extends Component> mapComponent) {
+        // TODO: Should be moved into grid class
         IntBag entities = grid.getEntities(grid.getCellIndex(position));
         for (int i = 0; i < entities.size(); i++) {
             int e = entities.get(i);
@@ -201,12 +206,8 @@ public class BombFactory implements IEntityFactory {
         int e = world.create(explosionArchetype);
         mapTransform.get(e).position = position;
         mapTransform.get(e).rotation = 90f * (float) Math.random();
-        Assets asset_manager = Assets.getInstance();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(asset_manager.get("textures/tilemap1.atlas",
-                        TextureAtlas.class).findRegion("bomb_party_v4"),
-                        16, 4, 13, 3),
-                3 / duration);
+                SpriteHelper.createSprites(region, 16, 4, 13, 3), 3 / duration);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         mapGrid.get(e).grid = grid;
@@ -243,8 +244,8 @@ public class BombFactory implements IEntityFactory {
         //TODO else if (hasHealth) {health -= damage}
     }
 
-    // TODO: to be moved into grid class
     private IntBag filterEntities(Vector3 position, ComponentMapper<? extends Component> mapComponent) {
+        // TODO: to be moved into grid class
         int cellIndex = grid.getCellIndex(position);
         IntBag entities = grid.getEntities(cellIndex);
         IntBag matchingEntities = new IntBag();
