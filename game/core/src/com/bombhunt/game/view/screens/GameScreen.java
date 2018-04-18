@@ -40,6 +40,7 @@ import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.model.ecs.factories.WallFactory;
 import com.bombhunt.game.model.ecs.systems.BombSystem;
 import com.bombhunt.game.model.ecs.systems.DestroyableSystem;
+import com.bombhunt.game.model.ecs.systems.DurationSystem;
 import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.model.ecs.systems.GridSystem;
 import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
@@ -239,6 +240,7 @@ public class GameScreen extends BasicView {
         BombSystem bombSystem = new BombSystem(bombFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem();
         TimerSystem timerSystem = new TimerSystem();
+        DurationSystem durationSystem = new DurationSystem();
         GridSystem gridSystem = new GridSystem();
         DestroyableSystem destroyableSystem = new DestroyableSystem(box2d);
 
@@ -249,6 +251,7 @@ public class GameScreen extends BasicView {
                 .with(bombSystem)
                 .with(explosionSystem)
                 .with(timerSystem)
+                .with(durationSystem)
                 .with(gridSystem)
                 .with(destroyableSystem)
                 .build();
@@ -320,7 +323,7 @@ public class GameScreen extends BasicView {
             accTime -= 1f / TPS;
             tick++;
             if (tick % TPS == 0) {
-                System.out.println(Gdx.graphics.getFramesPerSecond() + " : " + tick + " : " + tick / gameTime);
+                //System.out.println(Gdx.graphics.getFramesPerSecond() + " : " + tick + " : " + tick / gameTime);
             }
         }
     }

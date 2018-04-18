@@ -19,6 +19,7 @@ import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.DestroyableComponent;
+import com.bombhunt.game.model.ecs.components.DurationComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.SolidComponent;
@@ -35,12 +36,14 @@ import com.bombhunt.game.services.graphics.SpriteHelper;
 
 public class BombFactory implements IEntityFactory {
 
-    private final float DURATION_EXPLOSION = 0.3f;
+    private final float TIMER_EXPLOSION = 0.1f;
+    private final float DURATION_EXPLOSION = 0.2f;
 
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<BombComponent> mapBomb;
     private ComponentMapper<TimerComponent> mapTimer;
+    private ComponentMapper<DurationComponent> mapDuration;
     private ComponentMapper<AnimationComponent> mapAnimation;
     private ComponentMapper<ExplosionComponent> mapExplosion;
     private ComponentMapper<GridPositionComponent> mapGrid;
@@ -62,6 +65,7 @@ public class BombFactory implements IEntityFactory {
         mapSprite = world.getMapper(SpriteComponent.class);
         mapBomb = world.getMapper(BombComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
+        mapDuration = world.getMapper(DurationComponent.class);
         mapExplosion = world.getMapper(ExplosionComponent.class);
         mapGrid = world.getMapper(GridPositionComponent.class);
         mapSolid = world.getMapper(SolidComponent.class);
@@ -82,6 +86,7 @@ public class BombFactory implements IEntityFactory {
                 .add(AnimationComponent.class)
                 .add(ExplosionComponent.class)
                 .add(TimerComponent.class)
+                .add(DurationComponent.class)
                 .add(GridPositionComponent.class)
                 .build(world);
     }
@@ -138,7 +143,7 @@ public class BombFactory implements IEntityFactory {
     private void decadeBomb(int e, int range) {
         TransformComponent transformComponent = mapTransform.get(e);
         TimerComponent timerComponent = mapTimer.get(e);
-        timerComponent.timer = DURATION_EXPLOSION;
+        timerComponent.timer = TIMER_EXPLOSION;
         timerComponent.listener = new EventListener() {
             @Override
             public boolean handle(Event event) {
@@ -149,7 +154,7 @@ public class BombFactory implements IEntityFactory {
                 for (Vector3 dir : dirs) {
                     chainExplosion(transformComponent.position, dir, range);
                 }
-                world.delete(e);
+                //world.delete(e);
                 return true;
             }
         };
@@ -168,14 +173,14 @@ public class BombFactory implements IEntityFactory {
             int finalRange = range;
             int explosionEntity = createSubExplosion(position, DURATION_EXPLOSION);
             TimerComponent timerComponent = mapTimer.get(explosionEntity);
-            timerComponent.timer = DURATION_EXPLOSION;
+            timerComponent.timer = TIMER_EXPLOSION;
             timerComponent.listener = new EventListener() {
                 @Override
                 public boolean handle(Event event) {
                     if (finalRange > 0 && !finalHasSolid) {
                         chainExplosion(position, direction, finalRange);
                     }
-                    world.delete(explosionEntity);
+                    // world.delete(explosionEntity);
                     return true;
                 }
             };
@@ -184,9 +189,9 @@ public class BombFactory implements IEntityFactory {
         }
     }
 
-    // TODO: Should be moved into grid class
     @NonNull
     private Boolean detect(Vector3 position, ComponentMapper<? extends Component> mapComponent) {
+        // TODO: Should be moved into grid class
         IntBag entities = grid.getEntities(grid.getCellIndex(position));
         for (int i = 0; i < entities.size(); i++) {
             int e = entities.get(i);
@@ -210,21 +215,26 @@ public class BombFactory implements IEntityFactory {
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         mapGrid.get(e).grid = grid;
+        setUpDurationExplosion(e, duration);
         return e;
+    }
+
+    private void setUpDurationExplosion(int e, float duration) {
+        DurationComponent durationComponent = mapDuration.get(e);
+        durationComponent.timer = duration;
+        durationComponent.listener = new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                world.delete(e);
+                return true;
+            }
+        };
     }
 
     private int createSubExplosion(Vector3 position, float duration) {
         int e = createMainExplosion(position, duration);
         explosionDamage(position);
         return e;
-    }
-
-    private void explosionDamage(Vector3 position) {
-        IntBag bombsEntities = filterEntities(position, mapBomb);
-        for (int i = 0; i < bombsEntities.size(); i++) {
-            int e = bombsEntities.get(i);
-            explodeBomb(e);
-        }
     }
 
     private void playSoundExplosion() {
@@ -240,11 +250,19 @@ public class BombFactory implements IEntityFactory {
             int e = destroyableEntities.get(i);
             mapDestroyable.get(e).health -= 1;
         }
+    }
+
+    private void explosionDamage(Vector3 position) {
+        IntBag bombsEntities = filterEntities(position, mapBomb);
+        for (int i = 0; i < bombsEntities.size(); i++) {
+            int e = bombsEntities.get(i);
+            explodeBomb(e);
+        }
         //TODO else if (hasHealth) {health -= damage}
     }
 
-    // TODO: to be moved into grid class
     private IntBag filterEntities(Vector3 position, ComponentMapper<? extends Component> mapComponent) {
+        // TODO: to be moved into grid class
         int cellIndex = grid.getCellIndex(position);
         IntBag entities = grid.getEntities(cellIndex);
         IntBag matchingEntities = new IntBag();
