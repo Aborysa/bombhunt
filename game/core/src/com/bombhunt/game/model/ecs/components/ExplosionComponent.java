@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Vector3;
  */
 
 public class ExplosionComponent extends Component {
-    public float duration = 0.5f;
-    public int range = 5;
+    public float duration = 0.3f;
+    public int range = 1;
     public boolean is_decaded = false;
     public Vector3 direction = null;
     public float time_decade = 0.2f; //must be lower than duration

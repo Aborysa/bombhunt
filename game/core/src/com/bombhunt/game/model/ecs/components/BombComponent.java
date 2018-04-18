@@ -7,5 +7,6 @@ import com.artemis.Component;
  */
 
 public class BombComponent extends Component {
-    public float timer = 2f;
+    public float timer = 3f;
+    public float ttl_timer = timer;
 }

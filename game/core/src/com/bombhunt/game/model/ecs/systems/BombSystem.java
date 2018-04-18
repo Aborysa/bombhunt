@@ -46,8 +46,9 @@ public class BombSystem extends IteratingSystem {
     protected void process(int e) {
         float delta = world.getDelta();
         BombComponent bombComponent = mapBomb.get(e);
-        bombComponent.timer -= delta;
-        if (bombComponent.timer <= 0) {
+        bombComponent.ttl_timer -= delta;
+        if (bombComponent.ttl_timer <= 0) {
+            bombComponent.ttl_timer = bombComponent.timer;
             explodeBomb(e);
         }
     }
