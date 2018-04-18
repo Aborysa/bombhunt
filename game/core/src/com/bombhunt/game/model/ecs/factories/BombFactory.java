@@ -129,10 +129,10 @@ public class BombFactory implements IEntityFactory {
     private void explodeBomb(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
         BombComponent bombComponent = mapBomb.get(e);
-        int explosionEntity = createExplosion(transformComponent.position, DURATION_EXPLOSION);
+        int explosionEntity = createMainExplosion(transformComponent.position, DURATION_EXPLOSION);
+        world.delete(e);
         decadeBomb(explosionEntity, bombComponent.range);
         playSoundExplosion();
-        world.delete(e);
     }
 
     private void decadeBomb(int e, int range) {
@@ -166,7 +166,7 @@ public class BombFactory implements IEntityFactory {
             boolean finalHasSolid = hasSolid;
             range -= 1;
             int finalRange = range;
-            int explosionEntity = createExplosion(position, DURATION_EXPLOSION);
+            int explosionEntity = createSubExplosion(position, DURATION_EXPLOSION);
             TimerComponent timerComponent = mapTimer.get(explosionEntity);
             timerComponent.timer = DURATION_EXPLOSION;
             timerComponent.listener = new EventListener() {
@@ -197,7 +197,7 @@ public class BombFactory implements IEntityFactory {
         return false;
     }
 
-    private int createExplosion(Vector3 position, float duration) {
+    private int createMainExplosion(Vector3 position, float duration) {
         int e = world.create(explosionArchetype);
         mapTransform.get(e).position = position;
         mapTransform.get(e).rotation = 90f * (float) Math.random();
@@ -210,8 +210,21 @@ public class BombFactory implements IEntityFactory {
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         mapGrid.get(e).grid = grid;
-        // explosionDamage for playerHealth
         return e;
+    }
+
+    private int createSubExplosion(Vector3 position, float duration) {
+        int e = createMainExplosion(position, duration);
+        explosionDamage(position);
+        return e;
+    }
+
+    private void explosionDamage(Vector3 position) {
+        IntBag bombsEntities = filterEntities(position, mapBomb);
+        for (int i = 0; i < bombsEntities.size(); i++) {
+            int e = bombsEntities.get(i);
+            explodeBomb(e);
+        }
     }
 
     private void playSoundExplosion() {
