@@ -70,7 +70,6 @@ public class BombSystem extends IteratingSystem {
                 .build(world);
         int e = world.create(explosionArchetype);
         ExplosionComponent explosionComponent = mapExplosion.get(e);
-        //explosionComponent.is_decaded = true;
         float duration = explosionComponent.duration;
         mapTransform.get(e).position = position;
         mapTransform.get(e).rotation = 90f * (float) Math.random();

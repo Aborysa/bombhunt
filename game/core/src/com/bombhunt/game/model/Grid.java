@@ -143,7 +143,7 @@ public class Grid {
         return false;
     }
 
-    private IntBag filterEntities(Vector3 position, ComponentMapper<? extends Component> mapComponent) {
+    public IntBag filterEntities(Vector3 position, ComponentMapper<? extends Component> mapComponent) {
         int cellIndex = getCellIndex(position);
         IntBag entities = getEntities(cellIndex);
         IntBag matchingEntities = new IntBag();

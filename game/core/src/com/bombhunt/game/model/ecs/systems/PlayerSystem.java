@@ -35,11 +35,11 @@ public class PlayerSystem extends IteratingSystem {
     private ComponentMapper<GridPositionComponent> mapGrid;
     private ComponentMapper<BombComponent> mapBomb;
 
-    // TODO: move to component...
+    private TextureRegion region;
+
+    // IMPORTANT: For controller interactions
     private Vector3 last_position = new Vector3();
     private Vector2 last_orientation = new Vector2();
-
-    private TextureRegion region;
     private boolean bombPlanted = false;
 
     public PlayerSystem(World box2d) {
@@ -60,25 +60,22 @@ public class PlayerSystem extends IteratingSystem {
         PlayerComponent playerComponent = mapPlayer.get(e);
 
         // TODO: use velocity component for that?
+        // TODO: to be wrapped in a method
         Body body = box2dComponent.body;
         Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
         body.setLinearVelocity(velocity);
         last_position = transformComponent.position.cpy();
 
+        updatePlantedBomb(playerComponent);
+        updateCoolDownBomb(playerComponent);
+    }
+
+    private void updatePlantedBomb(PlayerComponent playerComponent) {
         if (bombPlanted) {
             bombPlanted = false;
             if (!playerComponent.isCooledDownBomb) {
                 playerComponent.isCooledDownBomb = true;
                 createBomb();
-            }
-        }
-
-        if (playerComponent.isCooledDownBomb) {
-            float delta = world.getDelta();
-            playerComponent.ttl_cooldown_bomb -= delta;
-            if (playerComponent.ttl_cooldown_bomb <= 0) {
-                playerComponent.isCooledDownBomb = false;
-                playerComponent.ttl_cooldown_bomb = playerComponent.cooldown_bomb;
             }
         }
     }
@@ -111,6 +108,17 @@ public class PlayerSystem extends IteratingSystem {
         Sound sound = asset_manager.get("drop.wav", Sound.class);
         AudioPlayer audioPlayer = AudioPlayer.getInstance();
         audioPlayer.playSound(sound);
+    }
+
+    private void updateCoolDownBomb(PlayerComponent playerComponent) {
+        if (playerComponent.isCooledDownBomb) {
+            float delta = world.getDelta();
+            playerComponent.ttl_cooldown_bomb -= delta;
+            if (playerComponent.ttl_cooldown_bomb <= 0) {
+                playerComponent.isCooledDownBomb = false;
+                playerComponent.ttl_cooldown_bomb = playerComponent.cooldown_bomb;
+            }
+        }
     }
 
     public void move(Vector2 new_orientation) {

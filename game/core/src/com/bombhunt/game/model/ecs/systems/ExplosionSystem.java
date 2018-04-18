@@ -5,12 +5,15 @@ import com.artemis.ArchetypeBuilder;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
+import com.artemis.utils.IntBag;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
+import com.bombhunt.game.model.ecs.components.BombComponent;
+import com.bombhunt.game.model.ecs.components.DestroyableComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.SolidComponent;
@@ -24,6 +27,8 @@ public class ExplosionSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<ExplosionComponent> mapExplosion;
     private ComponentMapper<TimerComponent> mapTimer;
+    private ComponentMapper<BombComponent> mapBomb;
+    private ComponentMapper<DestroyableComponent> mapDestroyable;
     private ComponentMapper<SolidComponent> mapSolid;
     private ComponentMapper<AnimationComponent> mapAnimation;
     private ComponentMapper<SpriteComponent> mapSprite;
@@ -57,28 +62,30 @@ public class ExplosionSystem extends IteratingSystem {
             explosionComponent.ttl_decade -= delta;
             if (explosionComponent.ttl_decade <= 0) {
                 if (explosionComponent.range > 0) {
-                    // TODO: check if next is solid
-                    //TransformComponent transformComponent = mapTransform.get(e);
-                    //Boolean hasSolid = grid.detect(transformComponent.position, mapSolid);
-                    //if (!hasSolid) {
                     TransformComponent transformComponent = mapTransform.get(e);
                     GridPositionComponent gridPositionComponent = mapGrid.get(e);
                     Grid grid = gridPositionComponent.grid;
                     Vector3 offset = explosionComponent.direction.cpy().scl(grid.getCellSize());
                     Vector3 prev_position = transformComponent.position;
                     Vector3 position = prev_position.cpy().add(offset);
-                    int new_e = createExplosion(position);
-                    ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
-                    new_explosionComponent.direction = explosionComponent.direction;
-                    new_explosionComponent.is_decaded = true;
-                    new_explosionComponent.range = explosionComponent.range - 1;
-                    explosionComponent.range = 0;
-                    //}
+                    Boolean hasSolid = grid.detect(position, mapSolid);
+                    if (!hasSolid) {
+                        int new_e = createExplosion(position);
+                        ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
+                        new_explosionComponent.direction = explosionComponent.direction;
+                        new_explosionComponent.is_decaded = true;
+                        new_explosionComponent.range = explosionComponent.range - 1;
+                        explosionComponent.range = 0;
+                    } else {
+                        if (destructionDamage(e, position)) {
+                            explosionComponent.range = 0;
+                        }
+                    }
                 }
             }
         }
 
-        // TODO: check for damage in each loop
+        explosionDamage(e);
 
         explosionComponent.duration -= delta;
         if (explosionComponent.duration <= 0) {
@@ -95,14 +102,21 @@ public class ExplosionSystem extends IteratingSystem {
                 new Vector3(0, -1, 0),
                 new Vector3(-1, 0, 0)};
         for (Vector3 dir : dirs) {
-            // TODO: check if solid before creating
             Vector3 offset = dir.cpy().scl(grid.getCellSize());
             Vector3 prev_position = transformComponent.position;
             Vector3 position = prev_position.cpy().add(offset);
-            int new_e = createExplosion(position);
-            ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
-            new_explosionComponent.direction = dir;
-            new_explosionComponent.is_decaded = true;
+            Boolean hasSolid = grid.detect(position, mapSolid);
+            if (!hasSolid) {
+                int new_e = createExplosion(position);
+                ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
+                new_explosionComponent.direction = dir;
+                new_explosionComponent.is_decaded = true;
+            } else {
+                if (destructionDamage(e, position)) {
+                    ExplosionComponent explosionComponent = mapExplosion.get(e);
+                    explosionComponent.range = 0;
+                }
+            }
         }
     }
 
@@ -128,29 +142,28 @@ public class ExplosionSystem extends IteratingSystem {
         return e;
     }
 
-//
-//    private int createSubExplosion(Vector3 position) {
-//        int e = createMainExplosion(position);
-//        explosionDamage(position);
-//        return e;
-//    }
-//
-//    private void explosionDamage(Vector3 position) {
-//        IntBag bombsEntities = filterEntities(position, mapBomb);
-//        for (int i = 0; i < bombsEntities.size(); i++) {
-//            int e = bombsEntities.get(i);
-//            explodeBomb(e);
-//        }
-//    }
-//
-//    private void destructionDamage(Vector3 position) {
-//        IntBag destroyableEntities = filterEntities(position, mapDestroyable);
-//        for (int i = 0; i < destroyableEntities.size(); i++) {
-//            int e = destroyableEntities.get(i);
-//            mapDestroyable.get(e).health -= 1;
-//        }
-//        //TODO else if (hasHealth) {health -= damage}
-//    }
-//
+    private void explosionDamage(int e) {
+        TransformComponent transformComponent = mapTransform.get(e);
+        GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        Grid grid = gridPositionComponent.grid;
+        IntBag bombsEntities = grid.filterEntities(transformComponent.position, mapBomb);
+        for (int i = 0; i < bombsEntities.size(); i++) {
+            int bombEntity = bombsEntities.get(i);
+            BombComponent bombComponent = mapBomb.get(bombEntity);
+            bombComponent.timer = 0;
+        }
+        //TODO else if (hasHealth) {health -= damage}
+    }
+
+    private Boolean destructionDamage(int e, Vector3 position) {
+        GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        Grid grid = gridPositionComponent.grid;
+        IntBag destroyableEntities = grid.filterEntities(position, mapDestroyable);
+        for (int i = 0; i < destroyableEntities.size(); i++) {
+            int destroyableEntity = destroyableEntities.get(i);
+            mapDestroyable.get(destroyableEntity).health -= 1;
+        }
+        return destroyableEntities.size() != 0;
+    }
 
 }

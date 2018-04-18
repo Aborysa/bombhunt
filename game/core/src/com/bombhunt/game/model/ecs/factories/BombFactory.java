@@ -55,6 +55,7 @@
 //    private TextureRegion region;
 //
 //    public BombFactory() {
+            // TODO: reimplement for networking
 //        Assets asset_manager = Assets.getInstance();
 //        region = asset_manager.get("textures/tilemap1.atlas",
 //                TextureAtlas.class).findRegion("bomb_party_v4");
