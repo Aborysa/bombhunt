@@ -7,6 +7,7 @@ import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
@@ -20,20 +21,16 @@ public class GridSystem extends IteratingSystem {
     private ComponentMapper<GridPositionComponent> mapGridPosition;
     private ComponentMapper<Box2dComponent> mapBox2d;
 
-
     public GridSystem() {
         super(Aspect.all(TransformComponent.class, GridPositionComponent.class));
     }
-
 
     protected void process(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
         GridPositionComponent gridPositionComponent = mapGridPosition.get(e);
         Grid grid = gridPositionComponent.grid;
         Vector3 position = transformComponent.position;
-
         Vector2 pos2d = new Vector2(position.x, position.y).sub(grid.getCellSize() / 2, grid.getCellSize() / 2);
-
         // TODO: FILTER OVER MOVABLE OBJECTS ONLY (NO NEED TO LOOK AT WALLS PER EXAMPLE)
         Vector2 gridPosition = grid.getSnappedPosition(pos2d.cpy().add(grid.getCellSize() / 2, grid.getCellSize() / 2));
         int cellIndex = grid.getCellIndex(gridPosition);

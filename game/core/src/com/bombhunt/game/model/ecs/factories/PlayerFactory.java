@@ -14,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bombhunt.game.model.Grid;
+import com.bombhunt.game.model.ecs.components.GridPositionComponent;
+import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.services.physic.Collision;
@@ -32,27 +34,25 @@ public class PlayerFactory implements IEntityFactory {
 
     ComponentMapper<TransformComponent> mapTransform;
     ComponentMapper<SpriteComponent> mapSprite;
-    //ComponentMapper<VelocityComponent> mapVelocity;
     ComponentMapper<Box2dComponent> mapBox2d;
+    ComponentMapper<KillableComponent> mapKillable;
+    ComponentMapper<GridPositionComponent> mapGrid;
     ComponentMapper<PlayerComponent> mapPlayerInput;
     ComponentMapper<TimerComponent> mapTimer;
 
 
     public int createPlayer(Vector3 pos, Decal sprite) {
         int e = world.create(playerArchtype);
-
         mapSprite.get(e).sprite = sprite;
         mapTransform.get(e).position.set(pos);
         Body body = Collision.createBody(Collision.dynamicDef, Collision.wallFixture);
         PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
         shape.setAsBox((sprite.getWidth() / 2 - 0.3f) * Collision.worldTobox2d, (sprite.getHeight() / 2f - 0.3f) * Collision.worldTobox2d);
         body.setTransform(new Vector2(pos.x, pos.y).scl(Collision.worldTobox2d), 0);
-
         // prevents the player from rotating about when it collides with other objects.
         body.setFixedRotation(true);
         mapBox2d.get(e).body = body;
-
-
+        mapGrid.get(e).snapToGrid = false;
         return e;
     }
 
@@ -61,14 +61,11 @@ public class PlayerFactory implements IEntityFactory {
         TiledMapTile tile = cell.getTile();
         TextureRegion tex = tile.getTextureRegion();
         float rotation = 90 * cell.getRotation();
-
         Decal decal = Decal.newDecal(tex, true);
-        Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y, depth).add(new Vector3(layer.getTileWidth() / 2f, layer.getTileHeight() / 2f, 0));
+        Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y,
+                depth).add(new Vector3(layer.getTileWidth() / 2f, layer.getTileHeight() / 2f, 0));
         int e = createPlayer(pos, decal);
-
         mapTransform.get(e).rotation = rotation;
-
-
         return e;
     }
 
@@ -99,25 +96,22 @@ public class PlayerFactory implements IEntityFactory {
 
     public void setWorld(World world) {
         this.world = world;
-
         mapTransform = world.getMapper(TransformComponent.class);
         mapSprite = world.getMapper(SpriteComponent.class);
-        //mapVelocity = world.getMapper(VelocityComponent.class);
         mapBox2d = world.getMapper(Box2dComponent.class);
+        mapKillable = world.getMapper(KillableComponent.class);
+        mapGrid = world.getMapper(GridPositionComponent.class);
         mapPlayerInput = world.getMapper(PlayerComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
-
-
         playerArchtype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
                 .add(SpriteComponent.class)
-                //.add(VelocityComponent.class)
                 .add(Box2dComponent.class)
+                .add(KillableComponent.class)
+                .add(GridPositionComponent.class)
                 .add(PlayerComponent.class)
                 .add(TimerComponent.class)
                 .build(world);
-
-
     }
 
     @Override

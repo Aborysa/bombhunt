@@ -16,6 +16,7 @@ import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
+import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
@@ -30,6 +31,7 @@ public class PlayerSystem extends IteratingSystem {
     private ComponentMapper<Box2dComponent> mapBox2D;
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<PlayerComponent> mapPlayer;
+    private ComponentMapper<KillableComponent> mapKillable;
     private ComponentMapper<AnimationComponent> mapAnimation;
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<GridPositionComponent> mapGrid;

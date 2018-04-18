@@ -16,6 +16,7 @@ import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.DestroyableComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
+import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.SolidComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
@@ -29,6 +30,7 @@ public class ExplosionSystem extends IteratingSystem {
     private ComponentMapper<TimerComponent> mapTimer;
     private ComponentMapper<BombComponent> mapBomb;
     private ComponentMapper<DestroyableComponent> mapDestroyable;
+    private ComponentMapper<KillableComponent> mapKillable;
     private ComponentMapper<SolidComponent> mapSolid;
     private ComponentMapper<AnimationComponent> mapAnimation;
     private ComponentMapper<SpriteComponent> mapSprite;
@@ -86,6 +88,7 @@ public class ExplosionSystem extends IteratingSystem {
         }
 
         explosionDamage(e);
+        playerDamage(e);
 
         explosionComponent.duration -= delta;
         if (explosionComponent.duration <= 0) {
@@ -153,7 +156,20 @@ public class ExplosionSystem extends IteratingSystem {
             BombComponent bombComponent = mapBomb.get(bombEntity);
             bombComponent.ttl_timer = 0;
         }
-        //TODO else if (hasHealth) {health -= damage}
+    }
+
+    private void playerDamage(int e) {
+        TransformComponent transformComponent = mapTransform.get(e);
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
+        GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        Grid grid = gridPositionComponent.grid;
+        IntBag killableEntities = grid.filterEntities(transformComponent.position, mapKillable);
+        for (int i = 0; i < killableEntities.size(); i++) {
+            System.out.println("HIT");
+            int killableEntity = killableEntities.get(i);
+            KillableComponent killableComponent = mapKillable.get(killableEntity);
+            killableComponent.health -= explosionComponent.damage;
+        }
     }
 
     private Boolean destructionDamage(int e, Vector3 position) {

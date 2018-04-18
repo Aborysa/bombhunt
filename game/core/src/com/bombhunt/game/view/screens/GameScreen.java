@@ -41,6 +41,7 @@ import com.bombhunt.game.model.ecs.systems.BombSystem;
 import com.bombhunt.game.model.ecs.systems.DestroyableSystem;
 import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.model.ecs.systems.GridSystem;
+import com.bombhunt.game.model.ecs.systems.KillableSystem;
 import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.model.ecs.systems.PlayerSystem;
 import com.bombhunt.game.model.ecs.systems.SpriteSystem;
@@ -236,6 +237,7 @@ public class GameScreen extends BasicView {
         TimerSystem timerSystem = new TimerSystem();
         GridSystem gridSystem = new GridSystem();
         DestroyableSystem destroyableSystem = new DestroyableSystem(box2d);
+        KillableSystem killableSystem = new KillableSystem(box2d);
 
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem)
@@ -246,6 +248,7 @@ public class GameScreen extends BasicView {
                 .with(timerSystem)
                 .with(gridSystem)
                 .with(destroyableSystem)
+                .with(killableSystem)
                 .build();
         world = new World(config);
         for (IEntityFactory factory : factoryMap.values()) {
