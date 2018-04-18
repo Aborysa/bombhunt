@@ -165,10 +165,9 @@ public class ExplosionSystem extends IteratingSystem {
         Grid grid = gridPositionComponent.grid;
         IntBag killableEntities = grid.filterEntities(transformComponent.position, mapKillable);
         for (int i = 0; i < killableEntities.size(); i++) {
-            System.out.println("HIT");
             int killableEntity = killableEntities.get(i);
             KillableComponent killableComponent = mapKillable.get(killableEntity);
-            killableComponent.health -= explosionComponent.damage;
+            killableComponent.damage_received += explosionComponent.damage;
         }
     }
 

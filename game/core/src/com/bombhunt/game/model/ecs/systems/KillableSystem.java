@@ -25,10 +25,20 @@ public class KillableSystem extends IteratingSystem {
     @Override
     protected void process(int e) {
         KillableComponent killableComponent = mapKillable.get(e);
+        float delta = world.getDelta();
+
+        killableComponent.ttl_timer -= delta;
+        if (killableComponent.ttl_timer <= 0) {
+            System.out.println("DAMAGE RECEIVED");
+            System.out.println(killableComponent.damage_received);
+            killableComponent.ttl_timer = killableComponent.timer_damage;
+            killableComponent.health -= killableComponent.damage_received;
+        }
         if (killableComponent.health <= 0) {
             System.out.println("YOU ARE DEAD KEVEN");
             box2d.destroyBody(mapBox2d.get(e).body);
             world.delete(e);
         }
+        killableComponent.damage_received = 0;
     }
 }
