@@ -3,43 +3,50 @@ package com.bombhunt.game.model.ecs.systems;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.bombhunt.game.model.ecs.components.AnimationComponent;
+import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
+import com.bombhunt.game.model.ecs.components.GridPositionComponent;
+import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
+import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
+import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.services.audio.AudioPlayer;
 
 public class PlayerSystem extends IteratingSystem {
 
-    private float COOLDOWN_BOMB = 3;
-    private float BOMB_TIMER = 3;
-
-    private World box2d;
     private ComponentMapper<Box2dComponent> mapBox2D;
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<PlayerComponent> mapPlayer;
-    private ComponentMapper<TimerComponent> mapTimer;
-    //private ComponentMapper<VelocityComponent> mapVelocity;
+    private ComponentMapper<KillableComponent> mapKillable;
+    private ComponentMapper<AnimationComponent> mapAnimation;
+    private ComponentMapper<SpriteComponent> mapSprite;
+    private ComponentMapper<GridPositionComponent> mapGrid;
+    private ComponentMapper<BombComponent> mapBomb;
 
     private BombFactory bombFactory;
-    private Vector2 last_orientation = new Vector2();
-    private Boolean coolDownBomb = false;
-    private Boolean bombPlanted = false;
 
-    public PlayerSystem(World box2d, BombFactory bombFactory) {
-        // TODO: should create instance here instead of having to pass them...
+    // IMPORTANT: For controller interactions
+    private Vector3 last_position = new Vector3();
+    private Vector2 last_orientation = new Vector2();
+    private boolean bombPlanted = false;
+
+    public PlayerSystem(BombFactory bombFactory) {
         super(Aspect.all(
                 TransformComponent.class,
                 Box2dComponent.class,
                 PlayerComponent.class,
                 TimerComponent.class));
-        this.box2d = box2d;
         this.bombFactory = bombFactory;
     }
 
@@ -47,21 +54,43 @@ public class PlayerSystem extends IteratingSystem {
         Box2dComponent box2dComponent = mapBox2D.get(e);
         TransformComponent transformComponent = mapTransform.get(e);
         PlayerComponent playerComponent = mapPlayer.get(e);
-        TimerComponent timerComponent = mapTimer.get(e);
-        //VelocityComponent velocityComponent = mapVelocity.get(e);
-
         // TODO: use velocity component for that?
+        // TODO: to be wrapped in a method
         Body body = box2dComponent.body;
         Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
         body.setLinearVelocity(velocity);
+        last_position = transformComponent.position.cpy();
+        updatePlantedBomb(playerComponent);
+        updateCoolDownBomb(playerComponent);
+    }
 
+    private void updatePlantedBomb(PlayerComponent playerComponent) {
         if (bombPlanted) {
-            float position_x = transformComponent.position.x;
-            float position_y = transformComponent.position.y;
-            Vector3 position = new Vector3(position_x, position_y, 0);
-            bombFactory.createBomb(position, BOMB_TIMER);
-            startCoolDownBomb(timerComponent);
             bombPlanted = false;
+            if (!playerComponent.isCooledDownBomb) {
+                playerComponent.isCooledDownBomb = true;
+                Vector3 position = last_position.cpy();
+                bombFactory.createBomb(position);
+                playSoundDropBomb();
+            }
+        }
+    }
+
+    private void playSoundDropBomb() {
+        Assets asset_manager = Assets.getInstance();
+        Sound sound = asset_manager.get("drop.wav", Sound.class);
+        AudioPlayer audioPlayer = AudioPlayer.getInstance();
+        audioPlayer.playSound(sound);
+    }
+
+    private void updateCoolDownBomb(PlayerComponent playerComponent) {
+        if (playerComponent.isCooledDownBomb) {
+            float delta = world.getDelta();
+            playerComponent.ttl_cooldown_bomb -= delta;
+            if (playerComponent.ttl_cooldown_bomb <= 0) {
+                playerComponent.isCooledDownBomb = false;
+                playerComponent.ttl_cooldown_bomb = playerComponent.cooldown_bomb;
+            }
         }
     }
 
@@ -69,26 +98,11 @@ public class PlayerSystem extends IteratingSystem {
         last_orientation = new_orientation;
     }
 
+    public Vector3 getPosition() {
+        return last_position;
+    }
+
     public void plantBomb() {
-        if (!coolDownBomb) {
-            bombPlanted = true;
-        }
+        bombPlanted = true;
     }
-
-    public void startCoolDownBomb(TimerComponent timerComponent) {
-        coolDownBomb = true;
-        timerComponent.timer = COOLDOWN_BOMB;
-        timerComponent.listener = new EventListener() {
-            @Override
-            public boolean handle(Event event) {
-                stopCoolDownBomb();
-                return true;
-            }
-        };
-    }
-
-    public void stopCoolDownBomb() {
-        coolDownBomb = false;
-    }
-
 }

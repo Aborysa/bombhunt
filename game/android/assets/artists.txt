@@ -5,6 +5,7 @@ Credits Song - DeltaBreaker
 Button Sound -  Dusty Room
 Colored Spinning Bomb - Code Inferno Games
 Features Skin - Raymond "Raeleus" Buckley
+Gameplay Assets - usr_share
 
 -- FreeSound.com --
 Access Denied Sound - phatkatz4
