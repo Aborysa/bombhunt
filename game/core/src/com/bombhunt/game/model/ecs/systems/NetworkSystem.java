@@ -82,12 +82,15 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         for(int i = 0; i < entities.size(); i++){
             NetworkComponent netComponent = mapNetwork.get(ids[i]);
             netComponent.localTurn++;
-            System.out.println(netComponent.localTurn + " " +  netComponent.owner);
-            if(netComponent.localTurn % 4 == 0 && !netComponent.owner.equals("LOCAL")){
+
+            entityIdMap.put(netComponent.sequenceNumber, ids[i]);
+
+            if(netComponent.isLocal && netComponent.localTurn % 4 == 0 && !netComponent.owner.equals("LOCAL")){
                 Message m = new Message(new byte[512], "", 0);
                 m.putString("UPDATE_ENTITY");
                 m.getBuffer().putInt(netComponent.sequenceNumber);
                 m.putBox2d(mapBox2d.get(ids[i]));
+                //System.out.println("Sending: " + netComponent.sequenceNumber + " " + ids[i]);
                 this.playServices.sendToAllReliably(m.getData());
             }
         }
@@ -103,8 +106,15 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             INetworkFactory factory = factories.get(what);
             int entity = factory.createFromMessage(message);
         } else if(type.equals("UPDATE_ENTITY")) {
-            int snum = entityIdMap.get(message.getBuffer().getInt());
-            message.getBox2d(mapBox2d.get(snum));
+
+            int seqNum = message.getBuffer().getInt();
+            if(entityIdMap.containsKey(seqNum)){
+                int e = entityIdMap.get(seqNum);
+                System.out.print("seq: " + seqNum);
+                System.out.println(" entity: " + e);
+                message.getBox2d(mapBox2d.get(e));
+            }
+            System.out.println();
         }
     }
 
