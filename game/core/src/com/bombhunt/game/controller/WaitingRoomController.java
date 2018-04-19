@@ -56,7 +56,7 @@ public class WaitingRoomController extends BasicController implements RoomListen
     public void pingRemote() {
         Message message = new Message(new byte[512],"",0);
         Random random = new Random();
-        int randomNumber = random.nextInt();
+        int randomNumber = random.nextInt() & Integer.MAX_VALUE;
         message.putString("RAN_NUM");
         message.getBuffer().putInt(randomNumber);
         sender.sendToAllReliably(message.getData());
