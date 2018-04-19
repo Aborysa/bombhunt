@@ -14,8 +14,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import sun.nio.cs.US_ASCII;
-
 public class Message {
     private byte[] data;
     private ByteBuffer buffer;
@@ -44,19 +42,15 @@ public class Message {
 
 
     public String getString(){
-        byte[] chars = new byte[128];
-        byte next = buffer.get();
-        int idx = 0;
-        while(next != '\0'){
-            chars[idx++] = next;
-            next = buffer.get();
-        }
+        int len = buffer.getInt();
+        byte[] chars = new byte[len];
+        buffer.get(chars, 0, len);
         return new String(chars, StandardCharsets.UTF_8);
     }
 
     public void putString(String str){
+        buffer.putInt(str.length());
         buffer.put(str.getBytes(StandardCharsets.UTF_8));
-        buffer.put((byte)'\0');
     }
 
     public void putTransform(TransformComponent transformComponent){
