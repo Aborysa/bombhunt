@@ -11,8 +11,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
+import com.bombhunt.game.model.ecs.components.ExplosionComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
-import com.bombhunt.game.model.ecs.components.NetworkComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.assets.Assets;
@@ -22,21 +22,20 @@ import com.bombhunt.game.services.graphics.SpriteHelper;
  * Created by erlin on 27.03.2018.
  */
 
-public class BombFactory implements IEntityFactory, INetworkFactory {
+public class ExplosionFactory implements IEntityFactory {
 
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<GridPositionComponent> mapGrid;
     private ComponentMapper<SpriteComponent> mapSprite;
-    private ComponentMapper<BombComponent> mapBomb;
     private ComponentMapper<AnimationComponent> mapAnimation;
-    private ComponentMapper<NetworkComponent> mapNetwork;
+    private ComponentMapper<ExplosionComponent> mapExplosion;
 
     private World world;
     private Grid grid;
-    private Archetype bombArchetype;
+    private Archetype explosionArchetype;
     private TextureRegion region;
 
-    public BombFactory() {
+    public ExplosionFactory() {
         Assets asset_manager = Assets.getInstance();
         region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
@@ -49,17 +48,15 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
         mapTransform = world.getMapper(TransformComponent.class);
         mapGrid = world.getMapper(GridPositionComponent.class);
         mapSprite = world.getMapper(SpriteComponent.class);
-        mapBomb = world.getMapper(BombComponent.class);
         mapAnimation = world.getMapper(AnimationComponent.class);
-        mapNetwork = world.getMapper(NetworkComponent.class);
+        mapExplosion = world.getMapper(ExplosionComponent.class);
 
-        bombArchetype = new ArchetypeBuilder()
+        explosionArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
                 .add(GridPositionComponent.class)
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
-                .add(BombComponent.class)
-                .add(NetworkComponent.class)
+                .add(ExplosionComponent.class)
                 .build(world);
     }
 
@@ -68,41 +65,18 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
         this.grid = grid;
     }
 
-    @Override
-    public int createFromMessage(String message) {
-        int e = createBomb(Vector3.Zero);
-
-        // TODO: to be adapted by network pull request after rebase
-//        NetworkComponent networkComponent = mapNetwork.get(e);
-//        message.getNetwork(networkComponent);
-//        message.getTransform(mapTransform.get(e));
-//        message.getTimer(mapTimer.get(e));
-//        networkComponent.owner = message.getSender();
-
-        // TODO: THINK WE DONT HAVE TO PLAY THE SOUND
-        // purpose of sound was for user to know that a bomb just been planted
-        // playSoundDropBomb();
-        return e;
-    }
-
-    // TODO: delete if not used
-//    private void playSoundDropBomb() {
-//        Assets asset_manager = Assets.getInstance();
-//        Sound sound = asset_manager.get("drop.wav", Sound.class);
-//        AudioPlayer audioPlayer = AudioPlayer.getInstance();
-//        audioPlayer.playSound(sound);
-//    }
-
-    public int createBomb(Vector3 position) {
-        final int e = world.create(bombArchetype);
-        BombComponent bombComponent = mapBomb.get(e);
+    public int createExplosion(Vector3 position) {
+        int e = world.create(explosionArchetype);
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
+        float duration = explosionComponent.duration;
         mapTransform.get(e).position = position;
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
         gridPositionComponent.grid = grid;
-        //gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
+        gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
+        mapTransform.get(e).rotation = 90f * (float) Math.random();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(region, 16, 4, 18, 6),
-                6 / bombComponent.timer);
+                SpriteHelper.createSprites(region, 16, 4, 13, 3),
+                3 / duration);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         return e;

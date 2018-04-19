@@ -45,7 +45,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
     public NetworkSystem(HashMap<String, IEntityFactory> factories) {
         super(
-            Aspect.all(NetworkComponent.class).one(TransformComponent.class, ExplosionComponent.class, Box2dComponent.class )
+            Aspect.all(NetworkComponent.class).one(TransformComponent.class, ExplosionComponent.class, Box2dComponent.class)
         );
         this.netManager = NetworkManager.getInstance();
         this.netManager.openChannel(this, 50);
@@ -60,6 +60,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         netComponent.sequenceNumber = NetworkComponent.getNextId();
         entityIdMap.put(netComponent.sequenceNumber, entityId);
         System.out.println("Network component added " + " " + netComponent.owner + " " + netComponent.sequenceNumber);
+
     }
 
     @Override
@@ -95,18 +96,12 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             //int entity = factory.createFromNetwork(message);
         } else if(type == 20){
             int id = b.getInt();
-            message.getNetwork(mapNetwork.get(id));
-            if(mapTransform.has(id))
-                message.getTransform(mapTransform.get(id));
-
-            if(mapBox2d.has(id))
-                message.getBox2d(mapBox2d.get(id));
-
         }
     }
 
-    public void setSender(IPlayServices playService){
-      this.playServices = playService;
+
+    public void setSender(IPlayServices playService) {
+        this.playServices = playService;
     }
 
 }

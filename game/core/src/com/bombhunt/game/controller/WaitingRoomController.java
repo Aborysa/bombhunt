@@ -2,7 +2,6 @@ package com.bombhunt.game.controller;
 
 import com.artemis.utils.Sort;
 import com.bombhunt.game.BombHunt;
-import com.bombhunt.game.model.Player;
 import com.bombhunt.game.services.networking.IPlayServices;
 import com.bombhunt.game.services.networking.Message;
 import com.bombhunt.game.services.networking.NetworkManager;

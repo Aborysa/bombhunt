@@ -10,7 +10,7 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
 
 
 // System for moving sprites into place and dealing with animations for animated sprites
-public class SpriteSystem extends IteratingSystem{
+public class SpriteSystem extends IteratingSystem {
 
 
     private ComponentMapper<TransformComponent> mapTransform;
@@ -18,12 +18,12 @@ public class SpriteSystem extends IteratingSystem{
     private ComponentMapper<AnimationComponent> mapAnimation;
 
 
-    public SpriteSystem(){
+    public SpriteSystem() {
         super(Aspect.all(TransformComponent.class).one(SpriteComponent.class, AnimationComponent.class));
     }
 
     // helper function to process each entity.
-    protected void process(int entity){
+    protected void process(int entity) {
         // using our component mappers to get the components from the entities.
         TransformComponent transformComponent = mapTransform.get(entity);
         AnimationComponent animationComponent = mapAnimation.get(entity);
@@ -31,18 +31,18 @@ public class SpriteSystem extends IteratingSystem{
 
 
         Decal sprite = null;
-        if(animationComponent != null){
+        if (animationComponent != null) {
             animationComponent.time += world.getDelta();
             //System.out.println(animationComponent.animation);
             //System.out.println(animationComponent.time);
             sprite = animationComponent.animation
                     .getKeyFrame(animationComponent.time, true);
-            if(spriteComponent != null){
+            if (spriteComponent != null) {
                 spriteComponent.sprite = sprite;
             }
         }
 
-        if(spriteComponent != null){
+        if (spriteComponent != null) {
             sprite = spriteComponent.sprite;
         }
         sprite.setPosition(transformComponent.position);
