@@ -2,7 +2,7 @@ package com.bombhunt.game.model.ecs.factories;
 
 public enum ItemType {
     INCREASERANGE(1, Integer.MAX_VALUE), INCREASEDAMAGE(50, 200), INCREASEHEALTH(25, 200),
-    INCREASESPEED(1, 5);
+    INCREASESPEED(1, 4);
 
     private final int amount;
     private final int maxAmount;

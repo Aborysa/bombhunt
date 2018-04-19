@@ -92,22 +92,25 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
         //gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
 
         //TODO change texture (copied from bomb)
-        int x;
-        int y;
+        int x=0;
+        int y=0;
         switch (itemType) {
             case INCREASEDAMAGE: x=0; y=0; break;
-            default: x=1; y=1;
+            case INCREASEHEALTH: x=1; y=2; break;
+            case INCREASESPEED:  x=3; y=3; break;
+            case INCREASERANGE:  x=4; y=4; break;
         }
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(region, 32, x, y, 1),
                 1);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
+        mapSprite.get(e).sprite.setDimensions(16,16);
 
         return e;
     }
 
     public int createRandomItem(Vector3 position) {
-        ItemType randomType = ItemType.values()[random.nextInt(ItemType.values().length)];
+        ItemType randomType = ItemType.values()[3];//random.nextInt(ItemType.values().length)];
         return createItem(position, randomType);
     }
 }

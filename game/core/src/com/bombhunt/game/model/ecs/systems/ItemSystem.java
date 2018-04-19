@@ -10,6 +10,7 @@ import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.ItemComponent;
+import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
@@ -23,6 +24,7 @@ public class ItemSystem extends IteratingSystem {
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<GridPositionComponent> mapGrid;
     private ComponentMapper<PlayerComponent> mapPlayer;
+    private ComponentMapper<KillableComponent> mapKillable;
 
     private TextureRegion region;
 
@@ -44,11 +46,11 @@ public class ItemSystem extends IteratingSystem {
             world.delete(e);
         } else {
             if (itemComponent.timeout < itemComponent.flickerTime) {
-                int divide = (int)(itemComponent.timeout / 0.2f) % 2;
+                int divide = (int) (itemComponent.timeout / 0.2f) % 2;
                 if (divide == 0) {
-                    spriteComponent.sprite.setColor(1,1,1,0f);
+                    spriteComponent.sprite.setColor(1, 1, 1, 0f);
                 } else {
-                    spriteComponent.sprite.setColor(1,1,1,1f);
+                    spriteComponent.sprite.setColor(1, 1, 1, 1f);
                 }
             }
             TransformComponent transformComponent = mapTransform.get(e);
@@ -57,8 +59,8 @@ public class ItemSystem extends IteratingSystem {
             IntBag playerEntities = grid.filterEntities(transformComponent.position, mapPlayer);
             for (int i = 0; i < playerEntities.size(); i++) {
                 int playerEntity = playerEntities.get(i);
-                PlayerComponent playerComponent = mapPlayer.get(playerEntity);
-                applyItem(itemComponent, playerComponent);
+
+                applyItem(itemComponent, playerEntity);
                 world.delete(e);
                 break;
             }
@@ -66,19 +68,27 @@ public class ItemSystem extends IteratingSystem {
 
     }
 
-    private void applyItem(ItemComponent item, PlayerComponent player) {
-        switch(item.type) {
-            case INCREASEDAMAGE: player.bomb_damage =
-                    Math.max(player.bomb_damage+item.type.getAmount(), item.type.getMaxAmount());
-                                 break;
-            case INCREASEHEALTH: player.max_health =
-                    Math.max(player.max_health+item.type.getAmount(), item.type.getMaxAmount());
-                                 break;
-            case INCREASERANGE:  player.bomb_range =
-                    Math.max(player.bomb_range+item.type.getAmount(), item.type.getMaxAmount());
-                                 break;
-            case INCREASESPEED:  player.movement_speed =
-                    Math.max(player.movement_speed+item.type.getAmount(), item.type.getMaxAmount());
+    private void applyItem(ItemComponent item, int playerEntity) {
+        PlayerComponent playerComponent = mapPlayer.get(playerEntity);
+        switch (item.type) {
+            case INCREASEDAMAGE:
+                playerComponent.bomb_damage =
+                        Math.min(playerComponent.bomb_damage + item.type.getAmount(), item.type.getMaxAmount());
+                break;
+            case INCREASEHEALTH:
+                playerComponent.max_health =
+                        Math.min(playerComponent.max_health + item.type.getAmount(), item.type.getMaxAmount());
+                KillableComponent killableComponent = mapKillable.get(playerEntity);
+                killableComponent.health = Math.min(killableComponent.health + item.type.getAmount(), playerComponent.max_health);
+                break;
+            case INCREASERANGE:
+                playerComponent.bomb_range =
+                        Math.min(playerComponent.bomb_range + item.type.getAmount(), item.type.getMaxAmount());
+                break;
+            case INCREASESPEED:
+                playerComponent.movement_speed =
+                        Math.min(playerComponent.movement_speed + (item.type.getMaxAmount() - playerComponent.movement_speed) / 4,
+                                item.type.getMaxAmount());
                 break;
 
 
