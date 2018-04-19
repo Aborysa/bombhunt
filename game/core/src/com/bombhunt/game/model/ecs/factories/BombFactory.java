@@ -17,6 +17,7 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.graphics.SpriteHelper;
+import com.bombhunt.game.services.networking.Message;
 
 /**
  * Created by erlin on 27.03.2018.
@@ -69,7 +70,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
     }
 
     @Override
-    public int createFromMessage(String message) {
+    public int createFromMessage(Message message) {
         int e = createBomb(Vector3.Zero);
 
         // TODO: to be adapted by network pull request after rebase
@@ -106,6 +107,9 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
         return e;
+    }
+    public Message pushToNetwork(Message m, int e){
+        return m;
     }
 
 }

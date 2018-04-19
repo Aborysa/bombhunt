@@ -1,6 +1,7 @@
 package com.bombhunt.game.controller;
 
 import com.artemis.utils.Sort;
+import com.badlogic.gdx.Net;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.services.networking.IPlayServices;
 import com.bombhunt.game.services.networking.Message;
@@ -51,7 +52,8 @@ public class WaitingRoomController extends BasicController implements RoomListen
         for(int i = 0; i < players.length; i++){
             players[i].playerIndex = i;
         }
-
+        NetworkManager netManager = NetworkManager.getInstance();
+        netManager.setPlayers(Arrays.asList(players));
         changeView(new GameScreen(bombHunt, Arrays.asList(players)));
     }
 

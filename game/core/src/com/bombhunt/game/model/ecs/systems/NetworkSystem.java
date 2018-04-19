@@ -21,6 +21,7 @@ import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
+import com.bombhunt.game.model.ecs.factories.INetworkFactory;
 import com.bombhunt.game.services.networking.IPlayServices;
 import com.bombhunt.game.services.networking.Message;
 import com.bombhunt.game.services.networking.NetworkManager;
@@ -39,11 +40,11 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
     private HashMap<Integer, Integer> entityIdMap = new HashMap<Integer, Integer>();
 
-    private HashMap<String, IEntityFactory> factories;
+    private HashMap<String, INetworkFactory> factories;
 
     private int localTurn = 0;
 
-    public NetworkSystem(HashMap<String, IEntityFactory> factories) {
+    public NetworkSystem(HashMap<String, INetworkFactory> factories) {
         super(
             Aspect.all(NetworkComponent.class).one(TransformComponent.class, ExplosionComponent.class, Box2dComponent.class)
         );
@@ -83,19 +84,17 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
 
     public void handleDataReceived(Message message){
-        int type = message.getBuffer().getInt();
+        String type = message.getString();
         ByteBuffer b = message.getBuffer();
         /*
         * Mesasge types
         * 10 - create entity
         * 20 - sync entity
         * */
-        if (type == 10){
+        if (type.equals("CREATE_ENTITY")){
             String what = message.getString();
-            //IEntityFactory factory = factories.get(what);
-            //int entity = factory.createFromNetwork(message);
-        } else if(type == 20){
-            int id = b.getInt();
+            INetworkFactory factory = factories.get(what);
+            int entity = factory.createFromMessage(message);
         }
     }
 

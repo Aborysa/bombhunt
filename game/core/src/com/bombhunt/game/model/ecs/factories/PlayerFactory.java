@@ -4,6 +4,7 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -16,8 +17,13 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.KillableComponent;
+import com.bombhunt.game.model.ecs.components.NetworkComponent;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
+import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.services.graphics.SpriteHelper;
+import com.bombhunt.game.services.networking.Message;
+import com.bombhunt.game.services.networking.NetworkManager;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
@@ -27,7 +33,7 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
  * Created by erlin on 23.03.2018.
  */
 
-public class PlayerFactory implements IEntityFactory, ITileFactory {
+public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFactory {
     private World world;
     public Archetype playerArchtype;
     private Grid grid;
@@ -40,12 +46,16 @@ public class PlayerFactory implements IEntityFactory, ITileFactory {
     ComponentMapper<PlayerComponent> mapPlayerInput;
     ComponentMapper<TimerComponent> mapTimer;
 
+    ComponentMapper<NetworkComponent> mapNetwork;
 
-    public int createPlayer(Vector3 pos, Decal sprite) {
+
+    private TextureRegion region = Assets.getInstance().get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4");
+
+    public int createPlayer(Vector3 pos, int index) {
         int e = world.create(playerArchtype);
         mapTransform.get(e).position.set(pos);
         mapGrid.get(e).grid = grid;
-        mapSprite.get(e).sprite = sprite;
+        mapSprite.get(e).sprite = Decal.newDecal(SpriteHelper.createSprites(region, 16, 1, 17 + index, 1).get(0), true);
         Body body = Collision.createBody(Collision.dynamicDef, Collision.playerFixture);
         CircleShape shape = (CircleShape) body.getFixtureList().get(0).getShape();
         // TODO: Clean this and use circleShape
@@ -63,10 +73,10 @@ public class PlayerFactory implements IEntityFactory, ITileFactory {
         TiledMapTile tile = cell.getTile();
         TextureRegion tex = tile.getTextureRegion();
         float rotation = 90 * cell.getRotation();
-        Decal decal = Decal.newDecal(tex, true);
+        /*Decal decal = Decal.newDecal(tex, true);*/
         Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y,
                 depth).add(new Vector3(layer.getTileWidth() / 2f, layer.getTileHeight() / 2f, 0));
-        int e = createPlayer(pos, decal);
+        int e = createPlayer(pos, 0);
         mapTransform.get(e).rotation = rotation;
         return e;
     }
@@ -105,6 +115,8 @@ public class PlayerFactory implements IEntityFactory, ITileFactory {
         mapGrid = world.getMapper(GridPositionComponent.class);
         mapPlayerInput = world.getMapper(PlayerComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
+        mapNetwork = world.getMapper(NetworkComponent.class);
+
         playerArchtype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
                 .add(SpriteComponent.class)
@@ -113,11 +125,38 @@ public class PlayerFactory implements IEntityFactory, ITileFactory {
                 .add(GridPositionComponent.class)
                 .add(PlayerComponent.class)
                 .add(TimerComponent.class)
+                .add(NetworkComponent.class)
                 .build(world);
     }
 
     @Override
     public void setGrid(Grid grid) {
         this.grid = grid;
+    }
+
+
+    public int createFromMessage(Message m){
+        Vector3 pos = m.getVector3();
+        int seq = m.getBuffer().getInt();
+
+        int e = createPlayer(pos, NetworkManager.getInstance().getPlayerInfo(m.getSender()).playerIndex);
+
+        mapNetwork.get(e).sequenceNumber = seq;
+        mapNetwork.get(e).owner = m.getSender();
+
+        return e;
+    }
+
+    public Message pushToNetwork(Message m, int e){
+        NetworkComponent netComp = mapNetwork.get(e);
+
+
+        netComp.sequenceNumber = NetworkComponent.getNextId();
+        netComp.owner = NetworkManager.getInstance().getPlayerService().getLocalID();
+        
+        m.putVector(mapTransform.get(e).position);
+        m.getBuffer().putInt(netComp.sequenceNumber);
+
+        return m;
     }
 }

@@ -40,6 +40,7 @@ import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.model.ecs.factories.CrateFactory;
 import com.bombhunt.game.model.ecs.factories.ExplosionFactory;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
+import com.bombhunt.game.model.ecs.factories.INetworkFactory;
 import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.model.ecs.factories.WallFactory;
 import com.bombhunt.game.model.ecs.systems.BombSystem;
@@ -54,6 +55,8 @@ import com.bombhunt.game.model.ecs.systems.SpriteSystem;
 import com.bombhunt.game.model.ecs.systems.TimerSystem;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.graphics.SpriteHelper;
+import com.bombhunt.game.services.networking.Message;
+import com.bombhunt.game.services.networking.NetworkManager;
 import com.bombhunt.game.services.networking.PlayerInfo;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
@@ -117,14 +120,20 @@ public class GameScreen extends BasicView {
 
     private List<PlayerInfo> players;
 
+
     public void spawnPlayer(int index){
         Vector2 pos = spawnPoints.get(index);
         PlayerFactory factory = (PlayerFactory)factoryMap.get(PlayerFactory.class.getSimpleName());
         // 1, 17
-        Decal sprite = Decal.newDecal(SpriteHelper.createSprites(Assets.getInstance().get("textures/tilemap1.atlas",
-                TextureAtlas.class).findRegion("bomb_party_v4"),
-                16, 1, 17, 1).get(0), true);
-        int player = factory.createPlayer(new Vector3(pos, -10), sprite);
+        int player = factory.createPlayer(new Vector3(pos, -10), index);
+
+        Message m = new Message(new byte[512], "", 0);
+        m.putString("CREATE_ENTITY");
+        m.putString(PlayerFactory.class.getSimpleName());
+        factory.pushToNetwork(m, player);
+        NetworkManager.getInstance().createSender(50).sendToAllReliably(m.getData());
+
+
     }
 
     public GameScreen(BombHunt bombHunt, List<PlayerInfo> players) {
@@ -187,7 +196,17 @@ public class GameScreen extends BasicView {
         GridSystem gridSystem = new GridSystem();
         DestroyableSystem destroyableSystem = new DestroyableSystem(box2d);
         KillableSystem killableSystem = new KillableSystem(box2d);
-        NetworkSystem netSystem = new NetworkSystem(factoryMap);
+
+
+        HashMap<String, INetworkFactory> netFactories = new HashMap<String, INetworkFactory>();
+
+        for(IEntityFactory e : factoryMap.values()){
+            if(e instanceof INetworkFactory){
+                netFactories.put(e.getClass().getSimpleName(),(INetworkFactory) e);
+            }
+        }
+
+        NetworkSystem netSystem = new NetworkSystem(netFactories);
         
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem)

@@ -12,8 +12,10 @@ public class NetworkComponent extends Component {
   public int sequenceNumber = 0;
 
 
+  public static int playerIdx = 0;
   private static int nextId = 1;
+  
   public static int getNextId(){
-    return nextId++;
+    return (nextId++)%9000 * 10000 * playerIdx;
   }
 }
