@@ -38,12 +38,16 @@ public class ItemSystem extends IteratingSystem {
     protected void process(int e) {
         float dt = world.getDelta();
         ItemComponent itemComponent = mapItem.get(e);
+        SpriteComponent spriteComponent = mapSprite.get(e);
         itemComponent.timeout -= dt;
         if (itemComponent.timeout < 0) {
             world.delete(e);
         } else {
             if (itemComponent.timeout < itemComponent.flickerTime) {
-                //TODO flicker
+                int divide = (int)(itemComponent.timeout / 5) % 2;
+                if (divide == 0) {
+                    spriteComponent.sprite.setColor(1,1,1,0.5f);
+                }
             }
             TransformComponent transformComponent = mapTransform.get(e);
             GridPositionComponent gridPositionComponent = mapGrid.get(e);
@@ -62,11 +66,11 @@ public class ItemSystem extends IteratingSystem {
 
     private void applyItem(ItemComponent item, PlayerComponent player) {
         switch(item.type) {
-            case INCREASEDAMAGE: System.out.println("UPGRADE DAMAGE");
+            case INCREASEDAMAGE: player.bomb_damage += 10;
                                  break;
-            case INCREASEHEALTH: System.out.println("UPGRADE HEALTH");
+            case INCREASEHEALTH: player.max_health += 20;
                                  break;
-            case INCREASERANGE:  System.out.println("UPGRADE RANGE");
+            case INCREASERANGE:  player.bomb_range += 1;
                                  break;
 
 

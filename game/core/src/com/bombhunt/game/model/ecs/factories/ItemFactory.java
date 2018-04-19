@@ -18,6 +18,8 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.graphics.SpriteHelper;
 
+import java.util.Random;
+
 /**
  * Created by bartc on 19.04.2018.
  */
@@ -35,6 +37,7 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
     private Grid grid;
     private Archetype itemArchetype;
     private TextureRegion region;
+    private Random random;
 
 
     public enum ItemType{ INCREASERANGE, INCREASEDAMAGE, INCREASEHEALTH}
@@ -43,6 +46,7 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
         Assets asset_manager = Assets.getInstance();
         region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
+        random = new Random();
     }
 
     @Override
@@ -99,7 +103,7 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
     }
 
     public int createRandomItem(Vector3 position) {
-        //TODO make random
-        return createItem(position, ItemType.INCREASEDAMAGE);
+        ItemType randomType = ItemType.values()[random.nextInt(ItemType.values().length)];
+        return createItem(position, randomType);
     }
 }

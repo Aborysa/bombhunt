@@ -67,6 +67,7 @@ public class ExplosionSystem extends IteratingSystem {
     private void decadeBomb(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
         Grid grid = gridPositionComponent.grid;
         Vector3[] dirs = {new Vector3(0, 1, 0),
                 new Vector3(1, 0, 0),
@@ -78,14 +79,14 @@ public class ExplosionSystem extends IteratingSystem {
             Vector3 position = prev_position.cpy().add(offset);
             Boolean hasSolid = grid.detect(position, mapSolid);
             if (!hasSolid) {
-                int new_e = explosionFactory.createExplosion(position);
+                int new_e = explosionFactory.createExplosion(position,
+                        explosionComponent.damage, explosionComponent.range);
                 ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
                 new_explosionComponent.direction = dir;
                 new_explosionComponent.is_decaded = true;
                 new_explosionComponent.range -= 1;
             } else {
                 if (destructionDamage(e, position)) {
-                    ExplosionComponent explosionComponent = mapExplosion.get(e);
                     explosionComponent.range = 0;
                 }
             }
@@ -106,7 +107,8 @@ public class ExplosionSystem extends IteratingSystem {
                     Vector3 position = prev_position.cpy().add(offset);
                     Boolean hasSolid = grid.detect(position, mapSolid);
                     if (!hasSolid) {
-                        int new_e = explosionFactory.createExplosion(position);
+                        int new_e = explosionFactory.createExplosion(position,
+                                explosionComponent.damage, explosionComponent.range);
                         ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
                         new_explosionComponent.direction = explosionComponent.direction;
                         new_explosionComponent.is_decaded = true;

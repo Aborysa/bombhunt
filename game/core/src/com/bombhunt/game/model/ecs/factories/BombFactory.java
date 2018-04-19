@@ -93,7 +93,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
 //        audioPlayer.playSound(sound);
 //    }
 
-    public int createBomb(Vector3 position) {
+    private int createBomb(Vector3 position) {
         final int e = world.create(bombArchetype);
         BombComponent bombComponent = mapBomb.get(e);
         mapTransform.get(e).position = position;
@@ -108,4 +108,11 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
         return e;
     }
 
+    public int createBomb(Vector3 position, int damage, int range) {
+        int e = createBomb(position);
+        BombComponent bombComponent = mapBomb.get(e);
+        bombComponent.damage = damage;
+        bombComponent.range = range;
+        return e;
+    }
 }
