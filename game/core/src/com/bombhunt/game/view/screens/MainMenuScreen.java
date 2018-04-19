@@ -61,7 +61,7 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     public void dispose() {
         // IMPORTANT: super.dispose() will try to dispose texture that is not used here
         stage.dispose();
-        skin.dispose();
+        //skin.dispose();
         batch.dispose();
         //TODO: atlas.dispose();
     }

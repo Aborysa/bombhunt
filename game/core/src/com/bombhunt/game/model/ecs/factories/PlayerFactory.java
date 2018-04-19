@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.KillableComponent;
+import com.bombhunt.game.model.ecs.components.LabelComponent;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.services.physic.Collision;
@@ -27,7 +28,7 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
  * Created by erlin on 23.03.2018.
  */
 
-public class PlayerFactory implements IEntityFactory, ITileFactory {
+public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFactory{
     private World world;
     public Archetype playerArchtype;
     private Grid grid;
@@ -37,6 +38,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory {
     ComponentMapper<Box2dComponent> mapBox2d;
     ComponentMapper<KillableComponent> mapKillable;
     ComponentMapper<GridPositionComponent> mapGrid;
+    ComponentMapper<LabelComponent> mapLabel;
     ComponentMapper<PlayerComponent> mapPlayerInput;
     ComponentMapper<TimerComponent> mapTimer;
 
@@ -99,18 +101,20 @@ public class PlayerFactory implements IEntityFactory, ITileFactory {
     public void setWorld(World world) {
         this.world = world;
         mapTransform = world.getMapper(TransformComponent.class);
-        mapSprite = world.getMapper(SpriteComponent.class);
-        mapBox2d = world.getMapper(Box2dComponent.class);
-        mapKillable = world.getMapper(KillableComponent.class);
         mapGrid = world.getMapper(GridPositionComponent.class);
+        mapBox2d = world.getMapper(Box2dComponent.class);
+        mapSprite = world.getMapper(SpriteComponent.class);
+        mapLabel = world.getMapper(LabelComponent.class);
+        mapKillable = world.getMapper(KillableComponent.class);
         mapPlayerInput = world.getMapper(PlayerComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
         playerArchtype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
-                .add(SpriteComponent.class)
-                .add(Box2dComponent.class)
-                .add(KillableComponent.class)
                 .add(GridPositionComponent.class)
+                .add(Box2dComponent.class)
+                .add(SpriteComponent.class)
+                .add(LabelComponent.class)
+                .add(KillableComponent.class)
                 .add(PlayerComponent.class)
                 .add(TimerComponent.class)
                 .build(world);
@@ -119,5 +123,11 @@ public class PlayerFactory implements IEntityFactory, ITileFactory {
     @Override
     public void setGrid(Grid grid) {
         this.grid = grid;
+    }
+
+    @Override
+    public int createFromMessage(String message) {
+        // TODO: assign name player to label here
+        return 0;
     }
 }
