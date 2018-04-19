@@ -30,7 +30,9 @@ public class Message {
     }
 
     public Message copy(){
-        return new Message(Arrays.copyOf(this.data, buffer.position()), this.senderID, this.describeContents);
+        byte[] c = new byte[data.length - buffer.position()];
+        System.arraycopy(data, buffer.position(), c,0, c.length);
+        return new Message(c, this.senderID, this.describeContents);
     }
 
     public ByteBuffer getBuffer(){

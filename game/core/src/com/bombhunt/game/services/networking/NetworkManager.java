@@ -7,10 +7,8 @@ public class NetworkManager implements RealtimeListener{
     private IPlayServices sender;
 
     private static NetworkManager instance;
+    
     public NetworkManager(){
-        /*if(instance != null){
-            throw new RuntimeException("Singleton already instantiated");
-        }*/
         listeners = new HashMap<Integer, RealtimeListener>(255);
         instance = this;
     }
@@ -22,7 +20,17 @@ public class NetworkManager implements RealtimeListener{
 
     @Override
     public void handleDataReceived(Message message) {
-        int channel = message.getBuffer().getInt();
+        byte[] data = message.copy().getData();
+        System.out.println(data.length + " " + message.getData().length);
+        for(int i=0; i < data.length; i++){
+            if(i % 32 == 0){
+                System.out.println();
+            }
+            System.out.print(data[i] + " ");
+        }
+        System.out.println();
+        int channel = message.getBuffer().get();
+
         if(listeners.containsKey(channel)){
             listeners.get(channel).handleDataReceived(message.copy());
         }

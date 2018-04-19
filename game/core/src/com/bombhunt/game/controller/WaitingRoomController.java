@@ -97,7 +97,8 @@ public class WaitingRoomController extends BasicController implements RoomListen
     @Override
     public void handleDataReceived(Message message) {
         String type = message.getString();
-        if(type == "RAN_NUM") {
+        System.out.println(type);
+        if(type.equals("RAN_NUM")) {
             int num = message.getBuffer().getInt();
             System.out.println("Got number");
             System.out.println(num);

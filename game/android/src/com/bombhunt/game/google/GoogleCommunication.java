@@ -387,8 +387,6 @@ public class GoogleCommunication implements IPlayServices {
                 public void onRealTimeMessageReceived(@NonNull RealTimeMessage realTimeMessage) {
                     Message message = new Message(realTimeMessage.getMessageData(), realTimeMessage.getSenderParticipantId(), realTimeMessage.describeContents());
                     System.out.println("new message");
-                    System.out.println("message content");
-                    System.out.println(message.getString());
                     liveListener.handleDataReceived(message);
                 }
             };
