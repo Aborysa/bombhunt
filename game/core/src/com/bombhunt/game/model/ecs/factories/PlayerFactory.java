@@ -46,10 +46,10 @@ public class PlayerFactory implements IEntityFactory, ITileFactory {
         mapTransform.get(e).position.set(pos);
         mapGrid.get(e).grid = grid;
         mapSprite.get(e).sprite = sprite;
-        Body body = Collision.createBody(Collision.dynamicDef, Collision.wallFixture);
-        PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
+        Body body = Collision.createBody(Collision.dynamicDef, Collision.playerFixture);
+        CircleShape shape = (CircleShape) body.getFixtureList().get(0).getShape();
         // TODO: Clean this and use circleShape
-        shape.setAsBox((sprite.getWidth() / 2 - 0.3f) * Collision.worldTobox2d, (sprite.getHeight() / 2f - 0.3f) * Collision.worldTobox2d);
+        //shape.setAsBox((sprite.getWidth() / 2 - 0.3f) * Collision.worldTobox2d, (sprite.getHeight() / 2f - 0.3f) * Collision.worldTobox2d);
         body.setTransform(new Vector2(pos.x, pos.y).scl(Collision.worldTobox2d), 0);
         // prevents the player from rotating about when it collides with other objects.
         body.setFixedRotation(true);

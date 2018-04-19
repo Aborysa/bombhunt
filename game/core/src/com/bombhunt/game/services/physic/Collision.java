@@ -44,12 +44,12 @@ public class Collision {
 
     public static final FixtureDef playerFixture = new FixtureDef() {{
         shape = new CircleShape();
-        shape.setRadius(16f);
+        shape.setRadius(7 * worldTobox2d);
         density = 1;
         filter.categoryBits = Category.PLAYER;
         filter.maskBits = Category.WALL | Category.PLAYER;
         filter.groupIndex = 0;
-        restitution = 0f;
+        restitution = 0.1f;
         friction = 0f;
     }};
 
