@@ -12,6 +12,9 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -23,6 +26,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -31,6 +35,7 @@ import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.GameController;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.Level;
+import com.bombhunt.game.model.ecs.components.LabelComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
@@ -79,6 +84,7 @@ public class GameScreen extends BasicView {
 
     EntitySubscription subscription;
     private DecalBatch batch;
+    private Batch spriteBatch;
     private InputMultiplexer inputMux;
 
 
@@ -89,6 +95,7 @@ public class GameScreen extends BasicView {
     private HashMap<String, IEntityFactory> factoryMap;
     
     private ComponentMapper<SpriteComponent> mapSprite;
+    private ComponentMapper<LabelComponent> mapLabel;
     private ComponentMapper<TransformComponent> mapTransform;
 
 
@@ -201,6 +208,7 @@ public class GameScreen extends BasicView {
 
     private void setUpBatching() {
         batch = new DecalBatch(4096, new CameraGroupStrategy(currentCamera));
+        spriteBatch = new SpriteBatch();
     }
 
     private void setUpControls() {
@@ -269,6 +277,7 @@ public class GameScreen extends BasicView {
 
     private void setUpComponentMappers() {
         mapSprite = world.getMapper(SpriteComponent.class);
+        mapLabel = world.getMapper(LabelComponent.class);
         mapTransform = world.getMapper(TransformComponent.class);
     }
 
@@ -334,7 +343,7 @@ public class GameScreen extends BasicView {
     private void updateCamera(float dt) {
         currentCamera.position.set(moveCameraWithPlayer());
         //TODO: update zoom as the game time expire
-        // currentCamera.zoom += dt/100;
+        currentCamera.zoom =2;
         currentCamera.update();
     }
 
@@ -380,13 +389,32 @@ public class GameScreen extends BasicView {
                 Vector3 pos = mapTransform.get(e).position;
                 ecsDebugRenderer.circle(pos.x, pos.y, 8);
             }
+            if(mapLabel.has(e)) {
+                LabelComponent labelComponent = mapLabel.get(e);
+                Assets asset_manager = Assets.getInstance();
+                Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
+                BitmapFont font = skin.getFont("title");
+                font.draw(spriteBatch, labelComponent.label, currentCamera.position.x, currentCamera.position.y);
+            }
         }
         for(Decal d : mapDecals){
             batch.add(d);
         }
-
         ecsDebugRenderer.end();
 
+        spriteBatch.setProjectionMatrix(currentCamera.combined);
+        spriteBatch.begin();
+        for (int i = 0; i < entities.size(); i++) {
+            int e = entities.get(i);
+            if(mapLabel.has(e)) {
+                LabelComponent labelComponent = mapLabel.get(e);
+                Assets asset_manager = Assets.getInstance();
+                Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
+                BitmapFont font = skin.getFont("title");
+                font.draw(spriteBatch, labelComponent.label, currentCamera.position.x, currentCamera.position.y);
+            }
+        }
+        spriteBatch.end();
     }
 
     private void flushAllSprites() {
@@ -399,6 +427,7 @@ public class GameScreen extends BasicView {
         box2DDebugRenderer.dispose();
         box2d.dispose();
         batch.dispose();
+        spriteBatch.dispose();
     }
 
     @Override
