@@ -50,7 +50,7 @@ public class Collision {
         filter.maskBits = Category.WALL | Category.PLAYER;
         filter.groupIndex = 0;
         restitution = 0f;
-        friction = 0f;
+        friction = 0.5f;
     }};
 
     public static final FixtureDef wallFixture = new FixtureDef() {{

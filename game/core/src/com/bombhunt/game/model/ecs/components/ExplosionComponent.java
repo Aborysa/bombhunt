@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 public class ExplosionComponent extends Component {
     public float duration = 0.3f;
     public float ttl_duration = duration;
-    public int range = 1;
+    public int range = 2;
     public boolean is_decaded = false;
     public Vector3 direction = null;
     public float time_decade = 0.2f; //must be lower than duration
