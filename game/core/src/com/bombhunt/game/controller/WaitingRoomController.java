@@ -102,7 +102,7 @@ public class WaitingRoomController extends BasicController implements RoomListen
             int num = message.getBuffer().getInt();
             System.out.println("Got number");
             System.out.println(num);
-            System.out.println(message.getSender());
+            System.out.println(message.getSender() + " " + bombHunt.getPlayServices().getLocalID());
 
             PlayerInfo player = playerInfo.get(message.getSender());
             player.randomNumber = num;
@@ -117,7 +117,7 @@ public class WaitingRoomController extends BasicController implements RoomListen
             if (gotall) {
                 Message readyMessage = new Message(new byte[512], "", 0);
                 readyMessage.putString("READY");
-                sender.sendToAllReliably(message.getData());
+                sender.sendToAllReliably(readyMessage.getData());
             }
         } else if(type == "READY"){
             System.out.println("Player is ready " + message.getSender());
