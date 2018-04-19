@@ -28,6 +28,7 @@ import java.util.Map;
 public class BombFactory implements INetworkFactory {
 
     private ComponentMapper<TransformComponent> mapTransform;
+    private ComponentMapper<GridPositionComponent> mapGrid;
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<BombComponent> mapBomb;
     private ComponentMapper<AnimationComponent> mapAnimation;
@@ -48,6 +49,7 @@ public class BombFactory implements INetworkFactory {
         this.world = world;
 
         mapTransform = world.getMapper(TransformComponent.class);
+        mapGrid = world.getMapper(GridPositionComponent.class);
         mapSprite = world.getMapper(SpriteComponent.class);
         mapBomb = world.getMapper(BombComponent.class);
         mapAnimation = world.getMapper(AnimationComponent.class);
@@ -55,11 +57,11 @@ public class BombFactory implements INetworkFactory {
 
         bombArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
+                .add(GridPositionComponent.class)
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
                 .add(BombComponent.class)
                 .add(NetworkComponent.class)
-                .add(GridPositionComponent.class)
                 .build(world);
     }
 
@@ -70,6 +72,8 @@ public class BombFactory implements INetworkFactory {
         // TODO: adapt from position into message
         Vector3 position = Vector3.Zero;
         mapTransform.get(e).position = position;
+        GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(region, 16, 4, 18, 6),
                 6 / bombComponent.timer);

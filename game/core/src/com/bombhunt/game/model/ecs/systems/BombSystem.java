@@ -43,6 +43,9 @@ public class BombSystem extends IteratingSystem {
     protected void process(int e) {
         float delta = world.getDelta();
         BombComponent bombComponent = mapBomb.get(e);
+        GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        System.out.println("BOMB POSITION");
+        System.out.println(gridPositionComponent.cellIndex);
         bombComponent.ttl_timer -= delta;
         if (bombComponent.ttl_timer <= 0) {
             bombComponent.ttl_timer = bombComponent.timer;
@@ -60,15 +63,17 @@ public class BombSystem extends IteratingSystem {
     private int createExplosion(Vector3 position) {
         Archetype explosionArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
+                .add(GridPositionComponent.class)
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
                 .add(ExplosionComponent.class)
-                .add(GridPositionComponent.class)
                 .build(world);
         int e = world.create(explosionArchetype);
         ExplosionComponent explosionComponent = mapExplosion.get(e);
         float duration = explosionComponent.duration;
         mapTransform.get(e).position = position;
+        GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
         mapTransform.get(e).rotation = 90f * (float) Math.random();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(region, 16, 4, 13, 3),

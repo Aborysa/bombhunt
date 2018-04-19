@@ -85,16 +85,17 @@ public class PlayerSystem extends IteratingSystem {
     private int createBomb() {
         Archetype bombArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
+                .add(GridPositionComponent.class)
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
                 .add(BombComponent.class)
-                .add(GridPositionComponent.class)
                 .build(world);
         final int e = world.create(bombArchetype);
         BombComponent bombComponent = mapBomb.get(e);
         Vector3 position = last_position.cpy();
-        position.z = 0;
         mapTransform.get(e).position = position;
+        GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(region, 16, 4, 18, 6),
                 6 / bombComponent.timer);

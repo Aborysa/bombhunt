@@ -7,12 +7,11 @@ import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.bombhunt.game.model.ecs.components.KillableComponent;
-import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.services.physic.Collision;
 
 
 public class GridSystem extends IteratingSystem {

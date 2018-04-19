@@ -46,48 +46,22 @@ public class ExplosionSystem extends IteratingSystem {
 
     @Override
     protected void process(int e) {
-        ExplosionComponent explosionComponent = mapExplosion.get(e);
         float delta = world.getDelta();
+        updateDecade(e, delta);
+        updateChaining(e, delta);
+        explosionDamage(e);
+        playerDamage(e);
+        updateDeletion(e, delta);
+    }
 
+    private void updateDecade(int e, float dt) {
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
         if (!explosionComponent.is_decaded) {
-            explosionComponent.ttl_decade -= delta;
+            explosionComponent.ttl_decade -= dt;
             if (explosionComponent.ttl_decade <= 0) {
                 explosionComponent.is_decaded = true;
                 decadeBomb(e);
             }
-        }
-
-        if (explosionComponent.direction != null) {
-            explosionComponent.ttl_decade -= delta;
-            if (explosionComponent.ttl_decade <= 0) {
-                if (explosionComponent.range > 0) {
-                    TransformComponent transformComponent = mapTransform.get(e);
-                    GridPositionComponent gridPositionComponent = mapGrid.get(e);
-                    Grid grid = gridPositionComponent.grid;
-                    Vector3 offset = explosionComponent.direction.cpy().scl(grid.getCellSize());
-                    Vector3 prev_position = transformComponent.position;
-                    Vector3 position = prev_position.cpy().add(offset);
-                    Boolean hasSolid = grid.detect(position, mapSolid);
-                    if (!hasSolid) {
-                        int new_e = createExplosion(position);
-                        ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
-                        new_explosionComponent.direction = explosionComponent.direction;
-                        new_explosionComponent.is_decaded = true;
-                        new_explosionComponent.range = explosionComponent.range - 1;
-                        explosionComponent.range = 0;
-                    } else {
-                        if (destructionDamage(e, position)) {
-                            explosionComponent.range = 0;
-                        }
-                    }
-                }
-            }
-        }
-        explosionDamage(e);
-        playerDamage(e);
-        explosionComponent.duration -= delta;
-        if (explosionComponent.duration <= 0) {
-            world.delete(e);
         }
     }
 
@@ -119,19 +93,51 @@ public class ExplosionSystem extends IteratingSystem {
         }
     }
 
+    private void updateChaining(int e, float dt) {
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
+        if (explosionComponent.direction != null) {
+            explosionComponent.ttl_decade -= dt;
+            if (explosionComponent.ttl_decade <= 0) {
+                if (explosionComponent.range > 0) {
+                    TransformComponent transformComponent = mapTransform.get(e);
+                    GridPositionComponent gridPositionComponent = mapGrid.get(e);
+                    Grid grid = gridPositionComponent.grid;
+                    Vector3 offset = explosionComponent.direction.cpy().scl(grid.getCellSize());
+                    Vector3 prev_position = transformComponent.position;
+                    Vector3 position = prev_position.cpy().add(offset);
+                    Boolean hasSolid = grid.detect(position, mapSolid);
+                    if (!hasSolid) {
+                        int new_e = createExplosion(position);
+                        ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
+                        new_explosionComponent.direction = explosionComponent.direction;
+                        new_explosionComponent.is_decaded = true;
+                        new_explosionComponent.range = explosionComponent.range - 1;
+                        explosionComponent.range = 0;
+                    } else {
+                        if (destructionDamage(e, position)) {
+                            explosionComponent.range = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private int createExplosion(Vector3 position){
         Archetype explosionArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
+                .add(GridPositionComponent.class)
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
                 .add(ExplosionComponent.class)
-                .add(GridPositionComponent.class)
                 .build(world);
         int e = world.create(explosionArchetype);
         ExplosionComponent explosionComponent = mapExplosion.get(e);
         float duration = explosionComponent.duration;
         mapTransform.get(e).position = position;
         mapTransform.get(e).rotation = 90f * (float) Math.random();
+        GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(region, 16, 4, 13, 3),
                 3 / duration);
@@ -144,11 +150,14 @@ public class ExplosionSystem extends IteratingSystem {
         TransformComponent transformComponent = mapTransform.get(e);
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
         Grid grid = gridPositionComponent.grid;
+        System.out.println("CELL INDEX CHECKED");
+        System.out.println(gridPositionComponent.cellIndex);
         IntBag bombsEntities = grid.filterEntities(transformComponent.position, mapBomb);
         for (int i = 0; i < bombsEntities.size(); i++) {
             int bombEntity = bombsEntities.get(i);
             BombComponent bombComponent = mapBomb.get(bombEntity);
             bombComponent.ttl_timer = 0;
+            System.out.println("COLLATERAL");
         }
     }
 
@@ -174,6 +183,15 @@ public class ExplosionSystem extends IteratingSystem {
             mapDestroyable.get(destroyableEntity).health -= 1;
         }
         return destroyableEntities.size() != 0;
+    }
+
+    private void updateDeletion(int e, float dt) {
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
+        explosionComponent.ttl_duration -= dt;
+        if (explosionComponent.ttl_duration <= 0) {
+            explosionComponent.ttl_duration = explosionComponent.duration;
+            world.delete(e);
+        }
     }
 
 }

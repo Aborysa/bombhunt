@@ -9,6 +9,7 @@ import com.artemis.World;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 
 public class Grid {
 
@@ -147,8 +148,10 @@ public class Grid {
         int cellIndex = getCellIndex(position);
         IntBag entities = getEntities(cellIndex);
         IntBag matchingEntities = new IntBag();
+        ComponentMapper<GridPositionComponent> mapGrid = world.getMapper(GridPositionComponent.class);
         for (int e : entities.getData()) {
             if (mapComponent.has(e)) {
+                System.out.println("YES A BOMB");
                 matchingEntities.add(e);
             }
         }

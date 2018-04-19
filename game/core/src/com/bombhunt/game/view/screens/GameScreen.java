@@ -106,10 +106,10 @@ public class GameScreen extends BasicView {
     public GameScreen(BombHunt bombHunt) {
         feedFactoryMap();
         setUpWorld();
+        setUpECS(bombHunt);
         setUpCamera();
         setUpBatching();
         setUpControls();
-        setUpECS(bombHunt);
         setUpComponentMappers();
         setUpAspectSubscription();
         setUpInputProcessor();
@@ -139,10 +139,43 @@ public class GameScreen extends BasicView {
 
         ecsDebugRenderer = new ShapeRenderer();
         Collision.world = box2d;
+    }
+
+    private void setUpECS(BombHunt bombHunt) {
+        SpriteSystem spriteSystem = new SpriteSystem();
+        PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
+        // TODO: why is the bomb factory has to be passed in argument?
+        // TODO: cannot that be created into the constructor of each system respectively
+        PlayerSystem playerSystem = new PlayerSystem(box2d);
+        BombSystem bombSystem = new BombSystem();
+        ExplosionSystem explosionSystem = new ExplosionSystem();
+        TimerSystem timerSystem = new TimerSystem();
+        GridSystem gridSystem = new GridSystem();
+        DestroyableSystem destroyableSystem = new DestroyableSystem(box2d);
+        KillableSystem killableSystem = new KillableSystem(box2d);
+
+        WorldConfiguration config = new WorldConfigurationBuilder()
+                .with(spriteSystem)
+                .with(physicsSystem)
+                .with(playerSystem)
+                .with(bombSystem)
+                .with(explosionSystem)
+                .with(timerSystem)
+                .with(gridSystem)
+                .with(destroyableSystem)
+                .with(killableSystem)
+                .build();
+        world = new World(config);
+        for (IEntityFactory factory : factoryMap.values()) {
+            factory.setWorld(world);
+        }
         grid = level.createGrid(world);
         for(IEntityFactory factory : factoryMap.values()) {
             factory.setGrid(grid);
         }
+        // TODO: should be done in first place into the root constructor
+        // TODO: SET UP ECS should not be done in the interface
+        controller = new GameController(bombHunt, playerSystem);
     }
 
     private void setUpCamera() {
@@ -224,39 +257,6 @@ public class GameScreen extends BasicView {
         table.add(joystick.getTouchpad()).left().expandX();
         table.add(bombButton.getImageButton()).right();
         return table;
-    }
-
-    private void setUpECS(BombHunt bombHunt) {
-        SpriteSystem spriteSystem = new SpriteSystem();
-        PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
-        // TODO: why is the bomb factory has to be passed in argument?
-        // TODO: cannot that be created into the constructor of each system respectively
-        PlayerSystem playerSystem = new PlayerSystem(box2d);
-        BombSystem bombSystem = new BombSystem();
-        ExplosionSystem explosionSystem = new ExplosionSystem();
-        TimerSystem timerSystem = new TimerSystem();
-        GridSystem gridSystem = new GridSystem();
-        DestroyableSystem destroyableSystem = new DestroyableSystem(box2d);
-        KillableSystem killableSystem = new KillableSystem(box2d);
-
-        WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(spriteSystem)
-                .with(physicsSystem)
-                .with(playerSystem)
-                .with(bombSystem)
-                .with(explosionSystem)
-                .with(timerSystem)
-                .with(gridSystem)
-                .with(destroyableSystem)
-                .with(killableSystem)
-                .build();
-        world = new World(config);
-        for (IEntityFactory factory : factoryMap.values()) {
-            factory.setWorld(world);
-        }
-        // TODO: should be done in first place into the root constructor
-        // TODO: SET UP ECS should not be done in the interface
-        controller = new GameController(bombHunt, playerSystem);
     }
 
     private void setUpComponentMappers() {
