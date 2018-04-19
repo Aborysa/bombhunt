@@ -25,6 +25,7 @@ import com.bombhunt.game.model.ecs.factories.INetworkFactory;
 import com.bombhunt.game.services.networking.IPlayServices;
 import com.bombhunt.game.services.networking.Message;
 import com.bombhunt.game.services.networking.NetworkManager;
+import com.bombhunt.game.services.networking.PlayerInfo;
 import com.bombhunt.game.services.networking.RealtimeListener;
 
 import sun.nio.ch.Net;
@@ -49,6 +50,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             Aspect.all(NetworkComponent.class).one(TransformComponent.class, ExplosionComponent.class, Box2dComponent.class)
         );
         this.netManager = NetworkManager.getInstance();
+        PlayerInfo player = this.netManager.getPlayerInfo(netManager.getPlayerService().getLocalID());
+        NetworkComponent.playerIdx = player.playerIndex;
         this.netManager.openChannel(this, 50);
         this.factories = factories;
     }

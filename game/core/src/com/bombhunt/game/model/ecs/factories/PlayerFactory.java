@@ -142,8 +142,8 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         int e = createPlayer(pos, NetworkManager.getInstance().getPlayerInfo(m.getSender()).playerIndex);
         mapPlayerInput.remove(e);
         
-        //mapNetwork.get(e).sequenceNumber = seq;
-        //mapNetwork.get(e).owner = m.getSender();
+        mapNetwork.get(e).sequenceNumber = seq;
+        mapNetwork.get(e).owner = m.getSender();
 
         
 

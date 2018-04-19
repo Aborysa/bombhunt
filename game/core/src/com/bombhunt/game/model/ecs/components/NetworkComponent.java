@@ -14,8 +14,8 @@ public class NetworkComponent extends Component {
 
   public static int playerIdx = 0;
   private static int nextId = 1;
-  
+
   public static int getNextId(){
-    return (nextId++)%9000 * 10000 * playerIdx;
+    return ((nextId++) % 9000) + 10000 * playerIdx;
   }
 }
