@@ -60,7 +60,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
                 .add(BombComponent.class)
-                .add(NetworkComponent.class)
+                //.add(NetworkComponent.class)
                 .build(world);
     }
 
