@@ -8,5 +8,4 @@ public class ItemComponent extends Component {
     public ItemFactory.ItemType type;
     public float timeout = 10f;
     public float flickerTime = 3f;
-
 }

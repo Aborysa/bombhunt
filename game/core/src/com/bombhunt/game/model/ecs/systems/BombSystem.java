@@ -54,7 +54,9 @@ public class BombSystem extends IteratingSystem {
 
     private void explodeBomb(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
-        explosionFactory.createExplosion(transformComponent.position);
+        BombComponent bombComponent = mapBomb.get(e);
+        explosionFactory.createExplosion(transformComponent.position, bombComponent.damage,
+                bombComponent.range);
         world.delete(e);
         playSoundExplosion();
     }

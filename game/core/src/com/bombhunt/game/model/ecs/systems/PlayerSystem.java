@@ -70,7 +70,8 @@ public class PlayerSystem extends IteratingSystem {
             if (!playerComponent.isCooledDownBomb) {
                 playerComponent.isCooledDownBomb = true;
                 Vector3 position = last_position.cpy();
-                bombFactory.createBomb(position);
+                bombFactory.createBomb(position,
+                        playerComponent.bomb_damage, playerComponent.bomb_range);
                 playSoundDropBomb();
             }
         }

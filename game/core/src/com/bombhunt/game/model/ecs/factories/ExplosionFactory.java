@@ -65,7 +65,7 @@ public class ExplosionFactory implements IEntityFactory {
         this.grid = grid;
     }
 
-    public int createExplosion(Vector3 position) {
+    private int createExplosion(Vector3 position) {
         int e = world.create(explosionArchetype);
         ExplosionComponent explosionComponent = mapExplosion.get(e);
         float duration = explosionComponent.duration;
@@ -82,4 +82,11 @@ public class ExplosionFactory implements IEntityFactory {
         return e;
     }
 
+    public int createExplosion(Vector3 position, int damage, int range) {
+        int e = createExplosion(position);
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
+        explosionComponent.damage = damage;
+        explosionComponent.range = range;
+        return e;
+    }
 }
