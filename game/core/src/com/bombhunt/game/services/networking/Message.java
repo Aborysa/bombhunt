@@ -29,9 +29,6 @@ public class Message {
         this.describeContents = describeContents;
     }
 
-    // TODO: make getters to get specific data from the message. i.e. get x pos (byte[2] - byte[6]) -> float xpos
-
-
     public Message copy(){
         return new Message(Arrays.copyOf(this.data, buffer.position()), this.senderID, this.describeContents);
     }
@@ -98,7 +95,7 @@ public class Message {
 
     public Box2dComponent getBox2d(Box2dComponent component){
         component.body.setLinearVelocity(getVector2());
-        component.body.setTransform(getVector2(), component.body.getRotation());
+        component.body.setTransform(getVector2(), component.body.getTransform().getRotation());
         return component;
     }
 
@@ -123,6 +120,7 @@ public class Message {
     public String getSender(){
         return senderID;
     }
+
     public byte[] getData(){
         return data;
     }
