@@ -78,7 +78,13 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         int[] ids = entities.getData();
         for(int i = 0; i < entities.size(); i++){
             NetworkComponent netComponent = mapNetwork.get(ids[i]);
-            mapNetwork.get(ids[i]).localTurn++;
+            netComponent.localTurn++;
+            if(localTurn % 2 == 0 && !netComponent.owner.equals("LOCAL")){
+                Message m = new Message(new byte[512], "", 0);
+                m.putString("UPDATE_ENTITY");
+                m.getBuffer().putInt(ids[i]);
+                m.putBox2d(mapBox2d.get(ids[i]));
+            }
         }
     }
 
@@ -86,15 +92,14 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
     public void handleDataReceived(Message message){
         String type = message.getString();
         ByteBuffer b = message.getBuffer();
-        /*
-        * Mesasge types
-        * 10 - create entity
-        * 20 - sync entity
-        * */
+
         if (type.equals("CREATE_ENTITY")){
             String what = message.getString();
             INetworkFactory factory = factories.get(what);
             int entity = factory.createFromMessage(message);
+        } else if(type.equals("UPDATE_ENTITY")) {
+            int snum = entityIdMap.get(message.getBuffer().getInt());
+            message.getBox2d(mapBox2d.get(snum));
         }
     }
 
