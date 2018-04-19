@@ -33,7 +33,9 @@ import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.Level;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.model.ecs.factories.CrateFactory;
+import com.bombhunt.game.model.ecs.factories.ExplosionFactory;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
 import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.model.ecs.factories.WallFactory;
@@ -123,10 +125,14 @@ public class GameScreen extends BasicView {
         final String crateFactoryName = CrateFactory.class.getSimpleName();
         final String playerFactoryName = PlayerFactory.class.getSimpleName();
         final String wallFactoryName = WallFactory.class.getSimpleName();
+        final String bombFactoryName = BombFactory.class.getSimpleName();
+        final String explosionFactoryName = ExplosionFactory.class.getSimpleName();
         factoryMap = new HashMap<String, IEntityFactory>() {{
             put(crateFactoryName, new CrateFactory());
             put(playerFactoryName, new PlayerFactory());
             put(wallFactoryName, new WallFactory());
+            put(bombFactoryName, new BombFactory());
+            put(explosionFactoryName, new ExplosionFactory());
         }};
     }
 
@@ -136,7 +142,6 @@ public class GameScreen extends BasicView {
         box2d.setGravity(new Vector2(0, 0));
         box2DDebugRenderer = new Box2DDebugRenderer(true, false, false,
                 false, false, true);
-
         ecsDebugRenderer = new ShapeRenderer();
         Collision.world = box2d;
     }
@@ -146,14 +151,17 @@ public class GameScreen extends BasicView {
         PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
         // TODO: why is the bomb factory has to be passed in argument?
         // TODO: cannot that be created into the constructor of each system respectively
-        PlayerSystem playerSystem = new PlayerSystem(box2d);
-        BombSystem bombSystem = new BombSystem();
-        ExplosionSystem explosionSystem = new ExplosionSystem();
+        String bombFactoryName = BombFactory.class.getSimpleName();
+        String explosionFactoryName = ExplosionFactory.class.getSimpleName();
+        BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
+        ExplosionFactory explosionFactory = (ExplosionFactory) factoryMap.get(explosionFactoryName);
+        PlayerSystem playerSystem = new PlayerSystem(bombFactory);
+        BombSystem bombSystem = new BombSystem(explosionFactory);
+        ExplosionSystem explosionSystem = new ExplosionSystem(explosionFactory);
         TimerSystem timerSystem = new TimerSystem();
         GridSystem gridSystem = new GridSystem();
         DestroyableSystem destroyableSystem = new DestroyableSystem(box2d);
         KillableSystem killableSystem = new KillableSystem(box2d);
-
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem)
                 .with(physicsSystem)

@@ -23,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
+import com.bombhunt.game.model.ecs.factories.ITileFactory;
 import com.bombhunt.game.services.physic.Collision;
 
 import java.util.ArrayList;
@@ -117,7 +118,7 @@ public class Level {
         IntBag bag = new IntBag(1024);
         for (TiledMapTileLayer entityLayer : tileEntityLayers) {
             MapProperties props = entityLayer.getProperties();
-            IEntityFactory factory = factories.get(props.get("entity_factory"));
+            ITileFactory factory = (ITileFactory) factories.get(props.get("entity_factory"));
             int depth = props.get("depth", Integer.class);
             for (int x = 0; x < entityLayer.getWidth(); x++) {
                 for (int y = 0; y < entityLayer.getHeight(); y++) {

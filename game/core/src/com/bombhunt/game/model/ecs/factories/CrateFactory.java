@@ -23,7 +23,7 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.physic.Collision;
 
-public class CrateFactory implements IEntityFactory {
+public class CrateFactory implements IEntityFactory, ITileFactory {
 
     private World world;
     public Archetype crateArchtype;
@@ -82,22 +82,16 @@ public class CrateFactory implements IEntityFactory {
 
     public int createCrate(Vector3 position, Decal sprite, int health) {
         int e = world.create(crateArchtype);
-
-
         mapSprite.get(e).sprite = sprite;
         mapTransform.get(e).position.set(position);
         mapDestroyable.get(e).health = health;
-
         Body body = Collision.createBody(Collision.saticDef, Collision.wallFixture);
         PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
         shape.setAsBox((sprite.getWidth() / 2f - 0.2f) * Collision.worldTobox2d, (sprite.getHeight() / 2f - 0.2f) * Collision.worldTobox2d);
         body.setTransform(new Vector2(position.x, position.y).scl(Collision.worldTobox2d), 0);
-
         //Vector2 rveloc = new Vector2((float)Math.random() -0.5f , (float)Math.random() -0.5f).nor().scl((float)Math.random()*100f + 40f);
-
         //body.setLinearVelocity(rveloc);
         mapBox2d.get(e).body = body;
-
         return e;
     }
 

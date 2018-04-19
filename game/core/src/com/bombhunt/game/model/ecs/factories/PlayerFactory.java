@@ -27,7 +27,7 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
  * Created by erlin on 23.03.2018.
  */
 
-public class PlayerFactory implements IEntityFactory {
+public class PlayerFactory implements IEntityFactory, ITileFactory {
     private World world;
     public Archetype playerArchtype;
     private Grid grid;
@@ -43,8 +43,9 @@ public class PlayerFactory implements IEntityFactory {
 
     public int createPlayer(Vector3 pos, Decal sprite) {
         int e = world.create(playerArchtype);
-        mapSprite.get(e).sprite = sprite;
         mapTransform.get(e).position.set(pos);
+        mapGrid.get(e).grid = grid;
+        mapSprite.get(e).sprite = sprite;
         Body body = Collision.createBody(Collision.dynamicDef, Collision.wallFixture);
         PolygonShape shape = (PolygonShape) body.getFixtureList().get(0).getShape();
         // TODO: Clean this and use circleShape

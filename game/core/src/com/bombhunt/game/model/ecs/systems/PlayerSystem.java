@@ -1,7 +1,5 @@
 package com.bombhunt.game.model.ecs.systems;
 
-import com.artemis.Archetype;
-import com.artemis.ArchetypeBuilder;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
@@ -21,13 +19,12 @@ import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.audio.AudioPlayer;
-import com.bombhunt.game.services.graphics.SpriteHelper;
 
 public class PlayerSystem extends IteratingSystem {
 
-    private World box2d;
     private ComponentMapper<Box2dComponent> mapBox2D;
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<PlayerComponent> mapPlayer;
@@ -37,37 +34,32 @@ public class PlayerSystem extends IteratingSystem {
     private ComponentMapper<GridPositionComponent> mapGrid;
     private ComponentMapper<BombComponent> mapBomb;
 
-    private TextureRegion region;
+    private BombFactory bombFactory;
 
     // IMPORTANT: For controller interactions
     private Vector3 last_position = new Vector3();
     private Vector2 last_orientation = new Vector2();
     private boolean bombPlanted = false;
 
-    public PlayerSystem(World box2d) {
+    public PlayerSystem(BombFactory bombFactory) {
         super(Aspect.all(
                 TransformComponent.class,
                 Box2dComponent.class,
                 PlayerComponent.class,
                 TimerComponent.class));
-        this.box2d = box2d;
-        Assets asset_manager = Assets.getInstance();
-        region = asset_manager.get("textures/tilemap1.atlas",
-                TextureAtlas.class).findRegion("bomb_party_v4");
+        this.bombFactory = bombFactory;
     }
 
     protected void process(int e) {
         Box2dComponent box2dComponent = mapBox2D.get(e);
         TransformComponent transformComponent = mapTransform.get(e);
         PlayerComponent playerComponent = mapPlayer.get(e);
-
         // TODO: use velocity component for that?
         // TODO: to be wrapped in a method
         Body body = box2dComponent.body;
         Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
         body.setLinearVelocity(velocity);
         last_position = transformComponent.position.cpy();
-
         updatePlantedBomb(playerComponent);
         updateCoolDownBomb(playerComponent);
     }
@@ -77,32 +69,11 @@ public class PlayerSystem extends IteratingSystem {
             bombPlanted = false;
             if (!playerComponent.isCooledDownBomb) {
                 playerComponent.isCooledDownBomb = true;
-                createBomb();
+                Vector3 position = last_position.cpy();
+                bombFactory.createBomb(position);
+                playSoundDropBomb();
             }
         }
-    }
-
-    private int createBomb() {
-        Archetype bombArchetype = new ArchetypeBuilder()
-                .add(TransformComponent.class)
-                .add(GridPositionComponent.class)
-                .add(SpriteComponent.class)
-                .add(AnimationComponent.class)
-                .add(BombComponent.class)
-                .build(world);
-        final int e = world.create(bombArchetype);
-        BombComponent bombComponent = mapBomb.get(e);
-        Vector3 position = last_position.cpy();
-        mapTransform.get(e).position = position;
-        GridPositionComponent gridPositionComponent = mapGrid.get(e);
-        gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
-        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(region, 16, 4, 18, 6),
-                6 / bombComponent.timer);
-        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
-        mapTransform.get(e).scale = new Vector2(1f, 1f);
-        playSoundDropBomb();
-        return e;
     }
 
     private void playSoundDropBomb() {

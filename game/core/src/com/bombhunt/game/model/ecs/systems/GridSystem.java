@@ -65,6 +65,8 @@ public class GridSystem extends IteratingSystem {
         if (mapBox2d.has(e)) {
             Body body = mapBox2d.get(e).body;
             body.setTransform(position.x * Collision.worldTobox2d, position.y * Collision.worldTobox2d, body.getAngle());
+        } else if (mapTransform.has(e)) {
+            transformComponent.position.set(position);
         }
     }
 }

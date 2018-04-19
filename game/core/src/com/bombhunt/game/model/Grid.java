@@ -1,7 +1,5 @@
 package com.bombhunt.game.model;
 
-import android.support.annotation.NonNull;
-
 import com.artemis.Aspect;
 import com.artemis.Component;
 import com.artemis.ComponentMapper;
@@ -9,11 +7,8 @@ import com.artemis.World;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 
 public class Grid {
-
-    private static Grid instance = null;
 
     private int cellSize;
     private int width, height;
@@ -21,10 +16,6 @@ public class Grid {
     private World world;
 
     private IntBag[] gridCells;
-
-    public static Grid getInstance() {
-        return instance;
-    }
 
     public Grid(World world, int width, int height, int cellSize) {
         this.cellSize = cellSize;
@@ -35,7 +26,6 @@ public class Grid {
         for (int i = 0; i < this.gridCells.length; i++) {
             this.gridCells[i] = new IntBag(10);
         }
-        instance = this;
     }
 
     public Vector2 getSnappedPosition(Vector2 position) {
@@ -148,10 +138,8 @@ public class Grid {
         int cellIndex = getCellIndex(position);
         IntBag entities = getEntities(cellIndex);
         IntBag matchingEntities = new IntBag();
-        ComponentMapper<GridPositionComponent> mapGrid = world.getMapper(GridPositionComponent.class);
         for (int e : entities.getData()) {
             if (mapComponent.has(e)) {
-                System.out.println("YES A BOMB");
                 matchingEntities.add(e);
             }
         }

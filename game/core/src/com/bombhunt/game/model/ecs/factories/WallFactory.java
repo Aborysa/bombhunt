@@ -22,7 +22,7 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.physic.Collision;
 
-public class WallFactory implements IEntityFactory {
+public class WallFactory implements IEntityFactory, ITileFactory {
     private World world;
     public Archetype wallArchtype;
     private Grid grid;
