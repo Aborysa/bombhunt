@@ -50,7 +50,7 @@ public class Collision {
         filter.maskBits = Category.WALL | Category.PLAYER;
         filter.groupIndex = 0;
         restitution = 0f;
-        friction = 0.5f;
+        friction = 1f;
     }};
 
     public static final FixtureDef wallFixture = new FixtureDef() {{
@@ -62,7 +62,7 @@ public class Collision {
         filter.maskBits = Category.WALL | Category.PLAYER;
         filter.groupIndex = 0;
         restitution = 0f;
-        friction = 0f;
+        friction = 1f;
     }};
 
     public static Body createBody(World world, BodyDef bodyDef, FixtureDef... fixtureDefs) {

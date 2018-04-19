@@ -320,6 +320,7 @@ public class GoogleCommunication implements IPlayServices {
     // sending data
     @Override
     public void sendToAllReliably(byte[] message) {
+        if(mRoom == null){return;}
         for (String participantId : mRoom.getParticipantIds()) {
             if (!participantId.equals(mMyParticipantId)) {
                 Task<Integer> task = Games.

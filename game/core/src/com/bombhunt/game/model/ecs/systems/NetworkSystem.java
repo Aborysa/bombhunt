@@ -61,7 +61,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         super.inserted(entityId);
         NetworkComponent netComponent = mapNetwork.get(entityId);
         netComponent.localTurn = localTurn;
-        netComponent.sequenceNumber = NetworkComponent.getNextId();
+        //netComponent.sequenceNumber = NetworkComponent.getNextId();
         entityIdMap.put(netComponent.sequenceNumber, entityId);
         System.out.println("Network component added " + " " + netComponent.owner + " " + netComponent.sequenceNumber);
 
@@ -85,8 +85,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
             entityIdMap.put(netComponent.sequenceNumber, ids[i]);
 
-            if(netComponent.isLocal && netComponent.localTurn % 4 == 0 && !netComponent.owner.equals("LOCAL")){
-                Message m = new Message(new byte[512], "", 0);
+            if(netComponent.isLocal && netComponent.localTurn % 10 == 0 && !netComponent.owner.equals("LOCAL")){
+                Message m = new Message(new byte[64], "", 0);
                 m.putString("UPDATE_ENTITY");
                 m.getBuffer().putInt(netComponent.sequenceNumber);
                 m.putBox2d(mapBox2d.get(ids[i]));
@@ -110,11 +110,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             int seqNum = message.getBuffer().getInt();
             if(entityIdMap.containsKey(seqNum)){
                 int e = entityIdMap.get(seqNum);
-                System.out.print("seq: " + seqNum);
-                System.out.println(" entity: " + e);
                 message.getBox2d(mapBox2d.get(e));
             }
-            System.out.println();
         }
     }
 
