@@ -44,9 +44,11 @@ public class ItemSystem extends IteratingSystem {
             world.delete(e);
         } else {
             if (itemComponent.timeout < itemComponent.flickerTime) {
-                int divide = (int)(itemComponent.timeout / 5) % 2;
+                int divide = (int)(itemComponent.timeout / 0.2f) % 2;
                 if (divide == 0) {
-                    spriteComponent.sprite.setColor(1,1,1,0.5f);
+                    spriteComponent.sprite.setColor(1,1,1,0f);
+                } else {
+                    spriteComponent.sprite.setColor(1,1,1,1f);
                 }
             }
             TransformComponent transformComponent = mapTransform.get(e);
@@ -66,12 +68,18 @@ public class ItemSystem extends IteratingSystem {
 
     private void applyItem(ItemComponent item, PlayerComponent player) {
         switch(item.type) {
-            case INCREASEDAMAGE: player.bomb_damage += 10;
+            case INCREASEDAMAGE: player.bomb_damage =
+                    Math.max(player.bomb_damage+item.type.getAmount(), item.type.getMaxAmount());
                                  break;
-            case INCREASEHEALTH: player.max_health += 20;
+            case INCREASEHEALTH: player.max_health =
+                    Math.max(player.max_health+item.type.getAmount(), item.type.getMaxAmount());
                                  break;
-            case INCREASERANGE:  player.bomb_range += 1;
+            case INCREASERANGE:  player.bomb_range =
+                    Math.max(player.bomb_range+item.type.getAmount(), item.type.getMaxAmount());
                                  break;
+            case INCREASESPEED:  player.movement_speed =
+                    Math.max(player.movement_speed+item.type.getAmount(), item.type.getMaxAmount());
+                break;
 
 
         }

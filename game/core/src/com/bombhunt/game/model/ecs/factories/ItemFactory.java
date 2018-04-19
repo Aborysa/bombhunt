@@ -4,6 +4,7 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -39,13 +40,10 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
     private TextureRegion region;
     private Random random;
 
-
-    public enum ItemType{ INCREASERANGE, INCREASEDAMAGE, INCREASEHEALTH}
-
     public ItemFactory() {
         Assets asset_manager = Assets.getInstance();
-        region = asset_manager.get("textures/tilemap1.atlas",
-                TextureAtlas.class).findRegion("bomb_party_v4");
+        region = new TextureRegion(asset_manager.get("items.png",
+                Texture.class));
         random = new Random();
     }
 
@@ -94,9 +92,15 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
         //gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
 
         //TODO change texture (copied from bomb)
+        int x;
+        int y;
+        switch (itemType) {
+            case INCREASEDAMAGE: x=0; y=0; break;
+            default: x=1; y=1;
+        }
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(region, 16, 4, 18, 6),
-                6);
+                SpriteHelper.createSprites(region, 32, x, y, 1),
+                1);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
 
         return e;
