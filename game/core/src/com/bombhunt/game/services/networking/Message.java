@@ -70,13 +70,14 @@ public class Message {
     public String getString(){
         int len = buffer.getInt();
         byte[] chars = new byte[len];
-        buffer.get(chars, 0, len);
+        buffer.get(chars);
         return new String(chars, StandardCharsets.UTF_8);
     }
 
     public void putString(String str){
-        buffer.putInt(str.length());
-        buffer.put(str.getBytes(StandardCharsets.UTF_8));
+        byte[] data = str.getBytes(StandardCharsets.UTF_8);
+        buffer.putInt(data.length);
+        buffer.put(data);
     }
 
     public void putTransform(TransformComponent transformComponent){
