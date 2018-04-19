@@ -61,6 +61,7 @@ public class NetworkManager implements RealtimeListener{
 
     public void setPlayers(List<PlayerInfo> players){
         this.players = players;
+        playerMap = new HashMap<String, PlayerInfo>();
         for(PlayerInfo player : players){
             playerMap.put(player.playerId, player);
         }
