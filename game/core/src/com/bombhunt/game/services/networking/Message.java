@@ -41,6 +41,35 @@ public class Message {
     }
 
 
+    public Vector2 getVector2(Vector2 dst){
+        dst.set(buffer.getFloat(), buffer.getFloat());
+        return dst;
+    }
+
+    public Vector2 getVector2(){
+        return getVector2(new Vector2());
+    }
+
+    public void putVector(Vector2 src){
+        buffer.putFloat(src.x);
+        buffer.putFloat(src.y);
+    }
+
+    public void putVector(Vector3 src){
+        buffer.putFloat(src.x);
+        buffer.putFloat(src.y);
+        buffer.putFloat(src.z);
+    }
+
+    public Vector3 getVector3(Vector3 dst){
+        dst.set(buffer.getFloat(), buffer.getFloat(), buffer.getFloat());
+        return dst;
+    }
+
+    public Vector3 getVector3(){
+        return getVector3(new Vector3());
+    }
+
     public String getString(){
         int len = buffer.getInt();
         byte[] chars = new byte[len];
@@ -54,30 +83,22 @@ public class Message {
     }
 
     public void putTransform(TransformComponent transformComponent){
-        buffer.putFloat(transformComponent.position.x);
-        buffer.putFloat(transformComponent.position.y);
-        buffer.putFloat(transformComponent.position.z);
-
+        putVector(transformComponent.position);
     }
 
     public TransformComponent getTransform(TransformComponent component){
-        component.position.set(buffer.getFloat(), buffer.getFloat(), buffer.getFloat());
+        getVector3(component.position);
         return component;
     }
 
     public void putBox2d(Box2dComponent component){
-        Vector2 veloc = component.body.getLinearVelocity();
-        Transform t = component.body.getTransform();
-        buffer.putFloat(veloc.x);
-        buffer.putFloat(veloc.y);
-        buffer.putFloat(t.getPosition().x);
-        buffer.putFloat(t.getPosition().y);
+        putVector(component.body.getLinearVelocity());
+        putVector(component.body.getTransform().getPosition());
     }
 
     public Box2dComponent getBox2d(Box2dComponent component){
-        Transform t = component.body.getTransform();
-        component.body.setLinearVelocity(buffer.getFloat(), buffer.getFloat());
-        component.body.setTransform(buffer.getFloat(), buffer.getFloat(), t.getRotation());
+        component.body.setLinearVelocity(getVector2());
+        component.body.setTransform(getVector2(), component.body.getRotation());
         return component;
     }
 
