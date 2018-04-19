@@ -59,15 +59,14 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         netComponent.localTurn = localTurn;
         netComponent.sequenceNumber = NetworkComponent.getNextId();
         entityIdMap.put(netComponent.sequenceNumber, entityId);
-
-
-
+        System.out.println("Network component added " + " " + netComponent.owner + " " + netComponent.sequenceNumber);
     }
 
     @Override
     protected void removed(int entityId) {
         super.removed(entityId);
         entityIdMap.remove(entityId);
+        System.out.println("Network component removed");
     }
 
     @Override
@@ -92,8 +91,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         * */
         if (type == 10){
             String what = message.getString();
-            IEntityFactory factory = factories.get(what);
-            int entity = factory.createFromNetwork(message);
+            //IEntityFactory factory = factories.get(what);
+            //int entity = factory.createFromNetwork(message);
         } else if(type == 20){
             int id = b.getInt();
             message.getNetwork(mapNetwork.get(id));
