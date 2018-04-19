@@ -293,7 +293,11 @@ public class GameScreen extends BasicView {
         PlayerFactory playerFactory = (PlayerFactory) factoryMap.get(playerFactoryName);
         playerFactory.createPlayer(0, 0, Decal.newDecal(textureRegion));
         */
-        spawnPlayer(0);
+        for(PlayerInfo player : players){
+            if(player.isLocal){
+                spawnPlayer(player.playerIndex);
+            }
+        }
     }
 
     private void initialUpdateCamera() {

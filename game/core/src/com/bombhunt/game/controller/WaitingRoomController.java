@@ -49,6 +49,10 @@ public class WaitingRoomController extends BasicController implements RoomListen
             }
         });
 
+        for(int i = 0; i < players.length; i++){
+            players[i].playerIndex = i;
+        }
+
         changeView(new GameScreen(bombHunt, Arrays.asList(players)));
     }
 
@@ -119,11 +123,13 @@ public class WaitingRoomController extends BasicController implements RoomListen
                 readyMessage.putString("READY");
                 sender.sendToAllReliably(readyMessage.getData());
             }
-        } else if(type == "READY"){
+        } else if(type.equals("READY")){
             System.out.println("Player is ready " + message.getSender());
             leftToReady--;
+
             if(leftToReady <= 0){
-                enterGameScreen();
+                waitingRoomScreen.joinedRoom = true;
+                //enterGameScreen();
             }
         }
     }

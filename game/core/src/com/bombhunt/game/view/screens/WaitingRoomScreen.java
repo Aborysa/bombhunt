@@ -42,7 +42,7 @@ public class WaitingRoomScreen extends BasicView {
             controller.backToMainMenu();
         }
         if(joinedRoom){
-            // change to main game scene etc
+            controller.enterGameScreen();
         }
     }
 
