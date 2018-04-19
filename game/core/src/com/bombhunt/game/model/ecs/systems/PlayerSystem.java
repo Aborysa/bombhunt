@@ -88,7 +88,6 @@ public class PlayerSystem extends IteratingSystem {
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
                 .add(BombComponent.class)
-                .add(TimerComponent.class)
                 .add(GridPositionComponent.class)
                 .build(world);
         final int e = world.create(bombArchetype);

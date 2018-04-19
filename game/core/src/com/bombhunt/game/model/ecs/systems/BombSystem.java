@@ -15,7 +15,6 @@ import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
-import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.audio.AudioPlayer;
@@ -27,7 +26,6 @@ public class BombSystem extends IteratingSystem {
     private ComponentMapper<ExplosionComponent> mapExplosion;
     private ComponentMapper<AnimationComponent> mapAnimation;
     private ComponentMapper<SpriteComponent> mapSprite;
-    private ComponentMapper<TimerComponent> mapTimer;
     private ComponentMapper<GridPositionComponent> mapGrid;
 
     private TextureRegion region;
@@ -35,7 +33,6 @@ public class BombSystem extends IteratingSystem {
     public BombSystem() {
         super(Aspect.all(TransformComponent.class,
                 BombComponent.class,
-                TimerComponent.class,
                 GridPositionComponent.class));
         Assets asset_manager = Assets.getInstance();
         region = asset_manager.get("textures/tilemap1.atlas",
@@ -66,7 +63,6 @@ public class BombSystem extends IteratingSystem {
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
                 .add(ExplosionComponent.class)
-                .add(TimerComponent.class)
                 .add(GridPositionComponent.class)
                 .build(world);
         int e = world.create(explosionArchetype);

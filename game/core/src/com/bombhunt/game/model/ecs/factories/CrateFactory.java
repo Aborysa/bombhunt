@@ -25,11 +25,9 @@ import com.bombhunt.game.services.physic.Collision;
 
 public class CrateFactory implements IEntityFactory {
 
-
     private World world;
     public Archetype crateArchtype;
     private Grid grid;
-
 
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<SpriteComponent> mapSprite;

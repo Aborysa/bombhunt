@@ -19,7 +19,6 @@ import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.SolidComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
-import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.graphics.SpriteHelper;
