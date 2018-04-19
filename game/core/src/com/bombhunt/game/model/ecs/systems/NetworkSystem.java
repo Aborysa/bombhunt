@@ -88,6 +88,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                 m.putString("UPDATE_ENTITY");
                 m.getBuffer().putInt(ids[i]);
                 m.putBox2d(mapBox2d.get(ids[i]));
+                this.playServices.sendToAllReliably(m.getData());
             }
         }
     }
