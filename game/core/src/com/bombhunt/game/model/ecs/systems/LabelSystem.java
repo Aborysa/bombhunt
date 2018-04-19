@@ -19,7 +19,6 @@ public class LabelSystem extends IteratingSystem {
         LabelComponent labelComponent = mapLabel.get(e);
         TransformComponent transformComponent = mapTransform.get(e);
         labelComponent.position = transformComponent.position.cpy();
-        labelComponent.position.z = 1000;
         // TODO: OFFSET
     }
 }

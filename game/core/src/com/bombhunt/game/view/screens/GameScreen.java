@@ -372,7 +372,6 @@ public class GameScreen extends BasicView {
     @Override
     public void render() {
         renderEntities();
-        flushAllSprites();
         //box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
         stage.draw();
     }
@@ -389,20 +388,14 @@ public class GameScreen extends BasicView {
                 Vector3 pos = mapTransform.get(e).position;
                 ecsDebugRenderer.circle(pos.x, pos.y, 8);
             }
-            if(mapLabel.has(e)) {
-                LabelComponent labelComponent = mapLabel.get(e);
-                Assets asset_manager = Assets.getInstance();
-                Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
-                BitmapFont font = skin.getFont("title");
-                font.draw(spriteBatch, labelComponent.label, currentCamera.position.x, currentCamera.position.y);
-            }
         }
         for(Decal d : mapDecals){
             batch.add(d);
         }
         ecsDebugRenderer.end();
+        batch.flush();
 
-        spriteBatch.setProjectionMatrix(currentCamera.combined);
+        spriteBatch.setProjectionMatrix(stage.getCamera().combined);
         spriteBatch.begin();
         for (int i = 0; i < entities.size(); i++) {
             int e = entities.get(i);
@@ -411,14 +404,11 @@ public class GameScreen extends BasicView {
                 Assets asset_manager = Assets.getInstance();
                 Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
                 BitmapFont font = skin.getFont("title");
+                Vector3 position = labelComponent.position;
                 font.draw(spriteBatch, labelComponent.label, currentCamera.position.x, currentCamera.position.y);
             }
         }
         spriteBatch.end();
-    }
-
-    private void flushAllSprites() {
-        batch.flush();
     }
 
     @Override
