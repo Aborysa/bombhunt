@@ -27,7 +27,6 @@ import com.bombhunt.game.services.graphics.SpriteHelper;
 public class ExplosionSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<ExplosionComponent> mapExplosion;
-    private ComponentMapper<TimerComponent> mapTimer;
     private ComponentMapper<BombComponent> mapBomb;
     private ComponentMapper<DestroyableComponent> mapDestroyable;
     private ComponentMapper<KillableComponent> mapKillable;
@@ -40,8 +39,7 @@ public class ExplosionSystem extends IteratingSystem {
 
     public ExplosionSystem() {
         super(Aspect.all(TransformComponent.class,
-                ExplosionComponent.class,
-                TimerComponent.class));
+                ExplosionComponent.class));
         Assets asset_manager = Assets.getInstance();
         region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
@@ -86,10 +84,8 @@ public class ExplosionSystem extends IteratingSystem {
                 }
             }
         }
-
         explosionDamage(e);
         playerDamage(e);
-
         explosionComponent.duration -= delta;
         if (explosionComponent.duration <= 0) {
             world.delete(e);
@@ -130,7 +126,6 @@ public class ExplosionSystem extends IteratingSystem {
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
                 .add(ExplosionComponent.class)
-                .add(TimerComponent.class)
                 .add(GridPositionComponent.class)
                 .build(world);
         int e = world.create(explosionArchetype);

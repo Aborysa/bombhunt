@@ -29,13 +29,10 @@ public class KillableSystem extends IteratingSystem {
 
         killableComponent.ttl_timer -= delta;
         if (killableComponent.ttl_timer <= 0) {
-            System.out.println("DAMAGE RECEIVED");
-            System.out.println(killableComponent.damage_received);
             killableComponent.ttl_timer = killableComponent.timer_damage;
             killableComponent.health -= killableComponent.damage_received;
         }
         if (killableComponent.health <= 0) {
-            System.out.println("YOU ARE DEAD KEVEN");
             box2d.destroyBody(mapBox2d.get(e).body);
             world.delete(e);
         }
