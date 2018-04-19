@@ -49,7 +49,7 @@ public class Collision {
         filter.categoryBits = Category.PLAYER;
         filter.maskBits = Category.WALL | Category.PLAYER;
         filter.groupIndex = 0;
-        restitution = 0.1f;
+        restitution = 0f;
         friction = 0f;
     }};
 
@@ -61,7 +61,7 @@ public class Collision {
         filter.categoryBits = Category.WALL;
         filter.maskBits = Category.WALL | Category.PLAYER;
         filter.groupIndex = 0;
-        restitution = 1f;
+        restitution = 0f;
         friction = 0f;
     }};
 

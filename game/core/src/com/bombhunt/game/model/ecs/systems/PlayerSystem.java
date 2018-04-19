@@ -59,6 +59,7 @@ public class PlayerSystem extends IteratingSystem {
         Body body = box2dComponent.body;
         Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
         body.setLinearVelocity(velocity);
+        // body.applyLinearImpulse(velocity, new Vector2(0,0), true);
         last_position = transformComponent.position.cpy();
         updatePlantedBomb(playerComponent);
         updateCoolDownBomb(playerComponent);
