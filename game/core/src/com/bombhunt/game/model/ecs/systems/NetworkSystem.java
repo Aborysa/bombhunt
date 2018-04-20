@@ -151,6 +151,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                 }
 
                 if(bombComponent != null) {
+                    System.out.println("Interpolating bombtimer " + tickDiff * world.getDelta());
+
                     bombComponent.timer -= tickDiff * world.getDelta();
                 }
 
