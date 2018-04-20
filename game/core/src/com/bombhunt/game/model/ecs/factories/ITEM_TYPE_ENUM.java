@@ -15,6 +15,13 @@ public enum ITEM_TYPE_ENUM {
             playerComponent.health = (int) min(playerComponent.health + getAmount(), playerComponent.max_health);
         }
     },
+    POISON(-50f, 0, 200f, 0, 2) {
+        @Override
+        public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
+            playerComponent.health =
+                    (int) min(playerComponent.health + getAmount(), playerComponent.max_health);
+        }
+    },
     DAMAGE(50f, 0, 200f, 0, 0) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {

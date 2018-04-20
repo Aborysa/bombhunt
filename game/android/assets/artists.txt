@@ -14,4 +14,5 @@ Pop Up Sound - Quistard
 Bomb Drop Sound - bertiehs
 In Game Button Click Sound - suntemple
 Explosion Sound - fridobeck
+Items Spawning Sound - p0ss
 

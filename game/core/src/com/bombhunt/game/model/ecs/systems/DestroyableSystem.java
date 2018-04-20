@@ -5,6 +5,7 @@ import com.artemis.ArchetypeBuilder;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,6 +20,7 @@ import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.ItemFactory;
 import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
 
 public class DestroyableSystem extends IteratingSystem {
@@ -54,7 +56,10 @@ public class DestroyableSystem extends IteratingSystem {
             createCrateExplosion(e);
             if (Math.random() < destroyableComponent.items_probabilty) {
                 itemFactory.createRandomItem(transformComponent.position);
-                // TODO: play sound for items
+                Assets asset_manager = Assets.getInstance();
+                Sound sound = asset_manager.get("itemSpawning.mp3", Sound.class);
+                AudioPlayer audioPlayer = AudioPlayer.getInstance();
+                audioPlayer.playSound(sound);
             }
             box2d.destroyBody(mapBox2d.get(e).body);
             world.delete(e);
