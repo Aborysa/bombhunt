@@ -85,7 +85,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             Message m = new Message(new byte[128], "", 0);
             m.putString("REMOVE_ENTITY");
             m.getBuffer().putInt(component.sequenceNumber);
-            playServices.sendToAllUnreliably(m.getCompact());
+            playServices.sendToAllReliably(m.getCompact());
         }
     }
 
@@ -93,17 +93,19 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
     protected void processSystem() {
         netManager.readyForMessages(50);
         IntBag entities = subscription.getEntities();
-        localTurn++;
         int[] ids = entities.getData();
         for(int i = 0; i < entities.size(); i++){
             process(ids[i]);
         }
+        localTurn++;
     }
 
     public void process(int e){
         NetworkComponent networkComponent = mapNetwork.get(e);
         //networkComponent.remoteTurn++;
 
+        networkComponent.remoteTurn++;
+        networkComponent.localTurn++;
 
         Box2dComponent box2d = mapBox2d.getSafe(e, null);
         TransformComponent transformComponent = mapTransform.getSafe(e, null);
@@ -116,6 +118,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             Message m = new Message(new byte[128], "", 0);
             m.putString("UPDATE_ENTITY");
             m.getBuffer().putInt(networkComponent.sequenceNumber);
+            System.out.println("Writing localTrun " + networkComponent.localTurn);
             m.getBuffer().putInt(networkComponent.localTurn);
 
             if(box2d != null){
@@ -134,7 +137,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                 m.putKillable(killableComponent);
             }
 
-            this.playServices.sendToAllReliably(m.getCompact());
+            this.playServices.sendToAllUnreliably(m.getCompact());
         } else if(!networkComponent.isLocal) {
             /* Interpolate position and account for timers */
             int tickDiff = networkComponent.localTurn - networkComponent.remoteTurn;
@@ -159,9 +162,6 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
                 networkComponent.remoteTurn = networkComponent.localTurn;
             }
-
-            networkComponent.remoteTurn++;
-            networkComponent.localTurn++;
 
         }
 
