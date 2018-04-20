@@ -23,9 +23,13 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
+import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
+
+import java.lang.management.PlatformLoggingMXBean;
+import java.util.Arrays;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.asin;
@@ -50,7 +54,6 @@ public class PlayerSystem extends IteratingSystem {
     private Vector3 last_position = new Vector3();
     private Vector2 last_orientation = new Vector2();
     private boolean bombPlanted = false;
-    private TextureRegion region;
     private Array<Sprite> sprites;
 
     public PlayerSystem(BombFactory bombFactory) {
@@ -61,7 +64,7 @@ public class PlayerSystem extends IteratingSystem {
                 TimerComponent.class));
         this.bombFactory = bombFactory;
         Assets asset_manager = Assets.getInstance();
-        region = asset_manager.get("textures/tilemap1.atlas",
+        TextureRegion region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
         sprites = SpriteHelper.createSprites(region, 16, 0, 17, 10);
     }
@@ -71,7 +74,6 @@ public class PlayerSystem extends IteratingSystem {
         TransformComponent transformComponent = mapTransform.get(e);
         PlayerComponent playerComponent = mapPlayer.get(e);
         KillableComponent killableComponent = mapKillable.get(e);
-        SpriteComponent spriteComponent = mapSprite.get(e);
         killableComponent.health = playerComponent.health;
         Body body = box2dComponent.body;
         Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
@@ -79,9 +81,7 @@ public class PlayerSystem extends IteratingSystem {
         last_position = transformComponent.position.cpy();
         updatePlantedBomb(playerComponent);
         updateCoolDownBomb(playerComponent);
-        updateDirection(playerComponent);
-        // TODO: add animation eventually
-        updateSpriteDirection(playerComponent, spriteComponent);
+        updateDirection(e);
     }
 
     private void updatePlantedBomb(PlayerComponent playerComponent) {
@@ -115,7 +115,9 @@ public class PlayerSystem extends IteratingSystem {
         }
     }
 
-    private void updateDirection(PlayerComponent playerComponent) {
+    private void updateDirection(int e) {
+        PlayerComponent playerComponent = mapPlayer.get(e);
+        DIRECTION_ENUM previous_direction = playerComponent.direction;
         if (last_orientation.x != 0 && last_orientation.y != 0) {
             double hyp = sqrt(pow(last_orientation.x,2) + pow(last_orientation.y, 2));
             double theta = toDegrees(asin(last_orientation.y/hyp));
@@ -149,12 +151,21 @@ public class PlayerSystem extends IteratingSystem {
                 }
             }
         }
+        if (previous_direction != playerComponent.direction) {
+            updateSpriteDirection(e);
+        }
     }
 
-    private void updateSpriteDirection(PlayerComponent playerComponent, SpriteComponent spriteComponent) {
-        Sprite sprite = sprites.get(playerComponent.direction.getFrame());
-        sprite.flip(playerComponent.direction.isFlip(), false);
-        spriteComponent.sprite = Decal.newDecal(sprite, true);
+    private void updateSpriteDirection(int e) {
+        PlayerComponent playerComponent = mapPlayer.get(e);
+        int frame = playerComponent.direction.getFrame();
+        boolean is_flipped = playerComponent.direction.isFlip();
+        Sprite new_sprite = new Sprite(sprites.get(frame));
+        new_sprite.flip(is_flipped, false);
+        Array<Sprite> new_array_animation = new Array<> ();
+        new_array_animation.add(new_sprite);
+        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(new_array_animation, 60);
+        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(frame, true);
     }
 
     public void move(Vector2 new_orientation) {
