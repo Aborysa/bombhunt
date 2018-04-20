@@ -1,6 +1,7 @@
 package com.bombhunt.game.model.ecs.components;
 
 import com.artemis.Component;
+import com.bombhunt.game.model.ecs.systems.DIRECTION_ENUM;
 
 public class PlayerComponent extends Component {
     public float movement_speed = 1.2f;
@@ -11,4 +12,5 @@ public class PlayerComponent extends Component {
     public int health = max_health;
     public int bomb_damage = 10;
     public int bomb_range = 1;
+    public DIRECTION_ENUM direction = DIRECTION_ENUM.DOWN;
 }

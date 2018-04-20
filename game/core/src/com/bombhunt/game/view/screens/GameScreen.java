@@ -416,7 +416,7 @@ public class GameScreen extends BasicView {
             }
         }
         for(Decal d : mapDecals){
-            batch.add(d);
+            //batch.add(d);
         }
         ecsDebugRenderer.end();
         batch.flush();
