@@ -73,7 +73,7 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
 
     @Override
     public int createFromMessage(String message) {
-        int e = createItem(Vector3.Zero, ITEM_TYPE_ENUM.DAMAGE);
+        int e = createItem(Vector3.Zero, ITEM_TYPE_ENUM.BOMB_DAMAGE);
         return e;
     }
 

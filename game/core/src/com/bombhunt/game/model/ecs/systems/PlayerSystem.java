@@ -7,11 +7,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
@@ -23,15 +21,13 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
-import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
 
-import java.lang.management.PlatformLoggingMXBean;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.asin;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -53,6 +49,7 @@ public class PlayerSystem extends IteratingSystem {
     // IMPORTANT: For controller interactions
     private Vector3 last_position = new Vector3();
     private Vector2 last_orientation = new Vector2();
+    private Map<STATS_ENUM, Number> stats = new HashMap<>();
     private boolean bombPlanted = false;
     private Array<Sprite> sprites;
 
@@ -67,6 +64,9 @@ public class PlayerSystem extends IteratingSystem {
         TextureRegion region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
         sprites = SpriteHelper.createSprites(region, 16, 0, 17, 10);
+        for (STATS_ENUM i: STATS_ENUM.values()) {
+            stats.put(i, 0);
+        }
     }
 
     protected void process(int e) {
@@ -80,6 +80,7 @@ public class PlayerSystem extends IteratingSystem {
         updatePlantedBomb(playerComponent);
         updateCoolDownBomb(playerComponent);
         updateDirection(e);
+        updateStats(e);
     }
 
     private void updatePlantedBomb(PlayerComponent playerComponent) {
@@ -105,10 +106,10 @@ public class PlayerSystem extends IteratingSystem {
     private void updateCoolDownBomb(PlayerComponent playerComponent) {
         if (playerComponent.isCooledDownBomb) {
             float delta = world.getDelta();
-            playerComponent.ttl_cooldown_bomb -= delta;
-            if (playerComponent.ttl_cooldown_bomb <= 0) {
+            playerComponent.ttl_bomb_cooldown -= delta;
+            if (playerComponent.ttl_bomb_cooldown <= 0) {
                 playerComponent.isCooledDownBomb = false;
-                playerComponent.ttl_cooldown_bomb = playerComponent.cooldown_bomb;
+                playerComponent.ttl_bomb_cooldown = playerComponent.bomb_cooldown;
             }
         }
     }
@@ -117,8 +118,8 @@ public class PlayerSystem extends IteratingSystem {
         PlayerComponent playerComponent = mapPlayer.get(e);
         DIRECTION_ENUM previous_direction = playerComponent.direction;
         if (last_orientation.x != 0 && last_orientation.y != 0) {
-            double hyp = sqrt(pow(last_orientation.x,2) + pow(last_orientation.y, 2));
-            double theta = toDegrees(asin(last_orientation.y/hyp));
+            double hyp = sqrt(pow(last_orientation.x, 2) + pow(last_orientation.y, 2));
+            double theta = toDegrees(asin(last_orientation.y / hyp));
             if (last_orientation.x > 0) {
                 if (last_orientation.y > 0) {
                     if (theta > 45) {
@@ -160,10 +161,21 @@ public class PlayerSystem extends IteratingSystem {
         boolean is_flipped = playerComponent.direction.isFlip();
         Sprite new_sprite = new Sprite(sprites.get(frame));
         new_sprite.flip(is_flipped, false);
-        Array<Sprite> new_array_animation = new Array<> ();
+        Array<Sprite> new_array_animation = new Array<>();
         new_array_animation.add(new_sprite);
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(new_array_animation, 60);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(frame, true);
+    }
+
+    private void updateStats(int e) {
+        PlayerComponent playerComponent = mapPlayer.get(e);
+        KillableComponent killableComponent = mapKillable.get(e);
+        stats.put(STATS_ENUM.MAX_HEALTH, playerComponent.max_health);
+        stats.put(STATS_ENUM.HEALTH, killableComponent.health);
+        stats.put(STATS_ENUM.BOMB_COOLDOWN, playerComponent.bomb_cooldown);
+        stats.put(STATS_ENUM.BOMB_RANGE, playerComponent.bomb_range);
+        stats.put(STATS_ENUM.BOMB_DAMAGE, playerComponent.bomb_damage);
+        stats.put(STATS_ENUM.SPEED, playerComponent.movement_speed);
     }
 
     public void move(Vector2 new_orientation) {
@@ -172,6 +184,10 @@ public class PlayerSystem extends IteratingSystem {
 
     public Vector3 getPosition() {
         return last_position.cpy();
+    }
+
+    public Map<STATS_ENUM, Number> getStats() {
+        return stats;
     }
 
     public void plantBomb() {

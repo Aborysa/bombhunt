@@ -4,7 +4,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.model.ecs.systems.PlayerSystem;
+import com.bombhunt.game.model.ecs.systems.STATS_ENUM;
 import com.bombhunt.game.view.screens.MainMenuScreen;
+
+import java.util.Map;
 
 /**
  * Created by samuel on 29/03/18.
@@ -29,6 +32,10 @@ public class GameController extends BasicController {
 
     public Vector3 getPlayerPosition() {
         return playerSystem.getPosition();
+    }
+
+    public Map<STATS_ENUM, Number> getPlayerStats() {
+        return playerSystem.getStats();
     }
 
 }

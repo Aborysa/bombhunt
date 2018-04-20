@@ -5,9 +5,9 @@ import com.bombhunt.game.model.ecs.systems.DIRECTION_ENUM;
 
 public class PlayerComponent extends Component {
     public float movement_speed = 1.2f;
-    public float cooldown_bomb = 1f;
+    public float bomb_cooldown = 1f;
     public Boolean isCooledDownBomb = false;
-    public float ttl_cooldown_bomb = cooldown_bomb;
+    public float ttl_bomb_cooldown = bomb_cooldown;
     public int max_health = 100;
     public int malus = 0;
     public int bomb_damage = 10;

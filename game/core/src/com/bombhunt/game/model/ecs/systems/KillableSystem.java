@@ -46,7 +46,7 @@ public class KillableSystem extends IteratingSystem {
                 killableComponent.is_colored = true;
                 spriteComponent.sprite.setColor(0.5f, 0.5f, 1, 1);
             } else if (total_damage > 0) {
-                // NORMAL DAMAGE
+                // NORMAL BOMB_DAMAGE
                 killableComponent.is_colored = true;
                 spriteComponent.sprite.setColor(1, 0.5f, 0.5f, 1);
             } else if (total_damage < 0) {

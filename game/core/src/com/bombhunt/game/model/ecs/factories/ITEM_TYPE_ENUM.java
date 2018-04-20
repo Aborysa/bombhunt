@@ -7,7 +7,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public enum ITEM_TYPE_ENUM {
-    HEALTH(25f, 0, 200, 1, 2) {
+    HEAL(25f, 0, 200, 1, 2) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.max_health =
@@ -21,14 +21,14 @@ public enum ITEM_TYPE_ENUM {
             playerComponent.malus = (int) -getAmount();
         }
     },
-    DAMAGE(50f, 0, 200f, 0, 0) {
+    BOMB_DAMAGE(50f, 0, 200f, 0, 0) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.bomb_damage =
                     (int) max(min(playerComponent.bomb_damage + getAmount(), getMaxAmount()), getMinAmount());
         }
     },
-    RANGE(1f, 0, Float.MAX_VALUE, 4, 4) {
+    BOMB_RANGE(1f, 0, Float.MAX_VALUE, 3, 4) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.bomb_range =
@@ -45,8 +45,8 @@ public enum ITEM_TYPE_ENUM {
     BOMB_COOLDOWN(-0.1f, 0.5f, 1f, 2, 4) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
-            playerComponent.cooldown_bomb =
-                    max(min(playerComponent.cooldown_bomb + getAmount(), getMaxAmount()), getMinAmount());
+            playerComponent.bomb_cooldown =
+                    max(min(playerComponent.bomb_cooldown + getAmount(), getMaxAmount()), getMinAmount());
         }
     };
 
