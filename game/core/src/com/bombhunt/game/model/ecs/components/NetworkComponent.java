@@ -13,6 +13,8 @@ public class NetworkComponent extends Component {
   public int remoteTurn = 0;
   public int sequenceNumber = 0;
 
+  public boolean autoremove = false;
+
 
   public static int playerIdx = 0;
   private static int nextId = 1;
