@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.MainMenuController;
 import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.services.networking.IPlayServices;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -42,8 +43,10 @@ public class MainMenuScreen extends MovingBackgroundScreen {
     TextureAtlas atlas;
     Animation animation;
     Sprite sprite;
+    private IPlayServices playServices;
 
     public MainMenuScreen(BombHunt bombHunt) {
+        this.playServices = bombHunt.getPlayServices();
         controller = new MainMenuController(bombHunt);
         String theme_song = "heroism.ogg";
         controller.setNewThemeSong(theme_song);

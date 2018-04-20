@@ -15,7 +15,7 @@ import com.bombhunt.game.view.BasicView;
 
 public class WaitingRoomScreen extends BasicView {
 
-    private boolean created = false;
+    public boolean created = false;
     public boolean leftRoom = false;
     public boolean joinedRoom = false;
     private WaitingRoomController controller;

@@ -36,6 +36,11 @@ public class WaitingRoomController extends BasicController implements RoomListen
     public WaitingRoomController(BombHunt bombHunt, WaitingRoomScreen waitingRoomScreen){
         super(bombHunt);
         this.waitingRoomScreen = waitingRoomScreen;
+        if(!bombHunt.getPlayServices().isSignedIn()){
+            waitingRoomScreen.created = true;
+            waitingRoomScreen.leftRoom = true;
+            bombHunt.getPlayServices().signIn();
+        }
     }
 
     public void backToMainMenu() {changeView(new MainMenuScreen(bombHunt));}

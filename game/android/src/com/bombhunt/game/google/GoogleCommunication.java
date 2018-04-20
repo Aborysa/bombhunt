@@ -441,7 +441,7 @@ public class GoogleCommunication implements IPlayServices {
 
     @Override
     public boolean isSignedIn() {
-        return GoogleSignIn.getLastSignedInAccount(androidLauncher) != null;
+        return googleSignInAccount != null;
     }
 
     @Override
