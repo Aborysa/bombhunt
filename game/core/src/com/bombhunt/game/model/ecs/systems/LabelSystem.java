@@ -31,7 +31,7 @@ public class LabelSystem extends IteratingSystem {
         LabelComponent labelComponent = mapLabel.get(e);
         if (labelComponent.offset_y == 0f) {
             SpriteComponent spriteComponent = mapSprite.get(e);
-            labelComponent.offset_y = spriteComponent.sprite.getHeight() / 2f;
+            labelComponent.offset_y = -spriteComponent.sprite.getHeight() / 1.5f ;
         }
     }
 }
