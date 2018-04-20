@@ -3,6 +3,7 @@ package com.bombhunt.game.services.networking;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 
 public class NetworkManager implements RealtimeListener{
@@ -12,6 +13,7 @@ public class NetworkManager implements RealtimeListener{
     private List<PlayerInfo> players;
     private HashMap<String, PlayerInfo> playerMap;
     
+    private Random random = new Random();
 
     private static NetworkManager instance;
     
@@ -89,9 +91,16 @@ public class NetworkManager implements RealtimeListener{
     public void setPlayers(List<PlayerInfo> players){
         this.players = players;
         playerMap = new HashMap<String, PlayerInfo>();
+        long seed = 0; 
         for(PlayerInfo player : players){
+            seed += player.randomNumber;
             playerMap.put(player.playerId, player);
         }
+        random = new Random(seed);
+    }
+
+    public Random getRandom(){
+        return random;
     }
 
     public PlayerInfo getPlayerInfo(String id){

@@ -19,6 +19,7 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.graphics.SpriteHelper;
+import com.bombhunt.game.services.networking.NetworkManager;
 
 import java.util.Random;
 
@@ -44,7 +45,7 @@ public class ItemFactory implements IEntityFactory {
         Assets asset_manager = Assets.getInstance();
         region = new TextureRegion(asset_manager.get("items.png",
                 Texture.class));
-        random = new Random(1000);
+        random = NetworkManager.getInstance().getRandom();
     }
 
     @Override

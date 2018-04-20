@@ -24,6 +24,7 @@ import com.bombhunt.game.model.ecs.factories.ItemFactory;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
+import com.bombhunt.game.services.networking.NetworkManager;
 
 public class DestroyableSystem extends IteratingSystem {
     private ComponentMapper<DestroyableComponent> mapDestroyable;
@@ -49,7 +50,7 @@ public class DestroyableSystem extends IteratingSystem {
         Assets asset_manager = Assets.getInstance();
         regionCrate = new TextureRegion(asset_manager.get("crateExplosion.png", Texture.class));
         regionExplosion = asset_manager.get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4");
-        random = new Random(500);
+        random = NetworkManager.getInstance().getRandom();
     }
 
     @Override
