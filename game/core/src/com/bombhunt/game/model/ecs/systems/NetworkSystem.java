@@ -149,7 +149,6 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                     Vector2 interpolated = box2d.prePos;
                     interpolated.lerp(box2d.body.getTransform().getPosition(), world.getDelta() * tickDiff);
 
-                    System.out.println("Interpolating " + interpolated.cpy().scl(Collision.box2dToWorld));
                     body.setTransform(interpolated, body.getTransform().getRotation());
                 }
 
