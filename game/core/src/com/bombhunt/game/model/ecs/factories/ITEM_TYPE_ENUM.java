@@ -5,6 +5,7 @@ import com.bombhunt.game.model.ecs.components.PlayerComponent;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.lang.Math.round;
 
 public enum ITEM_TYPE_ENUM {
     HEAL(25f, 0, 200, 1, 2) {
@@ -15,6 +16,7 @@ public enum ITEM_TYPE_ENUM {
             playerComponent.malus = (int) -getAmount();
         }
     },
+
     POISON(-50f, 0, 0, 0, 2) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
@@ -46,7 +48,7 @@ public enum ITEM_TYPE_ENUM {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.bomb_cooldown =
-                    max(min(playerComponent.bomb_cooldown + getAmount(), getMaxAmount()), getMinAmount());
+                    round(max(min(playerComponent.bomb_cooldown + getAmount(), getMaxAmount()), getMinAmount())*10f)/10f;
         }
     };
 

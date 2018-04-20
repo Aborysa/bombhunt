@@ -12,12 +12,10 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -28,16 +26,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.GameController;
@@ -50,7 +43,6 @@ import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.model.ecs.factories.CrateFactory;
 import com.bombhunt.game.model.ecs.factories.ExplosionFactory;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
-import com.bombhunt.game.model.ecs.factories.ITEM_TYPE_ENUM;
 import com.bombhunt.game.model.ecs.factories.ItemFactory;
 import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.model.ecs.factories.WallFactory;
@@ -63,20 +55,18 @@ import com.bombhunt.game.model.ecs.systems.KillableSystem;
 import com.bombhunt.game.model.ecs.systems.LabelSystem;
 import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.model.ecs.systems.PlayerSystem;
-import com.bombhunt.game.model.ecs.systems.STATS_ENUM;
 import com.bombhunt.game.model.ecs.systems.SpriteSystem;
 import com.bombhunt.game.model.ecs.systems.TimerSystem;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
+import com.bombhunt.game.view.HUD;
 import com.bombhunt.game.view.InGameSettings;
 import com.bombhunt.game.view.controls.BombButton;
 import com.bombhunt.game.view.controls.Joystick;
 import com.bombhunt.game.view.controls.SettingsButton;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -124,7 +114,7 @@ public class GameScreen extends BasicView {
     private BombButton bombButton;
     private SettingsButton settingsButton;
     private Stage stage;
-    private Stage stageStats;
+    private HUD hud;
     private BitmapFont labelComponentFont;
     private GlyphLayout labelComponentLayout;
 
@@ -137,6 +127,7 @@ public class GameScreen extends BasicView {
         setUpCamera();
         setUpBatching();
         setUpControls();
+        setUpStats();
         setUpComponentMappers();
         setUpAspectSubscription();
         setUpInputProcessor();
@@ -302,48 +293,12 @@ public class GameScreen extends BasicView {
         return table;
     }
 
-    private Array<Group> updateStats() {
-        Map<STATS_ENUM, Number> stats = controller.getPlayerStats();
-        Assets asset_manager = Assets.getInstance();
-        Texture texture = asset_manager.get("items.png", Texture.class);
-        Array<Group> groups = new Array<>();
-        for(STATS_ENUM i : STATS_ENUM.values()) {
-            try {
-                ITEM_TYPE_ENUM item = ITEM_TYPE_ENUM.valueOf(String.valueOf(i));
-                TextureRegion textureRegion = new TextureRegion(texture, item.getCoord_x()*32, item.getCoord_y()*32, 32, 32);
-                Image image = new Image(textureRegion);
-                image.setScale(2.5f);
-                Label label = new Label(stats.get(i).toString(), skin);
-                Group group = new Group();
-                group.addActor(image);
-                group.addActor(label);
-                group.setHeight(image.getHeight()*image.getScaleY());
-                groups.add(group);
-            } catch (IllegalArgumentException e) {
-                continue;
-            }
-        }
-        return groups;
-    }
-
     private void setUpStats() {
-        Table table = new Table();
-        table.defaults().uniformY();
-        Array<Group> groups = updateStats();
-        float total_height = 0;
-        for (Group group : groups) {
-            total_height += group.getHeight();
-            table.add(group).row();
-        }
+        hud = new HUD(controller);
         Vector3 position = stage.getCamera().position.cpy();
         position.x -= Gdx.graphics.getWidth()/2 - PADDING_TABLE_CONTROLS;
-        position.y += Gdx.graphics.getHeight()/2 - PADDING_TABLE_CONTROLS - total_height/2.5f*2f; //0.5 less than scalling
-        table.setPosition(position.x, position.y);
-        if(stageStats != null) {
-            stageStats.dispose();
-        }
-        stageStats = new Stage();
-        stageStats.addActor(table);
+        position.y += Gdx.graphics.getHeight()/2 - PADDING_TABLE_CONTROLS - hud.getTotalHeight();
+        hud.setPosition(position);
     }
 
     private void setUpComponentMappers() {
@@ -400,10 +355,8 @@ public class GameScreen extends BasicView {
         updateClock(dt);
         processTicks(dt);
         updateCamera(dt);
-        updateStats();
-        setUpStats();
+        hud.update(dt);
         stage.act(dt);
-        stageStats.act(dt);
     }
 
     private void updateClock(float dt) {
@@ -460,8 +413,7 @@ public class GameScreen extends BasicView {
         //box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
         stage.setDebugAll(true);
         stage.draw();
-        stageStats.setDebugAll(true);
-        stageStats.draw();
+        hud.render();
     }
 
     private void renderEntities() {
@@ -507,7 +459,7 @@ public class GameScreen extends BasicView {
         batch.dispose();
         spriteBatch.dispose();
         stage.dispose();
-        stageStats.dispose();
+        hud.dispose();
         // IMPORTANT: to scale back title font...
         labelComponentFont.getData().setScale(1f);
     }
