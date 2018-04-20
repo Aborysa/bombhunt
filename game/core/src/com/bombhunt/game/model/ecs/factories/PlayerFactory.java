@@ -136,15 +136,18 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
 
 
     public int createFromMessage(Message m){
-        Vector3 pos = m.getVector3();
         int seq = m.getBuffer().getInt();
-
+        Vector3 pos = m.getVector3();
         int e = createPlayer(pos, NetworkManager.getInstance().getPlayerInfo(m.getSender()).playerIndex);
+
+
+
         mapPlayerInput.remove(e);
-        
-        mapNetwork.get(e).sequenceNumber = seq;
-        mapNetwork.get(e).owner = m.getSender();
-        mapNetwork.get(e).isLocal = false;
+
+        NetworkComponent netComp = mapNetwork.get(e);
+        netComp.sequenceNumber = seq;
+        netComp.owner = m.getSender();
+        netComp.isLocal = false;
         
         System.out.println("Creating remote player with seqnum " + mapNetwork.get(e).sequenceNumber);
         return e;
@@ -157,8 +160,8 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         netComp.sequenceNumber = NetworkComponent.getNextId();
         System.out.println("Creating local player with seqnum " + netComp.sequenceNumber);
         netComp.owner = NetworkManager.getInstance().getPlayerService().getLocalID();
-        m.putVector(mapTransform.get(e).position);
         m.getBuffer().putInt(netComp.sequenceNumber);
+        m.putVector(mapTransform.get(e).position);
 
         return m;
     }

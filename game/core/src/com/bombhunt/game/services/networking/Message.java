@@ -3,7 +3,9 @@ package com.bombhunt.game.services.networking;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Transform;
+import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
+import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.NetworkComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
@@ -120,11 +122,33 @@ public class Message {
         buffer.putFloat(component.timer);
     }
 
+    public void putBomb(BombComponent bomb){
+        buffer.putFloat(bomb.ttl_timer);
+    }
+
+    public BombComponent getBomb(BombComponent bomb){
+        bomb.timer = buffer.getFloat();
+        return bomb;
+    }
+
+    public void putKillable(KillableComponent killable){
+        buffer.putInt(killable.health);
+    }
+
+    public KillableComponent getKillable(KillableComponent killable){
+        killable.health = buffer.getInt();
+        return killable;
+    }
+
     public String getSender(){
         return senderID;
     }
 
     public byte[] getData(){
         return data;
+    }
+
+    public byte[] getCompact(){
+        return Arrays.copyOfRange(data, 0, buffer.position());
     }
 }

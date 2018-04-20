@@ -26,8 +26,8 @@ public class SpriteSystem extends IteratingSystem {
     protected void process(int entity) {
         // using our component mappers to get the components from the entities.
         TransformComponent transformComponent = mapTransform.get(entity);
-        AnimationComponent animationComponent = mapAnimation.get(entity);
-        SpriteComponent spriteComponent = mapSprite.get(entity);
+        AnimationComponent animationComponent = mapAnimation.getSafe(entity, null);
+        SpriteComponent spriteComponent = mapSprite.getSafe(entity, null);
 
 
         Decal sprite = null;

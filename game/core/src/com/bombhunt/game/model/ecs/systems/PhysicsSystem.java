@@ -27,6 +27,13 @@ public class PhysicsSystem extends IteratingSystem {
         this.box2d = box2d;
     }
 
+    @Override
+    protected void removed(int e){
+        super.removed(e);
+        if(mapBox2d.has(e)){
+            box2d.destroyBody(mapBox2d.get(e).body);
+        }
+    }
 
     protected void process(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
@@ -39,8 +46,6 @@ public class PhysicsSystem extends IteratingSystem {
 
             transformComponent.rotation = MathUtils.radiansToDegrees * body.getAngle();
 
-
-            // May need to map box2d coords to ecs coords
             transformComponent.position.set(body.getPosition().scl(Collision.box2dToWorld), transformComponent.position.z);
 
         } else if (mapVelocity.has(e)) {

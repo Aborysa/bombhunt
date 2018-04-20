@@ -1,12 +1,13 @@
 package com.bombhunt.game.model.ecs.components;
 
 import com.artemis.Component;
+import com.artemis.annotations.DelayedComponentRemoval;
 import com.badlogic.gdx.math.Vector2;
 import com.bombhunt.game.model.Grid;
 
-
+@DelayedComponentRemoval
 public class NetworkComponent extends Component {
-  public String owner = "LOCAL";
+  public String owner = "NONE";
   public boolean isLocal = true;
   public int localTurn = 0;
   public int remoteTurn = 0;

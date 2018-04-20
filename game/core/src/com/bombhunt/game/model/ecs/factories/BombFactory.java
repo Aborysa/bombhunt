@@ -17,7 +17,9 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.graphics.SpriteHelper;
+import com.bombhunt.game.services.networking.IPlayServices;
 import com.bombhunt.game.services.networking.Message;
+import com.bombhunt.game.services.networking.NetworkManager;
 
 /**
  * Created by erlin on 27.03.2018.
@@ -37,10 +39,15 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
     private Archetype bombArchetype;
     private TextureRegion region;
 
+    private IPlayServices sender;
+
     public BombFactory() {
         Assets asset_manager = Assets.getInstance();
         region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
+
+        sender = NetworkManager.getInstance().createSender(50);
+
     }
 
     @Override
@@ -60,7 +67,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
                 .add(SpriteComponent.class)
                 .add(AnimationComponent.class)
                 .add(BombComponent.class)
-                //.add(NetworkComponent.class)
+                .add(NetworkComponent.class)
                 .build(world);
     }
 
@@ -69,22 +76,6 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
         this.grid = grid;
     }
 
-    @Override
-    public int createFromMessage(Message message) {
-        int e = createBomb(Vector3.Zero);
-
-        // TODO: to be adapted by network pull request after rebase
-//        NetworkComponent networkComponent = mapNetwork.get(e);
-//        message.getNetwork(networkComponent);
-//        message.getTransform(mapTransform.get(e));
-//        message.getTimer(mapTimer.get(e));
-//        networkComponent.owner = message.getSender();
-
-        // TODO: THINK WE DONT HAVE TO PLAY THE SOUND
-        // purpose of sound was for user to know that a bomb just been planted
-        // playSoundDropBomb();
-        return e;
-    }
 
     // TODO: delete if not used
 //    private void playSoundDropBomb() {
@@ -106,10 +97,46 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
                 6 / bombComponent.timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
+
+        Message m = new Message(new byte[512], "", 0);
+        m.putString("CREATE_ENTITY");
+        m.putString(BombFactory.class.getSimpleName());
+        pushToNetwork(m, e);
+        sender.sendToAllReliably(m.getCompact());
+
+
         return e;
     }
+
+    @Override
+    public int createFromMessage(Message m) {
+        int seq = m.getBuffer().getInt();
+        Vector3 pos = m.getVector3();
+        int e = createBomb(pos);
+        m.getBomb(mapBomb.get(e));
+
+        NetworkComponent netComp = mapNetwork.get(e);
+        netComp.sequenceNumber = seq;
+        netComp.owner = m.getSender();
+        netComp.isLocal = false;
+
+
+        return e;
+    }
+
     public Message pushToNetwork(Message m, int e){
+
+        NetworkComponent netComp = mapNetwork.get(e);
+
+        netComp.sequenceNumber = NetworkComponent.getNextId();
+        netComp.owner = NetworkManager.getInstance().getPlayerService().getLocalID();
+        m.getBuffer().putInt(netComp.sequenceNumber);
+        m.putVector(mapTransform.get(e).position);
+        m.putBomb(mapBomb.get(e));
+
         return m;
     }
+
+
 
 }
