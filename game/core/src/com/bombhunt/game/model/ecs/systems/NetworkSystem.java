@@ -118,7 +118,6 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             Message m = new Message(new byte[128], "", 0);
             m.putString("UPDATE_ENTITY");
             m.getBuffer().putInt(networkComponent.sequenceNumber);
-            System.out.println("Writing localTrun " + networkComponent.localTurn);
             m.getBuffer().putInt(networkComponent.localTurn);
 
             if(box2d != null){
@@ -137,7 +136,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                 m.putKillable(killableComponent);
             }
 
-            this.playServices.sendToAllUnreliably(m.getCompact());
+            this.playServices.sendToAllReliably(m.getCompact());
         } else if(!networkComponent.isLocal) {
             /* Interpolate position and account for timers */
             int tickDiff = networkComponent.localTurn - networkComponent.remoteTurn;
