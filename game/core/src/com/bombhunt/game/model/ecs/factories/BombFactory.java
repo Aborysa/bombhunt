@@ -101,6 +101,8 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
                 6 / bombComponent.timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
+        bombComponent.damage = damage;
+        bombComponent.range = range;
         if(!local){
             Message m = new Message(new byte[512], "", 0);
             m.putString("CREATE_ENTITY");
@@ -108,8 +110,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
             pushToNetwork(m, e);
             sender.sendToAllReliably(m.getCompact());
         }
-        bombComponent.damage = damage;
-        bombComponent.range = range;
+
         return e;
     }
 
@@ -117,7 +118,9 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
     public int createFromMessage(Message m) {
         int seq = m.getBuffer().getInt();
         Vector3 pos = m.getVector3();
-        int e = createBomb(pos, m.getBuffer().getInt(), m.getBuffer().getInt(), true);
+        int damage = m.getBuffer().getInt();
+        int range = m.getBuffer().getInt();
+        int e = createBomb(pos, damage, range, true);
         m.getBomb(mapBomb.get(e));
 
         NetworkComponent netComp = mapNetwork.get(e);

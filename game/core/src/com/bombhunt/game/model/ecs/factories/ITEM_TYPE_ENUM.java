@@ -29,7 +29,7 @@ public enum ITEM_TYPE_ENUM {
                     (int) max(min(playerComponent.bomb_damage + getAmount(), getMaxAmount()), getMinAmount());
         }
     },
-    RANGE(1f, 0, Float.MAX_VALUE, 4, 4) {
+    RANGE(2f, 0, Float.MAX_VALUE, 4, 4) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.bomb_range =
