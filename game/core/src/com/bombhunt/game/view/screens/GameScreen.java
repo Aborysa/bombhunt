@@ -14,6 +14,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
@@ -49,6 +50,7 @@ import com.bombhunt.game.model.ecs.systems.DestroyableSystem;
 import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.model.ecs.systems.GridSystem;
 import com.bombhunt.game.model.ecs.systems.KillableSystem;
+import com.bombhunt.game.model.ecs.systems.LabelSystem;
 import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.model.ecs.systems.PlayerSystem;
 import com.bombhunt.game.model.ecs.systems.SpriteSystem;
@@ -109,6 +111,8 @@ public class GameScreen extends BasicView {
     private BombButton bombButton;
     private SettingsButton settingsButton;
     private Stage stage;
+    private BitmapFont labelComponentFont;
+    private GlyphLayout labelComponentLayout;
 
     private Decal mapDecals[];
 
@@ -122,6 +126,7 @@ public class GameScreen extends BasicView {
         setUpComponentMappers();
         setUpAspectSubscription();
         setUpInputProcessor();
+        setUpLabelComponentFont();
         createMapEntities();
         createCollisionBodies();
         createPlayerEntities();
@@ -169,6 +174,7 @@ public class GameScreen extends BasicView {
         GridSystem gridSystem = new GridSystem();
         DestroyableSystem destroyableSystem = new DestroyableSystem(box2d);
         KillableSystem killableSystem = new KillableSystem(box2d);
+        LabelSystem labelSystem = new LabelSystem();
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem)
                 .with(physicsSystem)
@@ -179,6 +185,7 @@ public class GameScreen extends BasicView {
                 .with(gridSystem)
                 .with(destroyableSystem)
                 .with(killableSystem)
+                .with(labelSystem)
                 .build();
         world = new World(config);
         for (IEntityFactory factory : factoryMap.values()) {
@@ -289,6 +296,16 @@ public class GameScreen extends BasicView {
         inputMux = new InputMultiplexer(stage, this);
     }
 
+    private void setUpLabelComponentFont() {
+        Assets asset_manager = Assets.getInstance();
+        Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
+        labelComponentFont = skin.getFont("title");
+        labelComponentFont.getData().setScale(0.05f, 0.05f);
+        //IMPORTANT: avoid irregular spacing between letters
+        labelComponentFont.setUseIntegerPositions(false);
+        labelComponentLayout = new GlyphLayout();
+    }
+
     private void createMapEntities() {
         level.createEntities(factoryMap);
         java.util.List<Decal> decals = level.createDecals();
@@ -343,7 +360,7 @@ public class GameScreen extends BasicView {
     private void updateCamera(float dt) {
         currentCamera.position.set(moveCameraWithPlayer());
         //TODO: update zoom as the game time expire
-        currentCamera.zoom =2;
+        //currentCamera.zoom =2;
         currentCamera.update();
     }
 
@@ -395,17 +412,17 @@ public class GameScreen extends BasicView {
         ecsDebugRenderer.end();
         batch.flush();
 
-        spriteBatch.setProjectionMatrix(stage.getCamera().combined);
+        spriteBatch.setProjectionMatrix(currentCamera.combined);
         spriteBatch.begin();
         for (int i = 0; i < entities.size(); i++) {
             int e = entities.get(i);
             if(mapLabel.has(e)) {
                 LabelComponent labelComponent = mapLabel.get(e);
-                Assets asset_manager = Assets.getInstance();
-                Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
-                BitmapFont font = skin.getFont("title");
                 Vector3 position = labelComponent.position;
-                font.draw(spriteBatch, labelComponent.label, currentCamera.position.x, currentCamera.position.y);
+                position = controller.getPlayerPosition();
+                labelComponentLayout.setText(labelComponentFont, labelComponent.label);
+                position.x -= labelComponentLayout.width/2f;
+                labelComponentFont.draw(spriteBatch, labelComponent.label, position.x, position.y);
             }
         }
         spriteBatch.end();

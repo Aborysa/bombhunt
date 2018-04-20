@@ -68,7 +68,7 @@ public class DestroyableSystem extends IteratingSystem {
 
     private void fireAnimation(TransformComponent transformComponent, DestroyableComponent destroyableComponent) {
         int explosionEntity = world.create(crateExplosionArchetype);
-        mapTransform.get(explosionEntity).position = transformComponent.position;
+        mapTransform.get(explosionEntity).position = transformComponent.position.cpy();
         mapAnimation.get(explosionEntity).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(regionExplosion, 16, 4, 13, 3),
                 3 / destroyableComponent.timer_destruction);
