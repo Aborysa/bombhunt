@@ -493,7 +493,7 @@ public class GameScreen extends BasicView {
             int e = entities.get(i);
             if(mapLabel.has(e)) {
                 LabelComponent labelComponent = mapLabel.get(e);
-                Vector3 position = controller.getPlayerPosition();
+                Vector3 position = mapTransform.get(e).position.cpy();//controller.getPlayerPosition();
                 labelComponentLayout.setText(labelComponentFont, labelComponent.label);
                 position.x -= labelComponentLayout.width/2f;
                 position.y -= labelComponent.offset_y;
