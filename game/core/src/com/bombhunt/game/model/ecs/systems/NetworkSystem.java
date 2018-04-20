@@ -136,7 +136,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                 m.putKillable(killableComponent);
             }
 
-            this.playServices.sendToAllUnreliably(m.getCompact());
+            this.playServices.sendToAllReliably(m.getCompact());
         } else if(!networkComponent.isLocal) {
             /* Interpolate position and account for timers */
             int tickDiff = networkComponent.localTurn - networkComponent.remoteTurn;
