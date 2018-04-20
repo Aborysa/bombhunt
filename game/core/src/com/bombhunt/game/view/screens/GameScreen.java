@@ -300,10 +300,11 @@ public class GameScreen extends BasicView {
         Assets asset_manager = Assets.getInstance();
         Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
         labelComponentFont = skin.getFont("title");
-        labelComponentFont.getData().setScale(0.05f, 0.05f);
+        labelComponentFont.getData().setScale(0.05f);
         //IMPORTANT: avoid irregular spacing between letters
         labelComponentFont.setUseIntegerPositions(false);
         labelComponentLayout = new GlyphLayout();
+
     }
 
     private void createMapEntities() {
@@ -418,10 +419,10 @@ public class GameScreen extends BasicView {
             int e = entities.get(i);
             if(mapLabel.has(e)) {
                 LabelComponent labelComponent = mapLabel.get(e);
-                Vector3 position = labelComponent.position;
-                position = controller.getPlayerPosition();
+                Vector3 position = controller.getPlayerPosition();
                 labelComponentLayout.setText(labelComponentFont, labelComponent.label);
                 position.x -= labelComponentLayout.width/2f;
+                position.y -= labelComponent.offset_y;
                 labelComponentFont.draw(spriteBatch, labelComponent.label, position.x, position.y);
             }
         }
@@ -435,6 +436,8 @@ public class GameScreen extends BasicView {
         box2d.dispose();
         batch.dispose();
         spriteBatch.dispose();
+        // IMPORTANT: to scale back title font...
+        labelComponentFont.getData().setScale(1f);
     }
 
     @Override

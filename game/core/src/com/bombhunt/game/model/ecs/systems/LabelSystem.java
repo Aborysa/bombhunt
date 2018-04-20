@@ -12,7 +12,6 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
 import sun.security.provider.ConfigFile;
 
 public class LabelSystem extends IteratingSystem {
-    private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<LabelComponent> mapLabel;
     private ComponentMapper<SpriteComponent> mapSprite;
 
@@ -22,10 +21,17 @@ public class LabelSystem extends IteratingSystem {
 
     @Override
     protected void process(int e) {
-        TransformComponent transformComponent = mapTransform.get(e);
+        // IMPORTANT: the update of the position is now performed into the interface directly using
+        // controller.getPlayerPosition()
+        // will avoid intermittent flickering of the label by using the same player position for
+        // camera and label
+        // will still replace the position attribute for height_offset that could be useful for
+        // animation with varying height...?!
+        // otherwise just make check if null and update - more efficient...?
         LabelComponent labelComponent = mapLabel.get(e);
-        SpriteComponent spriteComponent = mapSprite.get(e);
-        labelComponent.position = transformComponent.position.cpy();
-        labelComponent.position.y -= spriteComponent.sprite.getHeight()/2f;
+        if (labelComponent.offset_y == 0f) {
+            SpriteComponent spriteComponent = mapSprite.get(e);
+            labelComponent.offset_y = spriteComponent.sprite.getHeight() / 2f;
+        }
     }
 }
