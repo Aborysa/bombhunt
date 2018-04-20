@@ -26,7 +26,7 @@ import java.util.Random;
  * Created by bartc on 19.04.2018.
  */
 
-public class ItemFactory implements IEntityFactory, INetworkFactory {
+public class ItemFactory implements IEntityFactory {
 
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<GridPositionComponent> mapGrid;
@@ -71,11 +71,7 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
         this.grid = grid;
     }
 
-    @Override
-    public int createFromMessage(String message) {
-        int e = createItem(Vector3.Zero, ITEM_TYPE_ENUM.DAMAGE);
-        return e;
-    }
+
 
     public int createRandomItem(Vector3 position) {
         int random_item_value = random.nextInt(ITEM_TYPE_ENUM.values().length);
