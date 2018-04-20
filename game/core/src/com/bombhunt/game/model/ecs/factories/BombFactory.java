@@ -86,6 +86,10 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
 //    }
 
     public int createBomb(Vector3 position) {
+        return createBomb(position, false);
+    }
+
+    public int createBomb(Vector3 position, boolean local) {
         final int e = world.create(bombArchetype);
         BombComponent bombComponent = mapBomb.get(e);
         mapTransform.get(e).position = position;
@@ -97,14 +101,13 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
                 6 / bombComponent.timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
-
-        Message m = new Message(new byte[512], "", 0);
-        m.putString("CREATE_ENTITY");
-        m.putString(BombFactory.class.getSimpleName());
-        pushToNetwork(m, e);
-        sender.sendToAllReliably(m.getCompact());
-
-
+        if(!local){
+            Message m = new Message(new byte[512], "", 0);
+            m.putString("CREATE_ENTITY");
+            m.putString(BombFactory.class.getSimpleName());
+            pushToNetwork(m, e);
+            sender.sendToAllReliably(m.getCompact());
+        }
         return e;
     }
 
@@ -112,7 +115,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
     public int createFromMessage(Message m) {
         int seq = m.getBuffer().getInt();
         Vector3 pos = m.getVector3();
-        int e = createBomb(pos);
+        int e = createBomb(pos, true);
         m.getBomb(mapBomb.get(e));
 
         NetworkComponent netComp = mapNetwork.get(e);
