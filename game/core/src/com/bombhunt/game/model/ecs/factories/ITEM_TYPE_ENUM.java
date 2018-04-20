@@ -36,7 +36,7 @@ public enum ITEM_TYPE_ENUM {
                     (int) max(min(playerComponent.bomb_range + getAmount(), getMaxAmount()), getMinAmount());
         }
     },
-    SPEED(1f, 1f, 4f, 3, 3) {
+    SPEED(0.5f, 1f, 4f, 3, 3) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.movement_speed =
