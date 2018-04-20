@@ -1,5 +1,6 @@
 package com.bombhunt.game.services.networking;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Transform;
@@ -99,8 +100,15 @@ public class Message {
     }
 
     public Box2dComponent getBox2d(Box2dComponent component){
+        return getBox2d(component, 1);
+    }
+
+    public Box2dComponent getBox2d(Box2dComponent component, float iv){
         component.body.setLinearVelocity(getVector2());
-        component.body.setTransform(getVector2(), component.body.getTransform().getRotation());
+        Vector2 newPos = getVector2();
+        Vector2 oldPos = component.body.getTransform().getPosition();
+        oldPos.interpolate(newPos, iv, Interpolation.linear);
+        component.body.setTransform(oldPos, component.body.getTransform().getRotation());
         return component;
     }
 

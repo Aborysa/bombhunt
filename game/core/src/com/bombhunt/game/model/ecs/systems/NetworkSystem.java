@@ -139,19 +139,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         } else if(!networkComponent.isLocal) {
             /* Interpolate position and account for timers */
             int tickDiff = networkComponent.localTurn - networkComponent.remoteTurn;
+
             if(tickDiff > 0) {
-                if (box2d != null) {
-
-                    Body body = box2d.body;
-                    if(box2d.prePos == null){
-                        box2d.prePos = body.getTransform().getPosition();
-                    }
-                    Vector2 interpolated = box2d.prePos;
-                    interpolated.lerp(box2d.body.getTransform().getPosition(), world.getDelta() * tickDiff);
-
-                    body.setTransform(interpolated, body.getTransform().getRotation());
-                }
-
                 if(bombComponent != null) {
                     bombComponent.timer -= tickDiff * world.getDelta();
                 }
@@ -190,7 +179,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                     KillableComponent killableComponent = mapKillable.getSafe(e, null);
 
                     if (box2d != null) {
-                        message.getBox2d(box2d);
+                        message.getBox2d(box2d, Math.max(1, world.getDelta() * (localTurn-remoteTurn) ));
                     } else if (transformComponent != null) {
                         message.getTransform(transformComponent);
                     }
