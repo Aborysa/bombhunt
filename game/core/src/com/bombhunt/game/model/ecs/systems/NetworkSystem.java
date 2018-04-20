@@ -148,7 +148,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
                     Vector2 newpos = body.getTransform().getPosition().add(interpolated);
                     //body.setTransform(newpos, body.getTransform().getRotation());
-                    System.out.println("Interpolating " + tickDiff + " " + veloc + " " + interpolated);
+                    System.out.println("Interpolating " + tickDiff + " " + networkComponent.latestRemote + " " + networkComponent.remoteTurn);
                 }
 
                 if(bombComponent != null) {
