@@ -55,7 +55,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         int e = world.create(playerArchtype);
         mapTransform.get(e).position.set(pos);
         mapGrid.get(e).grid = grid;
-        mapSprite.get(e).sprite = Decal.newDecal(SpriteHelper.createSprites(region, 16, 1, 17 + index, 1).get(0), true);
+        mapSprite.get(e).sprite = Decal.newDecal(SpriteHelper.createSprites(region, 16, 1, 14 + index, 1).get(0), true);
         Body body = Collision.createBody(Collision.dynamicDef, Collision.playerFixture);
         CircleShape shape = (CircleShape) body.getFixtureList().get(0).getShape();
         // TODO: Clean this and use circleShape
