@@ -41,6 +41,10 @@ public class ChanneledSender implements IPlayServices{
         this.playServices.sendToAllReliably(appendChannel(message));
     }
 
+    public void sendToAllUnreliably(byte[] message) {
+        this.playServices.sendToAllUnreliably(message);
+    }
+
     public void sendToOneReliably(byte[] message, String userID){
         this.playServices.sendToOneReliably(appendChannel(message), userID);
     }

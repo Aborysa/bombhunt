@@ -337,6 +337,25 @@ public class GoogleCommunication implements IPlayServices {
         }
     }
 
+    // send to all unreliably. used for more frequent sending
+    @Override
+    public void sendToAllUnreliably(byte[] message) {
+        if(mRoom == null){return;}
+        List<String> recievers = new ArrayList<>();
+        for (String participantId : mRoom.getParticipantIds()) {
+            if (!participantId.equals(mMyParticipantId)) {
+                Task<Void> task = Games.
+                        getRealTimeMultiplayerClient(androidLauncher, GoogleSignIn.getLastSignedInAccount(androidLauncher))
+                        .sendUnreliableMessage(message, mRoom.getRoomId(), participantId).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                            }
+                        });
+            }
+        }
+    }
+
     // send data to specific user ID
     @Override
     public void sendToOneReliably(byte[] message, String userID){
