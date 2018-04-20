@@ -35,6 +35,7 @@ import com.bombhunt.game.services.networking.Message;
 import com.bombhunt.game.services.networking.NetworkManager;
 import com.bombhunt.game.services.networking.PlayerInfo;
 import com.bombhunt.game.services.networking.RealtimeListener;
+import com.bombhunt.game.services.physic.Collision;
 
 import sun.nio.ch.Net;
 
@@ -149,8 +150,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                     interpolated.lerp(veloc.scl(tickDiff * world.getDelta()), 0.1f);
 
                     Vector2 newpos = body.getTransform().getPosition().add(interpolated);
+                    System.out.println("Interpolating " + interpolated.scl(Collision.box2dToWorld));
                     body.setTransform(newpos, body.getTransform().getRotation());
-                    System.out.println("Interpolating " + tickDiff + " " + networkComponent.latestRemote + " " + networkComponent.remoteTurn);
                 }
 
                 if(bombComponent != null) {
