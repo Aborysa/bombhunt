@@ -1,30 +1,52 @@
 package com.bombhunt.game.services.networking;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
 public class NetworkManager implements RealtimeListener{
-    private HashMap<Integer, RealtimeListener> listeners;
+    private HashMap<Integer, ListenerContainer> listeners;
     private IPlayServices sender;
 
     private List<PlayerInfo> players;
     private HashMap<String, PlayerInfo> playerMap;
+    
 
     private static NetworkManager instance;
     
     public NetworkManager(){
-        listeners = new HashMap<Integer, RealtimeListener>(255);
+        listeners = new HashMap<Integer, ListenerContainer>(255);
         instance = this;
     }
 
     public void openChannel(RealtimeListener listener, Integer channel) {
-        listeners.put(channel, listener);
+        openChannel(listener, channel, false);
+
+    }
+
+
+    public void openChannel(RealtimeListener listener, Integer channel, boolean waitForUpdate) {
+        ListenerContainer container = new ListenerContainer();
+        container.listener = listener;
+        container.wait = waitForUpdate;
+        listeners.put(channel, container);
         listener.setSender(createSender(channel));
     }
 
     public IPlayServices createSender(Integer channel){
         return new ChanneledSender(sender, channel);
+    }
+
+    public void readyForMessages(int channel){
+        
+        if(listeners.containsKey(channel)){
+            ListenerContainer listenerContainer = listeners.get(channel);
+            for(Message m : listenerContainer.queue){
+                listenerContainer.listener.handleDataReceived(m);    
+            }
+            listenerContainer.queue.clear();
+        }
     }
 
 
@@ -42,7 +64,12 @@ public class NetworkManager implements RealtimeListener{
         int channel = message.getBuffer().get();
 
         if(listeners.containsKey(channel)){
-            listeners.get(channel).handleDataReceived(message.copy());
+            ListenerContainer listenerContainer = listeners.get(channel);
+            if(!listenerContainer.wait){
+                listenerContainer.listener.handleDataReceived(message.copy());
+            } else {
+                listenerContainer.queue.add(message.copy());
+            }
         }
     }
 
@@ -69,6 +96,14 @@ public class NetworkManager implements RealtimeListener{
 
     public PlayerInfo getPlayerInfo(String id){
         return playerMap.get(id);
+    }
+
+
+    private class ListenerContainer{
+        public Boolean wait;
+        public List<Message> queue = new ArrayList<Message>();
+        public RealtimeListener listener;
+
     }
 
 }

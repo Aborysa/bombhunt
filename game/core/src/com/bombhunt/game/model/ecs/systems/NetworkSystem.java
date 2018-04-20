@@ -63,7 +63,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         this.netManager = NetworkManager.getInstance();
         PlayerInfo player = this.netManager.getPlayerInfo(netManager.getPlayerService().getLocalID());
         NetworkComponent.playerIdx = player.playerIndex;
-        this.netManager.openChannel(this, 50);
+        this.netManager.openChannel(this, 50, true);
         this.factories = factories;
     }
 
@@ -91,6 +91,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
     @Override
     protected void processSystem() {
+        netManager.readyForMessages(50);
         IntBag entities = subscription.getEntities();
         localTurn++;
         int[] ids = entities.getData();
