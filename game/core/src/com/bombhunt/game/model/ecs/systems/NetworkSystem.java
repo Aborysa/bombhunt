@@ -85,7 +85,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             Message m = new Message(new byte[128], "", 0);
             m.putString("REMOVE_ENTITY");
             m.getBuffer().putInt(component.sequenceNumber);
-            playServices.sendToAllReliably(m.getCompact());
+            playServices.sendToAllUnreliably(m.getCompact());
         }
     }
 
@@ -113,7 +113,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
 
 
-        if(networkComponent.isLocal && networkComponent.localTurn % 32 == 0 && !networkComponent.owner.equals("NONE")){
+        if(networkComponent.isLocal && networkComponent.localTurn % 16 == 0 && !networkComponent.owner.equals("NONE")){
             Message m = new Message(new byte[128], "", 0);
             m.putString("UPDATE_ENTITY");
             m.getBuffer().putInt(networkComponent.sequenceNumber);
