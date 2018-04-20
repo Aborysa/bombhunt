@@ -7,19 +7,18 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public enum ITEM_TYPE_ENUM {
-    HEALTH(25f, 0, 200f, 1, 2) {
+    HEALTH(25f, 0, 200, 1, 2) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.max_health =
                     (int) max(min(playerComponent.max_health + getAmount(), getMaxAmount()), getMinAmount());
-            playerComponent.health = (int) min(playerComponent.health + getAmount(), playerComponent.max_health);
+            playerComponent.malus = (int) -getAmount();
         }
     },
-    POISON(-50f, 0, 200f, 0, 2) {
+    POISON(-50f, 0, 0, 0, 2) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
-            playerComponent.health =
-                    (int) min(playerComponent.health + getAmount(), playerComponent.max_health);
+            playerComponent.malus = (int) -getAmount();
         }
     },
     DAMAGE(50f, 0, 200f, 0, 0) {

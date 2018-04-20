@@ -9,7 +9,7 @@ public class PlayerComponent extends Component {
     public Boolean isCooledDownBomb = false;
     public float ttl_cooldown_bomb = cooldown_bomb;
     public int max_health = 100;
-    public int health = max_health;
+    public int malus = 0;
     public int bomb_damage = 10;
     public int bomb_range = 1;
     public DIRECTION_ENUM direction = DIRECTION_ENUM.DOWN;
