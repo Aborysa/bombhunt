@@ -18,6 +18,7 @@ import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.NetworkComponent;
+import com.bombhunt.game.model.ecs.components.LabelComponent;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.services.assets.Assets;
@@ -33,7 +34,8 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
  * Created by erlin on 23.03.2018.
  */
 
-public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFactory {
+
+public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFactory{
     private World world;
     public Archetype playerArchtype;
     private Grid grid;
@@ -43,6 +45,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
     ComponentMapper<Box2dComponent> mapBox2d;
     ComponentMapper<KillableComponent> mapKillable;
     ComponentMapper<GridPositionComponent> mapGrid;
+    ComponentMapper<LabelComponent> mapLabel;
     ComponentMapper<PlayerComponent> mapPlayerInput;
     ComponentMapper<TimerComponent> mapTimer;
 
@@ -81,48 +84,26 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         return e;
     }
 
-    /*
-      public int createFromTile(Cell cell, TiledMapTileLayer layer, int x, int y, int depth){
-    TiledMapTile tile = cell.getTile();
-    TextureRegion tex = tile.getTextureRegion();
-    float rotation = 90*cell.getRotation();
-
-    //
-    Decal decal = Decal.newDecal(tex, true);
-
-
-    Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y, depth).add(new Vector3(layer.getTileWidth()/2f, layer.getTileHeight()/2f, 0));
-    int e = createWall(pos, decal, 1);
-
-    mapTransform.get(e).rotation = rotation;
-
-    MapProperties props = layer.getProperties();
-    Vector2 veloc = new Vector2(props.get("velocity", 0.0f, Float.class),0f);
-
-    //NOTE: box2d has a hardcoded max speed of 120 units per second
-    mapBox2d.get(e).body.setLinearVelocity(veloc);
-
-
-    return e;
-     */
 
     public void setWorld(World world) {
         this.world = world;
         mapTransform = world.getMapper(TransformComponent.class);
-        mapSprite = world.getMapper(SpriteComponent.class);
-        mapBox2d = world.getMapper(Box2dComponent.class);
-        mapKillable = world.getMapper(KillableComponent.class);
         mapGrid = world.getMapper(GridPositionComponent.class);
+        mapBox2d = world.getMapper(Box2dComponent.class);
+        mapSprite = world.getMapper(SpriteComponent.class);
+        mapLabel = world.getMapper(LabelComponent.class);
+        mapKillable = world.getMapper(KillableComponent.class);
         mapPlayerInput = world.getMapper(PlayerComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
         mapNetwork = world.getMapper(NetworkComponent.class);
 
         playerArchtype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
-                .add(SpriteComponent.class)
-                .add(Box2dComponent.class)
-                .add(KillableComponent.class)
                 .add(GridPositionComponent.class)
+                .add(Box2dComponent.class)
+                .add(SpriteComponent.class)
+                .add(LabelComponent.class)
+                .add(KillableComponent.class)
                 .add(PlayerComponent.class)
                 .add(TimerComponent.class)
                 .add(NetworkComponent.class)
@@ -167,5 +148,6 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         m.putVector(mapTransform.get(e).position);
 
         return m;
+
     }
 }

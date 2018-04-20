@@ -8,14 +8,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.bombhunt.game.services.assets.Assets;
 
 public abstract class BasicView extends InputAdapter {
 
-    private final String SKIN_PATH = "skin/craftacular-ui.json";
     protected Skin skin;
 
     public BasicView() {
-        skin = new Skin(Gdx.files.internal(SKIN_PATH));
+        Assets assetManager = Assets.getInstance();
+        skin = assetManager.get("skin/craftacular-ui.json", Skin.class);
     }
 
     public abstract void update(float dt);
@@ -23,7 +24,7 @@ public abstract class BasicView extends InputAdapter {
     public abstract void render();
 
     public void dispose() {
-        skin.dispose();
+        //skin.dispose();
     }
 
     public InputProcessor getInputProcessor() {

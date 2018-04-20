@@ -67,6 +67,7 @@ public class ExplosionSystem extends IteratingSystem {
     private void decadeBomb(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        ExplosionComponent explosionComponent = mapExplosion.get(e);
         Grid grid = gridPositionComponent.grid;
         Vector3[] dirs = {new Vector3(0, 1, 0),
                 new Vector3(1, 0, 0),
@@ -74,18 +75,18 @@ public class ExplosionSystem extends IteratingSystem {
                 new Vector3(-1, 0, 0)};
         for (Vector3 dir : dirs) {
             Vector3 offset = dir.cpy().scl(grid.getCellSize());
-            Vector3 prev_position = transformComponent.position;
-            Vector3 position = prev_position.cpy().add(offset);
+            Vector3 prev_position = transformComponent.position.cpy();
+            Vector3 position = prev_position.add(offset);
             Boolean hasSolid = grid.detect(position, mapSolid);
             if (!hasSolid) {
-                int new_e = explosionFactory.createExplosion(position);
+                int new_e = explosionFactory.createExplosion(position,
+                        explosionComponent.damage, explosionComponent.range);
                 ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
                 new_explosionComponent.direction = dir;
                 new_explosionComponent.is_decaded = true;
                 new_explosionComponent.range -= 1;
             } else {
                 if (destructionDamage(e, position)) {
-                    ExplosionComponent explosionComponent = mapExplosion.get(e);
                     explosionComponent.range = 0;
                 }
             }
@@ -102,11 +103,12 @@ public class ExplosionSystem extends IteratingSystem {
                     GridPositionComponent gridPositionComponent = mapGrid.get(e);
                     Grid grid = gridPositionComponent.grid;
                     Vector3 offset = explosionComponent.direction.cpy().scl(grid.getCellSize());
-                    Vector3 prev_position = transformComponent.position;
-                    Vector3 position = prev_position.cpy().add(offset);
+                    Vector3 prev_position = transformComponent.position.cpy();
+                    Vector3 position = prev_position.add(offset);
                     Boolean hasSolid = grid.detect(position, mapSolid);
                     if (!hasSolid) {
-                        int new_e = explosionFactory.createExplosion(position);
+                        int new_e = explosionFactory.createExplosion(position,
+                                explosionComponent.damage, explosionComponent.range);
                         ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
                         new_explosionComponent.direction = explosionComponent.direction;
                         new_explosionComponent.is_decaded = true;
@@ -126,7 +128,7 @@ public class ExplosionSystem extends IteratingSystem {
         TransformComponent transformComponent = mapTransform.get(e);
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
         Grid grid = gridPositionComponent.grid;
-        IntBag bombsEntities = grid.filterEntities(transformComponent.position, mapBomb);
+        IntBag bombsEntities = grid.filterEntities(transformComponent.position.cpy(), mapBomb);
         for (int i = 0; i < bombsEntities.size(); i++) {
             int bombEntity = bombsEntities.get(i);
             BombComponent bombComponent = mapBomb.get(bombEntity);
@@ -139,7 +141,7 @@ public class ExplosionSystem extends IteratingSystem {
         ExplosionComponent explosionComponent = mapExplosion.get(e);
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
         Grid grid = gridPositionComponent.grid;
-        IntBag killableEntities = grid.filterEntities(transformComponent.position, mapKillable);
+        IntBag killableEntities = grid.filterEntities(transformComponent.position.cpy(), mapKillable);
         for (int i = 0; i < killableEntities.size(); i++) {
             int killableEntity = killableEntities.get(i);
             KillableComponent killableComponent = mapKillable.get(killableEntity);

@@ -5,6 +5,7 @@ import com.artemis.ArchetypeBuilder;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -17,7 +18,9 @@ import com.bombhunt.game.model.ecs.components.DestroyableComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.model.ecs.factories.ItemFactory;
 import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
 
 public class DestroyableSystem extends IteratingSystem {
@@ -34,10 +37,12 @@ public class DestroyableSystem extends IteratingSystem {
     private Archetype crateExplosionArchetype;
     private TextureRegion regionCrate;
     private TextureRegion regionExplosion;
+    private ItemFactory itemFactory;
 
-    public DestroyableSystem(com.badlogic.gdx.physics.box2d.World box2d) {
+    public DestroyableSystem(com.badlogic.gdx.physics.box2d.World box2d, ItemFactory itemFactory) {
         super(Aspect.all(TransformComponent.class, DestroyableComponent.class, Box2dComponent.class));
         this.box2d = box2d;
+        this.itemFactory = itemFactory;
         Assets asset_manager = Assets.getInstance();
         regionCrate = new TextureRegion(asset_manager.get("crateExplosion.png", Texture.class));
         regionExplosion = asset_manager.get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4");
@@ -46,8 +51,16 @@ public class DestroyableSystem extends IteratingSystem {
     @Override
     protected void process(int e) {
         DestroyableComponent destroyableComponent = mapDestroyable.get(e);
+        TransformComponent transformComponent = mapTransform.get(e);
         if (destroyableComponent.health <= 0) {
             createCrateExplosion(e);
+            if (Math.random() < destroyableComponent.items_probabilty) {
+                itemFactory.createRandomItem(transformComponent.position);
+                Assets asset_manager = Assets.getInstance();
+                Sound sound = asset_manager.get("itemSpawning.mp3", Sound.class);
+                AudioPlayer audioPlayer = AudioPlayer.getInstance();
+                audioPlayer.playSound(sound);
+            }
             box2d.destroyBody(mapBox2d.get(e).body);
             world.delete(e);
         }
@@ -68,7 +81,7 @@ public class DestroyableSystem extends IteratingSystem {
 
     private void fireAnimation(TransformComponent transformComponent, DestroyableComponent destroyableComponent) {
         int explosionEntity = world.create(crateExplosionArchetype);
-        mapTransform.get(explosionEntity).position = transformComponent.position;
+        mapTransform.get(explosionEntity).position = transformComponent.position.cpy();
         mapAnimation.get(explosionEntity).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(regionExplosion, 16, 4, 13, 3),
                 3 / destroyableComponent.timer_destruction);

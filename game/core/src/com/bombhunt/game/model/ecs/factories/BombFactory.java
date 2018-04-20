@@ -77,7 +77,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
     }
 
 
-    // TODO: delete if not used
+// TODO: delete if not used
 //    private void playSoundDropBomb() {
 //        Assets asset_manager = Assets.getInstance();
 //        Sound sound = asset_manager.get("drop.wav", Sound.class);
@@ -85,11 +85,11 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
 //        audioPlayer.playSound(sound);
 //    }
 
-    public int createBomb(Vector3 position) {
-        return createBomb(position, false);
+    public int createBomb(Vector3 position, int damage, int range) {
+        return createBomb(position, damage, range, false);
     }
 
-    public int createBomb(Vector3 position, boolean local) {
+    public int createBomb(Vector3 position, int damage, int range, boolean local) {
         final int e = world.create(bombArchetype);
         BombComponent bombComponent = mapBomb.get(e);
         mapTransform.get(e).position = position;
@@ -108,6 +108,8 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
             pushToNetwork(m, e);
             sender.sendToAllReliably(m.getCompact());
         }
+        bombComponent.damage = damage;
+        bombComponent.range = range;
         return e;
     }
 
@@ -115,7 +117,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
     public int createFromMessage(Message m) {
         int seq = m.getBuffer().getInt();
         Vector3 pos = m.getVector3();
-        int e = createBomb(pos, true);
+        int e = createBomb(pos, m.getBuffer().getInt(), m.getBuffer().getInt(), true);
         m.getBomb(mapBomb.get(e));
 
         NetworkComponent netComp = mapNetwork.get(e);
@@ -130,12 +132,14 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
     public Message pushToNetwork(Message m, int e){
 
         NetworkComponent netComp = mapNetwork.get(e);
-
+        BombComponent bomb = mapBomb.get(e);
         netComp.sequenceNumber = NetworkComponent.getNextId();
         netComp.owner = NetworkManager.getInstance().getPlayerService().getLocalID();
         m.getBuffer().putInt(netComp.sequenceNumber);
         m.putVector(mapTransform.get(e).position);
-        m.putBomb(mapBomb.get(e));
+        m.getBuffer().putInt(bomb.damage);
+        m.getBuffer().putInt(bomb.range);
+        m.putBomb(bomb);
 
         return m;
     }

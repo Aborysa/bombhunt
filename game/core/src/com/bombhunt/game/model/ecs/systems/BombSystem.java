@@ -42,9 +42,6 @@ public class BombSystem extends IteratingSystem {
         float delta = world.getDelta();
         BombComponent bombComponent = mapBomb.get(e);
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
-        /*System.out.println("BOMB POSITION");
-        System.out.println(gridPositionComponent.cellIndex);
-        System.out.println(gridPositionComponent.grid);*/
         bombComponent.ttl_timer -= delta;
         if (bombComponent.ttl_timer <= 0) {
             bombComponent.ttl_timer = bombComponent.timer;
@@ -54,7 +51,9 @@ public class BombSystem extends IteratingSystem {
 
     private void explodeBomb(int e) {
         TransformComponent transformComponent = mapTransform.get(e);
-        explosionFactory.createExplosion(transformComponent.position);
+        BombComponent bombComponent = mapBomb.get(e);
+        explosionFactory.createExplosion(transformComponent.position.cpy(), bombComponent.damage,
+                bombComponent.range);
         world.delete(e);
         playSoundExplosion();
     }

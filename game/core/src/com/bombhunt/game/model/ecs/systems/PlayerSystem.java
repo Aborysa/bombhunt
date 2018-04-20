@@ -54,9 +54,8 @@ public class PlayerSystem extends IteratingSystem {
         Box2dComponent box2dComponent = mapBox2D.get(e);
         TransformComponent transformComponent = mapTransform.get(e);
         PlayerComponent playerComponent = mapPlayer.get(e);
-
-        // TODO: use velocity component for that?
-        // TODO: to be wrapped in a method
+        KillableComponent killableComponent = mapKillable.get(e);
+        killableComponent.health = playerComponent.health;
         Body body = box2dComponent.body;
         Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
         body.setLinearVelocity(velocity);
@@ -73,7 +72,8 @@ public class PlayerSystem extends IteratingSystem {
             if (!playerComponent.isCooledDownBomb) {
                 playerComponent.isCooledDownBomb = true;
                 Vector3 position = last_position.cpy();
-                bombFactory.createBomb(position);
+                bombFactory.createBomb(position,
+                        playerComponent.bomb_damage, playerComponent.bomb_range);
                 playSoundDropBomb();
             }
         }
@@ -102,7 +102,7 @@ public class PlayerSystem extends IteratingSystem {
     }
 
     public Vector3 getPosition() {
-        return last_position;
+        return last_position.cpy();
     }
 
     public void plantBomb() {
