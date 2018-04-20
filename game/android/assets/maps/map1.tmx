@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../textures/bomb_party_v4.tsx"/>
  <layer name="base" width="20" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAAzvKwMBwlMr4CJUwsnnUcNOoeaPmjZo3at5QNI+a5Sk1MQBeBuDsQAYAAA==
+   H4sIAAAAAAAACjvKwMBwlMr4CJUwsnnY2MS4gxT2qHmj5o2aNzTMG2nlCzX9S00MAFibF+FABgAA
   </data>
  </layer>
  <layer name="walls" width="20" height="20">
@@ -11,7 +11,7 @@
    <property name="entity_factory" value="WallFactory"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA5NkZGDgohKWhGJqAXTzyDEbXT+MD3MzqQBZH639O2oe9dVJMqJiSs1DTveE0hOx/iA2bQ6X+B0M5m1lIL98wVUebCXDTcjxTgv/Uqush2EAu9VSPkAGAAA=
+   H4sIAAAAAAAACr1UQQrAMAiz1/3A/7+h/9tlARe0umErSKWpaURRh8jV5Pp4l1k+jvmsYoihGTGfFWxnvZ6GlX3Vp+P91uaucjx9wCJT549MH3MzR6Yv4sZ9hnPM9VoteBfh1X54OYxFWk/0I5qXSj92z/Mfs3xT+vfLdGrhmk7vl65dD78Bp/dVFEAGAAA=
   </data>
  </layer>
  <layer name="crates" width="20" height="20">
@@ -19,7 +19,7 @@
    <property name="entity_factory" value="CrateFactory"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA2NgoB04Syc9A2EHPdxJC3CWRDwKRjYYCellqJQHg7E8BQD2FbPRQAYAAA==
+   H4sIAAAAAAAACmNgoB04i4fGJ0drcBYLG5v9xMhhM5dS/+JzAzZArvuQxbGJkeI+ZHPQMSF9uMSw6cflTkLuw6YXXZwYt1LDPFxi1PQvsn5K44MW6YUW6ZkW+Y2S8oDaYDCWpwA5xpZBQAYAAA==
   </data>
  </layer>
  <objectgroup name="spawns">
