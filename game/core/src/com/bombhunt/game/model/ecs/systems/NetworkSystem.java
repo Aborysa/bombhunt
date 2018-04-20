@@ -185,6 +185,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                 NetworkComponent networkComponent = mapNetwork.get(e);
                 // Messages are sent unreliably, we only care about the newest data
                 if(networkComponent.latestRemote  <= remoteTurn) {
+                    System.out.println(remoteTurn);
+
                     networkComponent.latestRemote  = remoteTurn;
                     networkComponent.remoteTurn = remoteTurn;
 
