@@ -160,6 +160,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
 
         netComp.sequenceNumber = NetworkComponent.getNextId();
         netComp.autoremove = true;
+        netComp.updateRate = 4;
         System.out.println("Creating local player with seqnum " + netComp.sequenceNumber);
         netComp.owner = NetworkManager.getInstance().getPlayerService().getLocalID();
         m.getBuffer().putInt(netComp.sequenceNumber);

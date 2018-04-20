@@ -102,8 +102,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
     public void process(int e){
         NetworkComponent networkComponent = mapNetwork.get(e);
-        networkComponent.localTurn++;
-        networkComponent.remoteTurn++;
+        //networkComponent.remoteTurn++;
 
 
         Box2dComponent box2d = mapBox2d.getSafe(e, null);
@@ -113,7 +112,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
 
 
-        if(networkComponent.isLocal && networkComponent.localTurn % 16 == 0 && !networkComponent.owner.equals("NONE")){
+        if(networkComponent.isLocal && networkComponent.localTurn % networkComponent.updateRate == 0 && !networkComponent.owner.equals("NONE")){
             Message m = new Message(new byte[128], "", 0);
             m.putString("UPDATE_ENTITY");
             m.getBuffer().putInt(networkComponent.sequenceNumber);
@@ -148,7 +147,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                     interpolated.lerp(veloc.scl(tickDiff * world.getDelta()), 1f);
 
                     Vector2 newpos = body.getTransform().getPosition().add(interpolated);
-                    body.setTransform(newpos, body.getTransform().getRotation());
+                    //body.setTransform(newpos, body.getTransform().getRotation());
                     System.out.println("Interpolating " + tickDiff + " " + veloc + " " + interpolated);
                 }
 
@@ -160,6 +159,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
                 networkComponent.remoteTurn = networkComponent.localTurn;
             }
+
+            networkComponent.localTurn++;
 
         }
 
@@ -179,28 +180,32 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             int remoteTurn = message.getBuffer().getInt();
             if(entityIdMap.containsKey(seqNum)){
                 int e = entityIdMap.get(seqNum);
+
                 NetworkComponent networkComponent = mapNetwork.get(e);
-                networkComponent.remoteTurn = remoteTurn;
+                // Messages are sent unreliably, we only care about the newest data
+                if(networkComponent.remoteTurn <= remoteTurn) {
+                    networkComponent.remoteTurn = remoteTurn;
 
-                Box2dComponent box2d = mapBox2d.getSafe(e, null);
-                TransformComponent transformComponent = mapTransform.getSafe(e, null);
-                BombComponent bombComponent = mapBomb.getSafe(e, null);
-                KillableComponent killableComponent = mapKillable.getSafe(e, null);
+                    Box2dComponent box2d = mapBox2d.getSafe(e, null);
+                    TransformComponent transformComponent = mapTransform.getSafe(e, null);
+                    BombComponent bombComponent = mapBomb.getSafe(e, null);
+                    KillableComponent killableComponent = mapKillable.getSafe(e, null);
 
-                if(box2d != null){
-                    message.getBox2d(box2d);
-                }
+                    if (box2d != null) {
+                        message.getBox2d(box2d);
+                    }
 
-                if(transformComponent != null){
-                    message.getTransform(transformComponent);
-                }
+                    if (transformComponent != null) {
+                        message.getTransform(transformComponent);
+                    }
 
-                if(bombComponent != null){
-                    message.getBomb(bombComponent);
-                }
+                    if (bombComponent != null) {
+                        message.getBomb(bombComponent);
+                    }
 
-                if(killableComponent != null){
-                    message.getKillable(killableComponent);
+                    if (killableComponent != null) {
+                        message.getKillable(killableComponent);
+                    }
                 }
             }
         } else if (type.equals("REMOVE_ENTITY")) {

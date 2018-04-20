@@ -11,6 +11,7 @@ public class NetworkComponent extends Component {
   public boolean isLocal = true;
   public int localTurn = 0;
   public int remoteTurn = 0;
+  public int updateRate = 16;
   public int sequenceNumber = 0;
 
   public boolean autoremove = false;
