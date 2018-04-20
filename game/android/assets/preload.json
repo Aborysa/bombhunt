@@ -1,5 +1,7 @@
 [
   {"file": "maps/map1.tmx", "type": "com.bombhunt.game.model.Level"},
+  {"file": "maps/map2.tmx", "type": "com.bombhunt.game.model.Level"},
+  {"file": "maps/map3.tmx", "type": "com.bombhunt.game.model.Level"},
   {"file": "skin/craftacular-ui.json", "type": "com.badlogic.gdx.scenes.scene2d.ui.Skin"},
   {"file": "textures/tilemap1.atlas", "type": "com.badlogic.gdx.graphics.g2d.TextureAtlas"},
   {"file": "textures/badlogic.jpg", "type": "com.badlogic.gdx.graphics.Texture"},
