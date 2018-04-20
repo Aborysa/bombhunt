@@ -141,11 +141,13 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
             int tickDiff = networkComponent.localTurn - networkComponent.remoteTurn;
             if(tickDiff > 0) {
                 if (box2d != null) {
+
                     Body body = box2d.body;
                     Vector2 interpolated = body.getTransform().getPosition();
                     Vector2 veloc = body.getLinearVelocity().cpy();
-                    interpolated.interpolate(veloc.scl(tickDiff * world.getDelta()).add(interpolated), 0.75f, Interpolation.linear);
+                    interpolated.lerp(veloc.scl(tickDiff * world.getDelta()).add(interpolated), 0.75f);
                     body.setTransform(interpolated, body.getTransform().getRotation());
+                    System.out.println("Interpolating " + tickDiff + " " + veloc + " " + interpolated);
                 }
 
                 if(bombComponent != null) {
