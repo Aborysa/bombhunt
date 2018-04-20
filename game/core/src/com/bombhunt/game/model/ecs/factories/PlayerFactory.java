@@ -67,6 +67,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         // prevents the player from rotating about when it collides with other objects.
         body.setFixedRotation(true);
         mapBox2d.get(e).body = body;
+        mapLabel.get(e).label = "Player " + (index+1);
         mapGrid.get(e).snapToGrid = false;
         return e;
     }
