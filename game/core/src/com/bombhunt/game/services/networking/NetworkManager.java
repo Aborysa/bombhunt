@@ -38,7 +38,7 @@ public class NetworkManager implements RealtimeListener{
         return new ChanneledSender(sender, channel);
     }
 
-    public void readyForMessages(int channel){
+    public synchronized void readyForMessages(int channel){
         
         if(listeners.containsKey(channel)){
             ListenerContainer listenerContainer = listeners.get(channel);
@@ -51,7 +51,7 @@ public class NetworkManager implements RealtimeListener{
 
 
     @Override
-    public void handleDataReceived(Message message) {
+    public synchronized void handleDataReceived(Message message) {
         byte[] data = message.copy().getData();
         /*System.out.println(data.length + " " + message.getData().length);
         for(int i=0; i < data.length; i++){
