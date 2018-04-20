@@ -8,6 +8,7 @@ import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
@@ -135,12 +136,12 @@ public class GameScreen extends BasicView {
     private Decal mapDecals[];
 
     private int playerIndex;
-
+    private int randomSpawnOffset;
     private List<PlayerInfo> players;
 
 
     public void spawnPlayer(int index){
-        Vector2 pos = spawnPoints.get(index);
+        Vector2 pos = spawnPoints.get( (index + randomSpawnOffset) % spawnPoints.size());
         PlayerFactory factory = (PlayerFactory)factoryMap.get(PlayerFactory.class.getSimpleName());
         // 1, 17
         int player = factory.createPlayer(new Vector3(pos, -10), index);
@@ -191,8 +192,12 @@ public class GameScreen extends BasicView {
     }
 
     private void setUpWorld() {
-        level = Assets.getInstance().get("maps/map1.tmx", Level.class);
+        int r = NetworkManager.getInstance().getRandom().nextInt(3);
+        String[] maps = {"maps/map1.tmx", "maps/map2.tmx", "maps/map3.tmx"};
+        level = Assets.getInstance().get(maps[r], Level.class);
         this.spawnPoints = level.getSpawnPoints();
+
+        randomSpawnOffset = NetworkManager.getInstance().getRandom().nextInt(spawnPoints.size());
         box2d = new com.badlogic.gdx.physics.box2d.World(level.getDim(), true);
         box2d.setGravity(new Vector2(0, 0));
         box2DDebugRenderer = new Box2DDebugRenderer(true, false, false,
@@ -267,8 +272,13 @@ public class GameScreen extends BasicView {
         int tilePixelWidth = mapProperties.get("tilewidth", Integer.class);
         int tilePixelHeight = mapProperties.get("tileheight", Integer.class);
 
+        int sw = Gdx.graphics.getWidth();
+        int sh = Gdx.graphics.getHeight();
+
+        float r = sh/sw;
+
         int x_tile_desired = 10;
-        int y_tile_desired = 6;
+        int y_tile_desired = (int)(10*r);
         currentCamera = new OrthographicCamera(x_tile_desired*tilePixelWidth,
                 y_tile_desired*tilePixelHeight);
         currentCamera.position.set(new Vector3(0, 0, 0f));
