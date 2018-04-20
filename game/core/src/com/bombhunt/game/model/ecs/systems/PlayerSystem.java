@@ -100,7 +100,7 @@ public class PlayerSystem extends IteratingSystem {
     }
 
     public Vector3 getPosition() {
-        return last_position;
+        return last_position.cpy();
     }
 
     public void plantBomb() {

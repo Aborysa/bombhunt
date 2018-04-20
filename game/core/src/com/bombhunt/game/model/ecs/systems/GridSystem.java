@@ -28,7 +28,7 @@ public class GridSystem extends IteratingSystem {
         TransformComponent transformComponent = mapTransform.get(e);
         GridPositionComponent gridPositionComponent = mapGridPosition.get(e);
         Grid grid = gridPositionComponent.grid;
-        Vector3 position = transformComponent.position;
+        Vector3 position = transformComponent.position.cpy();
         Vector2 pos2d = new Vector2(position.x, position.y).sub(grid.getCellSize() / 2, grid.getCellSize() / 2);
         // TODO: FILTER OVER MOVABLE OBJECTS ONLY (NO NEED TO LOOK AT WALLS PER EXAMPLE)
         Vector2 gridPosition = grid.getSnappedPosition(pos2d.cpy().add(grid.getCellSize() / 2, grid.getCellSize() / 2));

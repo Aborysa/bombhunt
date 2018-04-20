@@ -75,8 +75,8 @@ public class ExplosionSystem extends IteratingSystem {
                 new Vector3(-1, 0, 0)};
         for (Vector3 dir : dirs) {
             Vector3 offset = dir.cpy().scl(grid.getCellSize());
-            Vector3 prev_position = transformComponent.position;
-            Vector3 position = prev_position.cpy().add(offset);
+            Vector3 prev_position = transformComponent.position.cpy();
+            Vector3 position = prev_position.add(offset);
             Boolean hasSolid = grid.detect(position, mapSolid);
             if (!hasSolid) {
                 int new_e = explosionFactory.createExplosion(position,
@@ -103,8 +103,8 @@ public class ExplosionSystem extends IteratingSystem {
                     GridPositionComponent gridPositionComponent = mapGrid.get(e);
                     Grid grid = gridPositionComponent.grid;
                     Vector3 offset = explosionComponent.direction.cpy().scl(grid.getCellSize());
-                    Vector3 prev_position = transformComponent.position;
-                    Vector3 position = prev_position.cpy().add(offset);
+                    Vector3 prev_position = transformComponent.position.cpy();
+                    Vector3 position = prev_position.add(offset);
                     Boolean hasSolid = grid.detect(position, mapSolid);
                     if (!hasSolid) {
                         int new_e = explosionFactory.createExplosion(position,
@@ -128,7 +128,7 @@ public class ExplosionSystem extends IteratingSystem {
         TransformComponent transformComponent = mapTransform.get(e);
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
         Grid grid = gridPositionComponent.grid;
-        IntBag bombsEntities = grid.filterEntities(transformComponent.position, mapBomb);
+        IntBag bombsEntities = grid.filterEntities(transformComponent.position.cpy(), mapBomb);
         for (int i = 0; i < bombsEntities.size(); i++) {
             int bombEntity = bombsEntities.get(i);
             BombComponent bombComponent = mapBomb.get(bombEntity);
@@ -141,7 +141,7 @@ public class ExplosionSystem extends IteratingSystem {
         ExplosionComponent explosionComponent = mapExplosion.get(e);
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
         Grid grid = gridPositionComponent.grid;
-        IntBag killableEntities = grid.filterEntities(transformComponent.position, mapKillable);
+        IntBag killableEntities = grid.filterEntities(transformComponent.position.cpy(), mapKillable);
         for (int i = 0; i < killableEntities.size(); i++) {
             int killableEntity = killableEntities.get(i);
             KillableComponent killableComponent = mapKillable.get(killableEntity);
