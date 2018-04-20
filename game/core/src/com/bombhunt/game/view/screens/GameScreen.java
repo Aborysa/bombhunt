@@ -266,6 +266,7 @@ public class GameScreen extends BasicView {
         MapProperties mapProperties = level.getMap().getProperties();
         int tilePixelWidth = mapProperties.get("tilewidth", Integer.class);
         int tilePixelHeight = mapProperties.get("tileheight", Integer.class);
+
         int x_tile_desired = 10;
         int y_tile_desired = 6;
         currentCamera = new OrthographicCamera(x_tile_desired*tilePixelWidth,

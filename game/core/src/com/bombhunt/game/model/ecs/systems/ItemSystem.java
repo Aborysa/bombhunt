@@ -41,11 +41,14 @@ public class ItemSystem extends IteratingSystem {
             TransformComponent transformComponent = mapTransform.get(e);
             GridPositionComponent gridPositionComponent = mapGrid.get(e);
             Grid grid = gridPositionComponent.grid;
-            IntBag playerEntities = grid.filterEntities(transformComponent.position, mapPlayer);
+            IntBag playerEntities = grid.filterEntities(transformComponent.position, mapKillable);
             for (int i = 0; i < playerEntities.size(); i++) {
+                
                 int playerEntity = playerEntities.get(i);
-                PlayerComponent playerComponent = mapPlayer.get(playerEntity);
-                itemComponent.type.applyItem(itemComponent, playerComponent);
+                if(mapPlayer.has(playerEntity)){
+                    PlayerComponent playerComponent = mapPlayer.get(playerEntity);
+                    itemComponent.type.applyItem(itemComponent, playerComponent);
+                }
                 world.delete(e);
                 // TODO: I THINK WE CAN REMOVE BREAK TEST IN MULTIPLAYER,
                 // TODO: because world.delete(e) will just apply over first player crossed

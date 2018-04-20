@@ -44,7 +44,7 @@ public class ItemFactory implements IEntityFactory {
         Assets asset_manager = Assets.getInstance();
         region = new TextureRegion(asset_manager.get("items.png",
                 Texture.class));
-        random = new Random();
+        random = new Random(1000);
     }
 
     @Override

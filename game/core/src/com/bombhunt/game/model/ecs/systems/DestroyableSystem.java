@@ -1,5 +1,7 @@
 package com.bombhunt.game.model.ecs.systems;
 
+import java.util.Random;
+
 import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.Aspect;
@@ -37,6 +39,7 @@ public class DestroyableSystem extends IteratingSystem {
     private Archetype crateExplosionArchetype;
     private TextureRegion regionCrate;
     private TextureRegion regionExplosion;
+    private Random random;
     private ItemFactory itemFactory;
 
     public DestroyableSystem(com.badlogic.gdx.physics.box2d.World box2d, ItemFactory itemFactory) {
@@ -46,6 +49,7 @@ public class DestroyableSystem extends IteratingSystem {
         Assets asset_manager = Assets.getInstance();
         regionCrate = new TextureRegion(asset_manager.get("crateExplosion.png", Texture.class));
         regionExplosion = asset_manager.get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4");
+        random = new Random(500);
     }
 
     @Override
@@ -54,7 +58,7 @@ public class DestroyableSystem extends IteratingSystem {
         TransformComponent transformComponent = mapTransform.get(e);
         if (destroyableComponent.health <= 0) {
             createCrateExplosion(e);
-            if (Math.random() < destroyableComponent.items_probabilty) {
+            if (random.nextFloat() < destroyableComponent.items_probabilty) {
                 itemFactory.createRandomItem(transformComponent.position);
                 Assets asset_manager = Assets.getInstance();
                 Sound sound = asset_manager.get("itemSpawning.mp3", Sound.class);
