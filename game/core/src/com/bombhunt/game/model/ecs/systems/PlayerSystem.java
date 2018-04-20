@@ -58,7 +58,7 @@ public class PlayerSystem extends IteratingSystem {
         // TODO: use velocity component for that?
         // TODO: to be wrapped in a method
         Body body = box2dComponent.body;
-        if(body != null){
+        if(body != null && playerComponent != null){
             Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
             body.setLinearVelocity(velocity);
             // body.applyLinearImpulse(velocity, new Vector2(0,0), true);
