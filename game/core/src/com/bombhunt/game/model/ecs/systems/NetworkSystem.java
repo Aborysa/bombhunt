@@ -160,6 +160,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                 networkComponent.remoteTurn = networkComponent.localTurn;
             }
 
+            networkComponent.remoteTurn++;
             networkComponent.localTurn++;
 
         }
@@ -183,7 +184,8 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
                 NetworkComponent networkComponent = mapNetwork.get(e);
                 // Messages are sent unreliably, we only care about the newest data
-                if(networkComponent.remoteTurn <= remoteTurn) {
+                if(networkComponent.latestRemote  <= remoteTurn) {
+                    networkComponent.latestRemote  = remoteTurn;
                     networkComponent.remoteTurn = remoteTurn;
 
                     Box2dComponent box2d = mapBox2d.getSafe(e, null);
