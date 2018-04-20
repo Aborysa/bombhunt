@@ -82,10 +82,10 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         NetworkComponent component = mapNetwork.get(entityId);
         entityIdMap.remove(component.sequenceNumber);
         if(component.isLocal) {
-            Message m = new Message(new byte[128], "", 0);
+            /*Message m = new Message(new byte[128], "", 0);
             m.putString("REMOVE_ENTITY");
             m.getBuffer().putInt(component.sequenceNumber);
-            playServices.sendToAllReliably(m.getCompact());
+            playServices.sendToAllReliably(m.getCompact());*/
         }
     }
 
