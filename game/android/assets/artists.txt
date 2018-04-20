@@ -6,6 +6,7 @@ Button Sound -  Dusty Room
 Colored Spinning Bomb - Code Inferno Games
 Features Skin - Raymond "Raeleus" Buckley
 Gameplay Assets - usr_share
+Items - thekingphoenix
 
 -- FreeSound.com --
 Access Denied Sound - phatkatz4
@@ -13,4 +14,5 @@ Pop Up Sound - Quistard
 Bomb Drop Sound - bertiehs
 In Game Button Click Sound - suntemple
 Explosion Sound - fridobeck
+Items Spawning Sound - p0ss
 

@@ -70,7 +70,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
 
     @Override
     public int createFromMessage(String message) {
-        int e = createBomb(Vector3.Zero);
+        int e = createBomb(Vector3.Zero, 0, 0);
 
         // TODO: to be adapted by network pull request after rebase
 //        NetworkComponent networkComponent = mapNetwork.get(e);
@@ -93,7 +93,7 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
 //        audioPlayer.playSound(sound);
 //    }
 
-    public int createBomb(Vector3 position) {
+    public int createBomb(Vector3 position, int damage, int range) {
         final int e = world.create(bombArchetype);
         BombComponent bombComponent = mapBomb.get(e);
         mapTransform.get(e).position = position;
@@ -105,7 +105,8 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
                 6 / bombComponent.timer);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
         mapTransform.get(e).scale = new Vector2(1f, 1f);
+        bombComponent.damage = damage;
+        bombComponent.range = range;
         return e;
     }
-
 }

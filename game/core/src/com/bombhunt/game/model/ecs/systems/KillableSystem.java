@@ -18,7 +18,9 @@ public class KillableSystem extends IteratingSystem {
     private com.badlogic.gdx.physics.box2d.World box2d;
 
     public KillableSystem(com.badlogic.gdx.physics.box2d.World box2d) {
-        super(Aspect.all(TransformComponent.class, KillableComponent.class, Box2dComponent.class));
+        super(Aspect.all(TransformComponent.class,
+                KillableComponent.class,
+                Box2dComponent.class));
         this.box2d = box2d;
     }
 
