@@ -52,8 +52,9 @@ public class DestroyableSystem extends IteratingSystem {
         TransformComponent transformComponent = mapTransform.get(e);
         if (destroyableComponent.health <= 0) {
             createCrateExplosion(e);
-            if (Math.random()< 0.5f) {
+            if (Math.random() < destroyableComponent.items_probabilty) {
                 itemFactory.createRandomItem(transformComponent.position);
+                // TODO: play sound for items
             }
             box2d.destroyBody(mapBox2d.get(e).body);
             world.delete(e);

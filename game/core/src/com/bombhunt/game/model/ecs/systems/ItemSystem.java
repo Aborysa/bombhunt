@@ -4,94 +4,60 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.artemis.utils.IntBag;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.bombhunt.game.model.Grid;
-import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.ItemComponent;
 import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
-import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.model.ecs.factories.ITEM_TYPE_ENUM;
 
 public class ItemSystem extends IteratingSystem {
 
     private ComponentMapper<TransformComponent> mapTransform;
-    private ComponentMapper<ItemComponent> mapItem;
-    private ComponentMapper<AnimationComponent> mapAnimation;
-    private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<GridPositionComponent> mapGrid;
+    private ComponentMapper<SpriteComponent> mapSprite;
+    private ComponentMapper<ItemComponent> mapItem;
     private ComponentMapper<PlayerComponent> mapPlayer;
     private ComponentMapper<KillableComponent> mapKillable;
 
-    private TextureRegion region;
-
     public ItemSystem() {
         super(Aspect.all(TransformComponent.class,
-                ItemComponent.class,
-                GridPositionComponent.class));
-        Assets asset_manager = Assets.getInstance();
+                GridPositionComponent.class,
+                ItemComponent.class));
     }
-
 
     @Override
     protected void process(int e) {
         float dt = world.getDelta();
         ItemComponent itemComponent = mapItem.get(e);
-        SpriteComponent spriteComponent = mapSprite.get(e);
-        itemComponent.timeout -= dt;
-        if (itemComponent.timeout < 0) {
+        itemComponent.ttl_timer -= dt;
+        if (itemComponent.ttl_timer < 0) {
             world.delete(e);
         } else {
-            if (itemComponent.timeout < itemComponent.flickerTime) {
-                int divide = (int) (itemComponent.timeout / 0.2f) % 2;
-                if (divide == 0) {
-                    spriteComponent.sprite.setColor(1, 1, 1, 0f);
-                } else {
-                    spriteComponent.sprite.setColor(1, 1, 1, 1f);
-                }
-            }
+            SpriteComponent spriteComponent = mapSprite.get(e);
+            updateBlinking(itemComponent, spriteComponent);
             TransformComponent transformComponent = mapTransform.get(e);
             GridPositionComponent gridPositionComponent = mapGrid.get(e);
             Grid grid = gridPositionComponent.grid;
             IntBag playerEntities = grid.filterEntities(transformComponent.position, mapPlayer);
             for (int i = 0; i < playerEntities.size(); i++) {
                 int playerEntity = playerEntities.get(i);
-
-                applyItem(itemComponent, playerEntity);
+                PlayerComponent playerComponent = mapPlayer.get(playerEntity);
+                itemComponent.type.applyItem(itemComponent, playerComponent);
                 world.delete(e);
-                break;
+                // TODO: I THINK WE CAN REMOVE BREAK TEST IN MULTIPLAYER,
+                // TODO: because world.delete(e) will just apply over first player crossed
+                // break;
             }
         }
-
     }
 
-    private void applyItem(ItemComponent item, int playerEntity) {
-        PlayerComponent playerComponent = mapPlayer.get(playerEntity);
-        switch (item.type) {
-            case INCREASEDAMAGE:
-                playerComponent.bomb_damage =
-                        Math.min(playerComponent.bomb_damage + item.type.getAmount(), item.type.getMaxAmount());
-                break;
-            case INCREASEHEALTH:
-                playerComponent.max_health =
-                        Math.min(playerComponent.max_health + item.type.getAmount(), item.type.getMaxAmount());
-                KillableComponent killableComponent = mapKillable.get(playerEntity);
-                killableComponent.health = Math.min(killableComponent.health + item.type.getAmount(), playerComponent.max_health);
-                break;
-            case INCREASERANGE:
-                playerComponent.bomb_range =
-                        Math.min(playerComponent.bomb_range + item.type.getAmount(), item.type.getMaxAmount());
-                break;
-            case INCREASESPEED:
-                playerComponent.movement_speed =
-                        Math.min(playerComponent.movement_speed + (item.type.getMaxAmount() - playerComponent.movement_speed) / 4,
-                                item.type.getMaxAmount());
-                break;
-
-
+    private void updateBlinking(ItemComponent itemComponent, SpriteComponent spriteComponent) {
+        if (itemComponent.ttl_timer < itemComponent.blinkingTime) {
+            float alpha = (int) (itemComponent.ttl_timer / 0.2f) % 2;
+            spriteComponent.sprite.setColor(1, 1, 1, alpha);
         }
     }
 }

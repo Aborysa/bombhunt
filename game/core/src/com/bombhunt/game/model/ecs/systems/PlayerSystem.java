@@ -54,8 +54,8 @@ public class PlayerSystem extends IteratingSystem {
         Box2dComponent box2dComponent = mapBox2D.get(e);
         TransformComponent transformComponent = mapTransform.get(e);
         PlayerComponent playerComponent = mapPlayer.get(e);
-        // TODO: use velocity component for that?
-        // TODO: to be wrapped in a method
+        KillableComponent killableComponent = mapKillable.get(e);
+        killableComponent.health = playerComponent.health;
         Body body = box2dComponent.body;
         Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
         body.setLinearVelocity(velocity);

@@ -5,12 +5,13 @@ import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.bombhunt.game.model.Grid;
-import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.ItemComponent;
 import com.bombhunt.game.model.ecs.components.NetworkComponent;
@@ -31,7 +32,6 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
     private ComponentMapper<GridPositionComponent> mapGrid;
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<ItemComponent> mapItem;
-    private ComponentMapper<AnimationComponent> mapAnimation;
     private ComponentMapper<NetworkComponent> mapNetwork;
 
     private World world;
@@ -55,14 +55,12 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
         mapGrid = world.getMapper(GridPositionComponent.class);
         mapSprite = world.getMapper(SpriteComponent.class);
         mapItem = world.getMapper(ItemComponent.class);
-        mapAnimation = world.getMapper(AnimationComponent.class);
         mapNetwork = world.getMapper(NetworkComponent.class);
 
         itemArchetype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
                 .add(GridPositionComponent.class)
                 .add(SpriteComponent.class)
-                .add(AnimationComponent.class)
                 .add(ItemComponent.class)
                 .add(NetworkComponent.class)
                 .build(world);
@@ -73,44 +71,31 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
         this.grid = grid;
     }
 
-
-    //TODO
     @Override
     public int createFromMessage(String message) {
-        int e = createRandomItem(Vector3.Zero);
-        return e;
-    }
-
-    public int createItem(Vector3 position, ItemType itemType ) {
-        final int e = world.create(itemArchetype);
-        ItemComponent itemComponent = mapItem.get(e);
-        itemComponent.type = itemType;
-        mapTransform.get(e).position = position;
-        mapTransform.get(e).scale = new Vector2(1f, 1f);
-        GridPositionComponent gridPositionComponent = mapGrid.get(e);
-        gridPositionComponent.grid = grid;
-        //gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
-
-        //TODO change texture (copied from bomb)
-        int x=0;
-        int y=0;
-        switch (itemType) {
-            case INCREASEDAMAGE: x=0; y=0; break;
-            case INCREASEHEALTH: x=1; y=2; break;
-            case INCREASESPEED:  x=3; y=3; break;
-            case INCREASERANGE:  x=4; y=4; break;
-        }
-        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(region, 32, x, y, 1),
-                1);
-        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
-        mapSprite.get(e).sprite.setDimensions(16,16);
-
+        int e = createItem(Vector3.Zero, ITEM_TYPE_ENUM.DAMAGE);
         return e;
     }
 
     public int createRandomItem(Vector3 position) {
-        ItemType randomType = ItemType.values()[3];//random.nextInt(ItemType.values().length)];
+        int random_item_value = random.nextInt(ITEM_TYPE_ENUM.values().length);
+        ITEM_TYPE_ENUM randomType = ITEM_TYPE_ENUM.values()[random_item_value];
         return createItem(position, randomType);
+    }
+
+    private int createItem(Vector3 position, ITEM_TYPE_ENUM type) {
+        final int e = world.create(itemArchetype);
+        ItemComponent itemComponent = mapItem.get(e);
+        mapTransform.get(e).position = position;
+        mapTransform.get(e).scale = new Vector2(1f, 1f);
+        GridPositionComponent gridPositionComponent = mapGrid.get(e);
+        gridPositionComponent.grid = grid;
+        gridPositionComponent.cellIndex = gridPositionComponent.grid.getCellIndex(position);
+        itemComponent.type = type;
+        Array<Sprite> sprites = SpriteHelper.createSprites(region, 32, type.getCoord_x(), type.getCoord_y(), 1);
+        Sprite sprite = sprites.get(0);
+        mapSprite.get(e).sprite = Decal.newDecal(sprite, true);
+        mapSprite.get(e).sprite.setDimensions(16, 16);
+        return e;
     }
 }
