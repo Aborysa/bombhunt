@@ -4,6 +4,7 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,6 +22,7 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.systems.DIRECTION_ENUM;
 import com.bombhunt.game.services.assets.Assets;
+import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
 
 import java.util.Random;
@@ -77,6 +79,14 @@ public class DeathFactory implements IEntityFactory {
         new_array_animation.add(sprite);
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(new_array_animation, 60);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
+        playEvilLaughSound();
         return e;
+    }
+
+    private void playEvilLaughSound(){
+        Assets asset_manager = Assets.getInstance();
+        Sound evil_sound = asset_manager.get("evilLaugh.ogg", Sound.class);
+        AudioPlayer audioPlayer = AudioPlayer.getInstance();
+        audioPlayer.playSound(evil_sound);
     }
 }
