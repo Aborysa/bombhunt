@@ -13,4 +13,5 @@ public class PlayerComponent extends Component {
     public int bomb_damage = 10;
     public int bomb_range = 1;
     public DIRECTION_ENUM direction = DIRECTION_ENUM.DOWN;
+    public boolean is_dead = false;
 }

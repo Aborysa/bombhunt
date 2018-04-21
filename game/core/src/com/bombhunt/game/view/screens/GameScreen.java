@@ -176,13 +176,13 @@ public class GameScreen extends BasicView {
         BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
         ExplosionFactory explosionFactory = (ExplosionFactory) factoryMap.get(explosionFactoryName);
         ItemFactory itemFactory = (ItemFactory) factoryMap.get(itemFactoryName) ;
-        PlayerSystem playerSystem = new PlayerSystem(bombFactory);
+        PlayerSystem playerSystem = new PlayerSystem(bombFactory, box2d);
         BombSystem bombSystem = new BombSystem(explosionFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem(explosionFactory);
         TimerSystem timerSystem = new TimerSystem();
         GridSystem gridSystem = new GridSystem();
         DestroyableSystem destroyableSystem = new DestroyableSystem(box2d, itemFactory);
-        KillableSystem killableSystem = new KillableSystem(box2d);
+        KillableSystem killableSystem = new KillableSystem();
         ItemSystem itemSystem = new ItemSystem();
         LabelSystem labelSystem = new LabelSystem();
         WorldConfiguration config = new WorldConfigurationBuilder()
@@ -381,7 +381,7 @@ public class GameScreen extends BasicView {
     private void updateCamera(float dt) {
         currentCamera.position.set(moveCameraWithPlayer());
         //TODO: update zoom as the game time expire
-        //currentCamera.zoom =2;
+        //currentCamera.zoom =4;
         currentCamera.update();
     }
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
@@ -45,6 +46,7 @@ public class PlayerSystem extends IteratingSystem {
     private ComponentMapper<BombComponent> mapBomb;
 
     private BombFactory bombFactory;
+    private com.badlogic.gdx.physics.box2d.World box2d;
 
     // IMPORTANT: For controller interactions
     private Vector3 last_position = new Vector3();
@@ -53,13 +55,14 @@ public class PlayerSystem extends IteratingSystem {
     private boolean bombPlanted = false;
     private Array<Sprite> sprites;
 
-    public PlayerSystem(BombFactory bombFactory) {
+    public PlayerSystem(BombFactory bombFactory, World box2d) {
         super(Aspect.all(
                 TransformComponent.class,
                 Box2dComponent.class,
                 PlayerComponent.class,
                 TimerComponent.class));
         this.bombFactory = bombFactory;
+        this.box2d = box2d;
         Assets asset_manager = Assets.getInstance();
         TextureRegion region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
@@ -81,6 +84,7 @@ public class PlayerSystem extends IteratingSystem {
         updateCoolDownBomb(playerComponent);
         updateDirection(e);
         updateStats(e);
+        updateStilAlive(e);
     }
 
     private void updatePlantedBomb(PlayerComponent playerComponent) {
@@ -170,12 +174,23 @@ public class PlayerSystem extends IteratingSystem {
     private void updateStats(int e) {
         PlayerComponent playerComponent = mapPlayer.get(e);
         KillableComponent killableComponent = mapKillable.get(e);
-        stats.put(STATS_ENUM.MAX_HEALTH, playerComponent.max_health);
-        stats.put(STATS_ENUM.HEALTH, killableComponent.health);
-        stats.put(STATS_ENUM.BOMB_COOLDOWN, playerComponent.bomb_cooldown);
-        stats.put(STATS_ENUM.BOMB_RANGE, playerComponent.bomb_range);
-        stats.put(STATS_ENUM.BOMB_DAMAGE, playerComponent.bomb_damage);
-        stats.put(STATS_ENUM.SPEED, playerComponent.movement_speed);
+        if (playerComponent.is_dead) {
+            stats.put(STATS_ENUM.HEALTH, 0);
+        } else {
+            stats.put(STATS_ENUM.MAX_HEALTH, playerComponent.max_health);
+            stats.put(STATS_ENUM.HEALTH, killableComponent.health);
+            stats.put(STATS_ENUM.BOMB_COOLDOWN, playerComponent.bomb_cooldown);
+            stats.put(STATS_ENUM.BOMB_RANGE, playerComponent.bomb_range);
+            stats.put(STATS_ENUM.BOMB_DAMAGE, playerComponent.bomb_damage);
+            stats.put(STATS_ENUM.SPEED, playerComponent.movement_speed);
+        }
+    }
+
+    private void updateStilAlive(int e) {
+        if(mapPlayer.get(e).is_dead) {
+            box2d.destroyBody(mapBox2D.get(e).body);
+            world.delete(e);
+        }
     }
 
     public void move(Vector2 new_orientation) {

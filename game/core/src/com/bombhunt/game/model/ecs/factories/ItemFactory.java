@@ -80,6 +80,7 @@ public class ItemFactory implements IEntityFactory, INetworkFactory {
     public int createRandomItem(Vector3 position) {
         int random_item_value = random.nextInt(ITEM_TYPE_ENUM.values().length);
         ITEM_TYPE_ENUM randomType = ITEM_TYPE_ENUM.values()[random_item_value];
+        randomType = ITEM_TYPE_ENUM.values()[0];
         return createItem(position, randomType);
     }
 

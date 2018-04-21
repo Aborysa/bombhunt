@@ -12,19 +12,14 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
 public class KillableSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<KillableComponent> mapKillable;
-    private ComponentMapper<Box2dComponent> mapBox2d;
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<PlayerComponent> mapPlayer;
 
-    private com.badlogic.gdx.physics.box2d.World box2d;
-
-    public KillableSystem(com.badlogic.gdx.physics.box2d.World box2d) {
+    public KillableSystem() {
         super(Aspect.all(TransformComponent.class,
                 KillableComponent.class,
-                Box2dComponent.class,
                 SpriteComponent.class,
                 PlayerComponent.class));
-        this.box2d = box2d;
     }
 
     @Override
@@ -38,8 +33,8 @@ public class KillableSystem extends IteratingSystem {
         if (killableComponent.ttl_timer <= 0) {
             killableComponent.ttl_timer = killableComponent.timer_damage;
             total_damage += killableComponent.damage_received;
-            killableComponent.health -= total_damage;
         }
+        killableComponent.health -= total_damage;
         if (!killableComponent.is_colored) {
             if (playerComponent.malus > 0) {
                 // POISON
@@ -65,8 +60,7 @@ public class KillableSystem extends IteratingSystem {
             }
         }
         if (killableComponent.health <= 0) {
-            box2d.destroyBody(mapBox2d.get(e).body);
-            world.delete(e);
+            playerComponent.is_dead = true;
         }
         playerComponent.malus = 0;
         killableComponent.damage_received = 0;
