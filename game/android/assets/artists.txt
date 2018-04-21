@@ -4,6 +4,7 @@ Colored Spinning Bomb - Code Inferno Games
 Features Skin - Raymond "Raeleus" Buckley
 Gameplay Assets - usr_share
 Items - thekingphoenix
+Medals - Buch
 
 -- Musics --
 Main Menu Song - Edward J. Blakeley
