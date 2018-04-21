@@ -9,5 +9,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 @DelayedComponentRemoval
 public class Box2dComponent extends Component {
     public Body body;
-    public Vector2 prePos;
+    // Only used with NetworkingComponent in order to interpolate
+    public Vector2 targetVeloc;
+    public Vector2 targetPos;
+    public float interpolationValue = 0.25f;
 }

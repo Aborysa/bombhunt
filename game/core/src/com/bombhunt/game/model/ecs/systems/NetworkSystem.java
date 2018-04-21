@@ -179,7 +179,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                     KillableComponent killableComponent = mapKillable.getSafe(e, null);
 
                     if (box2d != null) {
-                        message.getBox2d(box2d, Math.max(1, world.getDelta() * (localTurn-remoteTurn) ));
+                        message.getBox2d(box2d, true);
                     } else if (transformComponent != null) {
                         message.getTransform(transformComponent);
                     }

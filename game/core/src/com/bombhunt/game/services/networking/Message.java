@@ -99,16 +99,19 @@ public class Message {
         putVector(component.body.getTransform().getPosition());
     }
 
+
     public Box2dComponent getBox2d(Box2dComponent component){
-        return getBox2d(component, 1);
+        return getBox2d(component, false);
     }
 
-    public Box2dComponent getBox2d(Box2dComponent component, float iv){
-        component.body.setLinearVelocity(getVector2());
-        Vector2 newPos = getVector2();
-        Vector2 oldPos = component.body.getTransform().getPosition();
-        oldPos.interpolate(newPos, iv, Interpolation.linear);
-        component.body.setTransform(oldPos, component.body.getTransform().getRotation());
+    public Box2dComponent getBox2d(Box2dComponent component, boolean interpolate){
+        if(!interpolate){
+            component.body.setLinearVelocity(getVector2());
+            component.body.setTransform(getVector2(), component.body.getTransform().getRotation());
+        } else {
+            component.targetVeloc = getVector2(); 
+            component.targetPos = getVector2();
+        }
         return component;
     }
 
