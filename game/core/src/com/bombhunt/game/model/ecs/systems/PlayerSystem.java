@@ -22,6 +22,7 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
+import com.bombhunt.game.model.ecs.factories.DeathFactory;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
@@ -46,6 +47,7 @@ public class PlayerSystem extends IteratingSystem {
     private ComponentMapper<BombComponent> mapBomb;
 
     private BombFactory bombFactory;
+    private DeathFactory deathFactory;
     private com.badlogic.gdx.physics.box2d.World box2d;
 
     // IMPORTANT: For controller interactions
@@ -55,13 +57,14 @@ public class PlayerSystem extends IteratingSystem {
     private boolean bombPlanted = false;
     private Array<Sprite> sprites;
 
-    public PlayerSystem(BombFactory bombFactory, World box2d) {
+    public PlayerSystem(BombFactory bombFactory, DeathFactory deathFactory, World box2d) {
         super(Aspect.all(
                 TransformComponent.class,
                 Box2dComponent.class,
                 PlayerComponent.class,
                 TimerComponent.class));
         this.bombFactory = bombFactory;
+        this.deathFactory = deathFactory;
         this.box2d = box2d;
         Assets asset_manager = Assets.getInstance();
         TextureRegion region = asset_manager.get("textures/tilemap1.atlas",
@@ -162,13 +165,13 @@ public class PlayerSystem extends IteratingSystem {
     private void updateSpriteDirection(int e) {
         PlayerComponent playerComponent = mapPlayer.get(e);
         int frame = playerComponent.direction.getFrame();
-        boolean is_flipped = playerComponent.direction.isFlip();
         Sprite new_sprite = new Sprite(sprites.get(frame));
+        boolean is_flipped = playerComponent.direction.isFlip();
         new_sprite.flip(is_flipped, false);
         Array<Sprite> new_array_animation = new Array<>();
         new_array_animation.add(new_sprite);
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(new_array_animation, 60);
-        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(frame, true);
+        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(0, true);
     }
 
     private void updateStats(int e) {
@@ -188,6 +191,14 @@ public class PlayerSystem extends IteratingSystem {
 
     private void updateStilAlive(int e) {
         if(mapPlayer.get(e).is_dead) {
+            TransformComponent transformComponent = mapTransform.get(e);
+            Vector3 position = transformComponent.position.cpy();
+            PlayerComponent playerComponent = mapPlayer.get(e);
+            int frame = playerComponent.direction.getFrame();
+            Sprite last_sprite = new Sprite(sprites.get(frame));
+            boolean is_flipped = playerComponent.direction.isFlip();
+            last_sprite.flip(is_flipped, false);
+            deathFactory.createDeath(position, last_sprite, playerComponent.last_hit);
             box2d.destroyBody(mapBox2D.get(e).body);
             world.delete(e);
         }

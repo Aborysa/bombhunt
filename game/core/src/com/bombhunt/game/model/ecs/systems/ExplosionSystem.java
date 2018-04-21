@@ -69,11 +69,8 @@ public class ExplosionSystem extends IteratingSystem {
         GridPositionComponent gridPositionComponent = mapGrid.get(e);
         ExplosionComponent explosionComponent = mapExplosion.get(e);
         Grid grid = gridPositionComponent.grid;
-        Vector3[] dirs = {new Vector3(0, 1, 0),
-                new Vector3(1, 0, 0),
-                new Vector3(0, -1, 0),
-                new Vector3(-1, 0, 0)};
-        for (Vector3 dir : dirs) {
+        for (DIRECTION_ENUM direction : DIRECTION_ENUM.values()) {
+            Vector3 dir = direction.getVector();
             Vector3 offset = dir.cpy().scl(grid.getCellSize());
             Vector3 prev_position = transformComponent.position.cpy();
             Vector3 position = prev_position.add(offset);
@@ -82,7 +79,7 @@ public class ExplosionSystem extends IteratingSystem {
                 int new_e = explosionFactory.createExplosion(position,
                         explosionComponent.damage, explosionComponent.range);
                 ExplosionComponent new_explosionComponent = mapExplosion.get(new_e);
-                new_explosionComponent.direction = dir;
+                new_explosionComponent.direction = direction;
                 new_explosionComponent.is_decaded = true;
                 new_explosionComponent.range -= 1;
             } else {
@@ -102,7 +99,7 @@ public class ExplosionSystem extends IteratingSystem {
                     TransformComponent transformComponent = mapTransform.get(e);
                     GridPositionComponent gridPositionComponent = mapGrid.get(e);
                     Grid grid = gridPositionComponent.grid;
-                    Vector3 offset = explosionComponent.direction.cpy().scl(grid.getCellSize());
+                    Vector3 offset = explosionComponent.direction.getVector().cpy().scl(grid.getCellSize());
                     Vector3 prev_position = transformComponent.position.cpy();
                     Vector3 position = prev_position.add(offset);
                     Boolean hasSolid = grid.detect(position, mapSolid);
@@ -146,6 +143,7 @@ public class ExplosionSystem extends IteratingSystem {
             int killableEntity = killableEntities.get(i);
             KillableComponent killableComponent = mapKillable.get(killableEntity);
             killableComponent.damage_received += explosionComponent.damage;
+            killableComponent.last_hit = explosionComponent.direction;
         }
     }
 

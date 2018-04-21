@@ -1,6 +1,7 @@
 package com.bombhunt.game.model.ecs.components;
 
 import com.artemis.Component;
+import com.bombhunt.game.model.ecs.systems.DIRECTION_ENUM;
 
 public class KillableComponent extends Component {
     public int health = 100;
@@ -10,4 +11,5 @@ public class KillableComponent extends Component {
     public boolean is_colored = false;
     public float color_persistence = 0.4f;
     public float ttl_color = color_persistence;
+    public DIRECTION_ENUM last_hit = null;
 }

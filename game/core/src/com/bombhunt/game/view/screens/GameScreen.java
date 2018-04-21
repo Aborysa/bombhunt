@@ -41,12 +41,14 @@ import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.model.ecs.factories.CrateFactory;
+import com.bombhunt.game.model.ecs.factories.DeathFactory;
 import com.bombhunt.game.model.ecs.factories.ExplosionFactory;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
 import com.bombhunt.game.model.ecs.factories.ItemFactory;
 import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.model.ecs.factories.WallFactory;
 import com.bombhunt.game.model.ecs.systems.BombSystem;
+import com.bombhunt.game.model.ecs.systems.DeathSystem;
 import com.bombhunt.game.model.ecs.systems.DestroyableSystem;
 import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.model.ecs.systems.GridSystem;
@@ -145,6 +147,7 @@ public class GameScreen extends BasicView {
         final String bombFactoryName = BombFactory.class.getSimpleName();
         final String explosionFactoryName = ExplosionFactory.class.getSimpleName();
         final String itemFactoryName = ItemFactory.class.getSimpleName();
+        final String deathFactoryName = DeathFactory.class.getSimpleName();
         factoryMap = new HashMap<String, IEntityFactory>() {{
             put(crateFactoryName, new CrateFactory());
             put(playerFactoryName, new PlayerFactory());
@@ -152,6 +155,7 @@ public class GameScreen extends BasicView {
             put(bombFactoryName, new BombFactory());
             put(explosionFactoryName, new ExplosionFactory());
             put(itemFactoryName, new ItemFactory());
+            put(deathFactoryName, new DeathFactory());
         }};
     }
 
@@ -173,10 +177,12 @@ public class GameScreen extends BasicView {
         String bombFactoryName = BombFactory.class.getSimpleName();
         String explosionFactoryName = ExplosionFactory.class.getSimpleName();
         String itemFactoryName = ItemFactory.class.getSimpleName();
+        String deathFactoryName = DeathFactory.class.getSimpleName();
         BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
         ExplosionFactory explosionFactory = (ExplosionFactory) factoryMap.get(explosionFactoryName);
-        ItemFactory itemFactory = (ItemFactory) factoryMap.get(itemFactoryName) ;
-        PlayerSystem playerSystem = new PlayerSystem(bombFactory, box2d);
+        ItemFactory itemFactory = (ItemFactory) factoryMap.get(itemFactoryName);
+        DeathFactory deathFactory = (DeathFactory) factoryMap.get(deathFactoryName);
+        PlayerSystem playerSystem = new PlayerSystem(bombFactory, deathFactory, box2d);
         BombSystem bombSystem = new BombSystem(explosionFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem(explosionFactory);
         TimerSystem timerSystem = new TimerSystem();
@@ -185,6 +191,7 @@ public class GameScreen extends BasicView {
         KillableSystem killableSystem = new KillableSystem();
         ItemSystem itemSystem = new ItemSystem();
         LabelSystem labelSystem = new LabelSystem();
+        DeathSystem deathSystem = new DeathSystem();
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem)
                 .with(physicsSystem)
@@ -197,6 +204,7 @@ public class GameScreen extends BasicView {
                 .with(killableSystem)
                 .with(itemSystem)
                 .with(labelSystem)
+                .with(deathSystem)
                 .build();
         world = new World(config);
         for (IEntityFactory factory : factoryMap.values()) {

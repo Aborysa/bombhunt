@@ -61,6 +61,7 @@ public class KillableSystem extends IteratingSystem {
         }
         if (killableComponent.health <= 0) {
             playerComponent.is_dead = true;
+            playerComponent.last_hit = killableComponent.last_hit;
         }
         playerComponent.malus = 0;
         killableComponent.damage_received = 0;
