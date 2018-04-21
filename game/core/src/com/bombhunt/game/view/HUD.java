@@ -35,7 +35,7 @@ public class HUD implements Disposable {
     private final int MIN_HEALTH_INIT = 0;
     private final int MAX_HEALTH_INIT = 100;
     private final int HEALTH_INIT = 0;
-    private final float HEIGHT_HEART = 16f;
+    private final float HEIGHT_HEART = 12f;
     private final float WIDTH_HEARTH = 18f;
     private final float HP_PER_HEARTH = 10f;
     private final int TEXTURE_SIZE = 32;
@@ -46,98 +46,24 @@ public class HUD implements Disposable {
     private Table health_bar_table;
     private Group health_bar_group;
     private ProgressBarStyle health_bar_style;
-    private Table main_table;
+    private Table stats_table;
     private Map<STATS_ENUM, Group> stats_groups;
     private float height_stats;
 
     public HUD(GameController controller){
         this.controller = controller;
+        feedHealthBarTable();
         feedStats();
-        feedMainTable();
+        feedStatsTable();
         feedStage();
     }
 
-    private void feedStats() {
-        stats_groups = new HashMap<>();
-        for(STATS_ENUM i : STATS_ENUM.values()) {
-            try {
-                ITEM_TYPE_ENUM item = ITEM_TYPE_ENUM.valueOf(String.valueOf(i));
-                Group group = processItem(i, item);
-                stats_groups.put(i, group);
-            } catch (IllegalArgumentException ignored) {}
-        }
-    }
-
-    private Group processItem(STATS_ENUM i, ITEM_TYPE_ENUM item) {
-        Image image = createImage(item);
-        Pixmap labelColor = new Pixmap((int) (image.getWidth()*SCALING_FACTOR), (int) (image.getHeight()*SCALING_FACTOR), RGB888);
-        labelColor.setColor(Color.FIREBRICK);
-        labelColor.fill();
-        Image background = new Image(new Texture(labelColor));
-        Map<STATS_ENUM, Number> stats = controller.getPlayerStats();
-        String text_label = stats.get(i).toString();
-        Label label = createLabel(text_label);
-        return createGroup(background, image, label);
-    }
-
-    private Image createImage(ITEM_TYPE_ENUM item) {
-        Assets asset_manager = Assets.getInstance();
-        Texture texture = asset_manager.get("items.png", Texture.class);
-        int x_coord = item.getCoord_x()*TEXTURE_SIZE;
-        int y_coord = item.getCoord_y()*TEXTURE_SIZE;
-        TextureRegion textureRegion = new TextureRegion(texture,
-                x_coord, y_coord, TEXTURE_SIZE, TEXTURE_SIZE);
-        Image image = new Image(textureRegion);
-        image.setName("IMAGE");
-        image.setScale(SCALING_FACTOR);
-        return image;
-    }
-
-    private Label createLabel(String text) {
-        Assets asset_manager = Assets.getInstance();
-        Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
-        Label label = new Label(text, skin, "dim");
-        label.setFontScale(1.5f);
-        label.setName("LABEL");
-        return label;
-    }
-
-    private Group createGroup(Image background, Image image, Label label) {
-        Group group = new Group();
-        group.addActor(background);
-        group.addActor(image);
-        group.addActor(label);
-        group.setHeight(image.getHeight()*SCALING_FACTOR);
-        return group;
-    }
-
-    private void feedMainTable() {
-        main_table = new Table();
-        main_table.defaults().uniformY();
-        addGroupsToTable();
-    }
-
-    private void addGroupsToTable() {
-        // IMPORTANT: ordering stats entries before adding to table
-        Map<STATS_ENUM, Group> ordered_stats = new TreeMap<>(stats_groups);
-        for (Map.Entry<STATS_ENUM, Group> group : ordered_stats.entrySet()) {
-            Group value = group.getValue();
-            height_stats += value.getHeight();
-            main_table.add(value).row();
-        }
-    }
-
-    private void feedStage() {
-        stage = new Stage();
+    private void feedHealthBarTable() {
         setUpHealthBarStyle();
-        ProgressBar health_bar = createHealthBar(HEALTH_INIT, MIN_HEALTH_INIT, MAX_HEALTH_INIT);
-        health_bar_group = new Group();
-        health_bar_group.scaleBy(SCALING_FACTOR);
-        addHealthBarToGroup(health_bar);
+        createHealthBarGroup();
         health_bar_table = new Table();
-        health_bar_table.add(health_bar_group).top().left().row();
-        stage.addActor(health_bar_table);
-        stage.addActor(main_table);
+        health_bar_table.top().left();
+        health_bar_table.add(health_bar_group).row();
     }
 
     private void setUpHealthBarStyle() {
@@ -148,6 +74,13 @@ public class HUD implements Disposable {
         health_bar_style.background = skin.getTiledDrawable("heart-bg");
         skin.getTiledDrawable("heart").setMinWidth(0.0f);
         health_bar_style.knobBefore = skin.getTiledDrawable("heart");
+    }
+
+    private void createHealthBarGroup() {
+        health_bar_group = new Group();
+        health_bar_group.scaleBy(SCALING_FACTOR);
+        ProgressBar health_bar = createHealthBar(HEALTH_INIT, MIN_HEALTH_INIT, MAX_HEALTH_INIT);
+        addHealthBarToGroup(health_bar);
     }
 
     private ProgressBar createHealthBar(int health, int min_health, int max_health) {
@@ -163,12 +96,95 @@ public class HUD implements Disposable {
         health_bar_group.setHeight(HEIGHT_HEART*SCALING_FACTOR);
     }
 
+    private void feedStats() {
+        stats_groups = new HashMap<>();
+        for(STATS_ENUM i : STATS_ENUM.values()) {
+            try {
+                ITEM_TYPE_ENUM item = ITEM_TYPE_ENUM.valueOf(String.valueOf(i));
+                Group group = processItem(i, item);
+                stats_groups.put(i, group);
+            } catch (IllegalArgumentException ignored) {}
+        }
+    }
+
+    private Group processItem(STATS_ENUM i, ITEM_TYPE_ENUM item) {
+        Image image = createImage(item);
+        Image background = createBackground(image);
+        Map<STATS_ENUM, Number> stats = controller.getPlayerStats();
+        String text_label = stats.get(i).toString();
+        Label label = createLabel(text_label);
+        return createStatsGroup(background, image, label);
+    }
+
+    private Image createImage(ITEM_TYPE_ENUM item) {
+        Assets asset_manager = Assets.getInstance();
+        Texture texture = asset_manager.get("items.png", Texture.class);
+        int x_coord = item.getCoord_x()*TEXTURE_SIZE;
+        int y_coord = item.getCoord_y()*TEXTURE_SIZE;
+        TextureRegion textureRegion = new TextureRegion(texture,
+                x_coord, y_coord, TEXTURE_SIZE, TEXTURE_SIZE);
+        Image image = new Image(textureRegion);
+        image.setName("IMAGE");
+        image.setScale(SCALING_FACTOR);
+        return image;
+    }
+
+    private Image createBackground(Image icon) {
+        int icon_width = (int) (icon.getWidth()*SCALING_FACTOR);
+        int icon_height = (int) (icon.getHeight()*SCALING_FACTOR);
+        Pixmap background_pixmap = new Pixmap(icon_width, icon_height, RGB888);
+        background_pixmap.setColor(Color.FIREBRICK);
+        background_pixmap.fill();
+        Image background = new Image(new Texture(background_pixmap));
+        return background;
+    }
+
+    private Label createLabel(String text) {
+        Assets asset_manager = Assets.getInstance();
+        Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
+        Label label = new Label(text, skin, "dim");
+        label.setFontScale(1.5f);
+        label.setName("LABEL");
+        return label;
+    }
+
+    private Group createStatsGroup(Image background, Image image, Label label) {
+        Group group = new Group();
+        group.addActor(background);
+        group.addActor(image);
+        group.addActor(label);
+        group.setHeight(image.getHeight()*SCALING_FACTOR);
+        return group;
+    }
+
+    private void feedStatsTable() {
+        stats_table = new Table();
+        stats_table.defaults().uniformY();
+        addStatsGroupsToTable();
+    }
+
+    private void addStatsGroupsToTable() {
+        // IMPORTANT: ordering stats entries before adding to table
+        Map<STATS_ENUM, Group> ordered_stats = new TreeMap<>(stats_groups);
+        for (Map.Entry<STATS_ENUM, Group> group : ordered_stats.entrySet()) {
+            Group value = group.getValue();
+            height_stats += value.getHeight();
+            stats_table.add(value).row();
+        }
+    }
+
+    private void feedStage() {
+        stage = new Stage();
+        stage.addActor(health_bar_table);
+        stage.addActor(stats_table);
+    }
+
     public float getTotalHeight() {
         return height_stats;
     }
 
     public void setPosition(Vector3 position) {
-        main_table.setPosition(position.x, position.y);
+        stats_table.setPosition(position.x, position.y);
         health_bar_table.setPosition(position.x, position.y + height_stats - health_bar_group.getHeight());
     }
 
