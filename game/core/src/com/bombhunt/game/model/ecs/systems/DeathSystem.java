@@ -46,11 +46,9 @@ public class DeathSystem extends IteratingSystem {
     private void updateOpacity(int e) {
         DeathComponent deathComponent = mapDeath.get(e);
         SpriteComponent spriteComponent = mapSprite.get(e);
-        float updateIntervalTime = deathComponent.timer/deathComponent.updateOpacityFrequency;
+        float updateIntervalTime = deathComponent.timer/deathComponent.update_opacity_frequency;
         if (((int) deathComponent.ttl_timer/updateIntervalTime) % 2 == 1) {
-            //deathComponent.alpha -= 0.5f/deathComponent.updateOpacityFrequency;
-            deathComponent.alpha -= 0.01f;
-            System.out.println(deathComponent.alpha);
+            deathComponent.alpha -= deathComponent.opacity_step;
             spriteComponent.sprite.setColor(1, 1, 1, deathComponent.alpha);
         }
     }

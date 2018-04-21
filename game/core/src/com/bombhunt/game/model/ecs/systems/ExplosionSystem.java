@@ -83,9 +83,7 @@ public class ExplosionSystem extends IteratingSystem {
                 new_explosionComponent.is_decaded = true;
                 new_explosionComponent.range -= 1;
             } else {
-                if (destructionDamage(e, position)) {
-                    explosionComponent.range = 0;
-                }
+                destructionDamage(e, position);
             }
         }
     }
@@ -110,7 +108,6 @@ public class ExplosionSystem extends IteratingSystem {
                         new_explosionComponent.direction = explosionComponent.direction;
                         new_explosionComponent.is_decaded = true;
                         new_explosionComponent.range = explosionComponent.range - 1;
-                        explosionComponent.range = 0;
                     } else {
                         if (destructionDamage(e, position)) {
                             explosionComponent.range = 0;

@@ -11,7 +11,7 @@ public class PlayerComponent extends Component {
     public float ttl_bomb_cooldown = bomb_cooldown;
     public int max_health = 100;
     public int malus = 0;
-    public int bomb_damage = 100;
+    public int bomb_damage = 10;
     public int bomb_range = 1;
     public DIRECTION_ENUM direction = DIRECTION_ENUM.DOWN;
     public boolean is_dead = false;
