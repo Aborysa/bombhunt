@@ -142,7 +142,7 @@ public class HUD implements Disposable {
     private Label createLabel(String text) {
         Assets asset_manager = Assets.getInstance();
         Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
-        Label label = new Label(text, skin, "dim");
+        Label label = new Label(text, skin, "xp");
         label.setFontScale(1.5f);
         label.setName("LABEL");
         return label;

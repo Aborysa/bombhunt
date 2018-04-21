@@ -32,7 +32,6 @@ public class DeathSystem extends IteratingSystem {
 
     @Override
     protected void process(int e) {
-        SpriteComponent spriteComponent = mapSprite.get(e);
         DeathComponent deathComponent = mapDeath.get(e);
         if(deathComponent.ttl_timer > 0) {
             float delta = world.getDelta();
@@ -47,8 +46,11 @@ public class DeathSystem extends IteratingSystem {
     private void updateOpacity(int e) {
         DeathComponent deathComponent = mapDeath.get(e);
         SpriteComponent spriteComponent = mapSprite.get(e);
-        if ((deathComponent.ttl_timer/(deathComponent.timer/20)) % 2 == 1) {
-            deathComponent.alpha -= 0.05f;
+        float updateIntervalTime = deathComponent.timer/deathComponent.updateOpacityFrequency;
+        if (((int) deathComponent.ttl_timer/updateIntervalTime) % 2 == 1) {
+            //deathComponent.alpha -= 0.5f/deathComponent.updateOpacityFrequency;
+            deathComponent.alpha -= 0.01f;
+            System.out.println(deathComponent.alpha);
             spriteComponent.sprite.setColor(1, 1, 1, deathComponent.alpha);
         }
     }
