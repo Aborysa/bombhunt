@@ -23,28 +23,28 @@ public enum ITEM_TYPE_ENUM {
             playerComponent.malus = (int) -getAmount();
         }
     },
-    BOMB_DAMAGE(50f, 0, 200f, 0, 0) {
+    BOMB_DAMAGE(50f, 0, 200f, 0, 3) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.bomb_damage =
                     (int) max(min(playerComponent.bomb_damage + getAmount(), getMaxAmount()), getMinAmount());
         }
     },
-    BOMB_RANGE(1f, 0, Float.MAX_VALUE, 3, 4) {
+    BOMB_RANGE(1f, 0, Float.MAX_VALUE, 2, 1) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.bomb_range =
                     (int) max(min(playerComponent.bomb_range + getAmount(), getMaxAmount()), getMinAmount());
         }
     },
-    SPEED(1f, 1f, 4f, 3, 3) {
+    SPEED(1f, 1f, 4f, 2, 3) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.movement_speed =
                     max(min(playerComponent.movement_speed + getAmount(), getMaxAmount()), getMinAmount());
         }
     },
-    BOMB_COOLDOWN(-0.1f, 0.5f, 1f, 2, 4) {
+    BOMB_COOLDOWN(-0.1f, 0.5f, 1f, 0, 4) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.bomb_cooldown =

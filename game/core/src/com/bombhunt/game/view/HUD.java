@@ -32,13 +32,15 @@ import static com.badlogic.gdx.graphics.Pixmap.Format.RGB888;
 public class HUD implements Disposable {
 
     private final float SCALING_FACTOR = 3f;
+    private final float FONT_SCALING_FACTOR = 1.5f;
+    private final int TEXTURE_SIZE = 32;
+    private final float OFFSET_FACTOR_ICONS = TEXTURE_SIZE/4*SCALING_FACTOR;
     private final int MIN_HEALTH_INIT = 0;
     private final int MAX_HEALTH_INIT = 100;
     private final int HEALTH_INIT = 0;
     private final float HEIGHT_HEART = 12f;
     private final float WIDTH_HEARTH = 18f;
     private final float HP_PER_HEARTH = 10f;
-    private final int TEXTURE_SIZE = 32;
 
     private GameController controller;
 
@@ -112,7 +114,7 @@ public class HUD implements Disposable {
         Image background = createBackground(image);
         Map<STATS_ENUM, Number> stats = controller.getPlayerStats();
         String text_label = stats.get(i).toString();
-        Label label = createLabel(text_label);
+        Label label = createLabel(text_label, image);
         return createStatsGroup(background, image, label);
     }
 
@@ -125,6 +127,7 @@ public class HUD implements Disposable {
                 x_coord, y_coord, TEXTURE_SIZE, TEXTURE_SIZE);
         Image image = new Image(textureRegion);
         image.setName("IMAGE");
+        image.setPosition(OFFSET_FACTOR_ICONS, 0);
         image.setScale(SCALING_FACTOR);
         return image;
     }
@@ -139,18 +142,20 @@ public class HUD implements Disposable {
         return background;
     }
 
-    private Label createLabel(String text) {
+    private Label createLabel(String text, Image icon) {
         Assets asset_manager = Assets.getInstance();
         Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
-        Label label = new Label(text, skin, "dim");
-        label.setFontScale(1.5f);
+        Label label = new Label(text, skin, "default");
+        label.setFontScale(FONT_SCALING_FACTOR);
+        label.setPosition(0, icon.getWidth()*SCALING_FACTOR - label.getHeight());
         label.setName("LABEL");
         return label;
     }
 
     private Group createStatsGroup(Image background, Image image, Label label) {
         Group group = new Group();
-        group.addActor(background);
+        // IMPORTANT: LET THE OPTION FOR BACKGROUND, BUT WONT USE IT FOR NOW
+        //group.addActor(background);
         group.addActor(image);
         group.addActor(label);
         group.setHeight(image.getHeight()*SCALING_FACTOR);
