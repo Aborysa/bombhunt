@@ -1,0 +1,35 @@
+\unnumberedSection[phase]{Phase Description}
+
+The last but not least phase of the semester project for the course \textsc{TDT4240 - Software Architecture} is the \textit{Implementation Phases}. During the this phase, the system design documents are passed to the developers that are in charge of the code production. This phase is the longest phase in the \gls{sdlc}. As straightforward as it may seems to implement and realize all the decisions took during the last two phases, it is also during this phase that most of the project fail to achieve the architectural goals set since the very beginning. If no proper monitoring is performed by a neutral party, we often end up with an architecture that works fine in practice, but that will be almost impossible to maintain and upgrade. The process by which the implementation of a project and its designed architecture drift apart is called \textit{Architecture Erosion}. \cite[Chapter 19]{bass2013}
+ \\
+
+Why is it so easy to fall in this dead end trap? Actually, many reasons can explain this phenomenon. The most commons one is the limitation in time putting pressure on development team to use shortcuts in order to deliver on time no matter how permissive was the initial deadline.\footnote{This phenomenon is so frequently raised that an adage has even been created to describe it. See Parkinson's law.\cite{wiki:parkinsonLaw}}. Anyhow, time limitation is not a valid reason to fall off from the blueprints and scope reduction is often a better avenue. A better and more realistic reason is the lack of refactoring and peer-reviewing combined to shortly sighted programmers that are too focused on finishing their immediate tasks and pass to the next feature. \\
+
+Even thought testing is usually another phase on its own, we will consider testing as part of the implementation phase. During the testing phase, the resulting product will be tested against the requirements of the project. Depending on the requirement we are trying to assess, different types of functional testing will be used. \cite{istqbexamSDLC} \\
+Functional testing is perfectly suited to evaluate functional requirements, but give only minimal insights relatively to quality attributes that are less tangible and deterministic. This is why non-functional testing that will specifically target those attributes also exist. Down here, a short listing of different techniques is presented for each category just discussed. \\
+
+\begin{minipage}{0.475\textwidth}
+  \centering
+  \textbf{Functional Testing}\\
+  \cite{wiki:functionalTesting}
+  \begin{itemize}
+    \item Unit Testing
+    \item Integration Testing
+    \item User Acceptance Testing
+    \item Regression Testing
+    \item Database Testing
+  \end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}{0.475\textwidth}
+  \centering
+  \textbf{Non-Functional Testing}\\
+  \cite{wiki:nonFunctionalTesting}
+  \begin{itemize}
+    \item Performance Testing
+    \item Recovery Testing
+    \item Security Testing
+    \item Scalability Testing
+    \item Usability Testing
+  \end{itemize}
+\end{minipage}
