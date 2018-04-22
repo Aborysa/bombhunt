@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextobjectid="182">
+<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="12" height="12" tilewidth="16" tileheight="16" infinite="0" nextobjectid="182">
  <tileset firstgid="1" source="../textures/bomb_party_v4.tsx"/>
- <layer name="base" width="20" height="20">
+ <layer name="base" width="12" height="12">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACjvKwMBwlMr4CJUwsnnY2MS4gxT2qHmj5o2aNzTMG2nlCzX9S00MAFibF+FABgAA
+   H4sIAAAAAAAACjvKwMBwlER8jAR8FIlGZ+Mzf1T90FAPAIHy+XJAAgAA
   </data>
  </layer>
- <layer name="walls" width="20" height="20">
+ <layer name="walls" width="12" height="12">
   <properties>
    <property name="entity_factory" value="WallFactory"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACr1UQQrAMAiz1/3A/7+h/9tlARe0umErSKWpaURRh8jV5Pp4l1k+jvmsYoihGTGfFWxnvZ6GlX3Vp+P91uaucjx9wCJT549MH3MzR6Yv4sZ9hnPM9VoteBfh1X54OYxFWk/0I5qXSj92z/Mfs3xT+vfLdGrhmk7vl65dD78Bp/dVFEAGAAA=
+   H4sIAAAAAAAACpNkZGDgIhJLQjGxAF09Nr3o8jA+zE50gCxOqXsGk3ouHHol8fgXV/hQ4h5i0wIMAwCVOshCQAIAAA==
   </data>
  </layer>
- <layer name="crates" width="20" height="20">
+ <layer name="crates" width="12" height="12">
   <properties>
    <property name="entity_factory" value="CrateFactory"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACmNgoB04i4fGJ0drcBYLG5v9xMhhM5dS/+JzAzZArvuQxbGJkeI+ZHPQMSF9uMSw6cflTkLuw6YXXZwYt1LDPFxi1PQvsn5K44MW6YUW6ZkW+Y2S8oDaYDCWpwA5xpZBQAYAAA==
+   H4sIAAAAAAAACmNgIB+cRaLPoolRAogxA5easySqgfGxiZGrnlL3kKuGWDOoGV8Axo9xv0ACAAA=
   </data>
  </layer>
  <objectgroup name="spawns">
@@ -29,19 +29,19 @@
    </properties>
    <point/>
   </object>
-  <object id="179" x="25.1889" y="297.229">
+  <object id="179" x="25.1889" y="170.229">
    <properties>
     <property name="spawnpoint" type="bool" value="true"/>
    </properties>
    <point/>
   </object>
-  <object id="180" x="295.214" y="299.244">
+  <object id="180" x="165.214" y="168.244">
    <properties>
     <property name="spawnpoint" type="bool" value="true"/>
    </properties>
    <point/>
   </object>
-  <object id="181" x="296.222" y="27.204">
+  <object id="181" x="167.222" y="28.204">
    <properties>
     <property name="spawnpoint" type="bool" value="true"/>
    </properties>
