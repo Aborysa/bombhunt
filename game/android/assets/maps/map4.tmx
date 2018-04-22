@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="14" height="14" tilewidth="16" tileheight="16" infinite="0" nextobjectid="183">
+ <tileset firstgid="1" source="../textures/bomb_party_v4.tsx"/>
+ <layer name="base" width="14" height="14">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACjvCwMBwZBSP4lEMxgCA2xSgEAMAAA==
+  </data>
+ </layer>
+ <layer name="walls" width="14" height="14">
+  <properties>
+   <property name="entity_factory" value="WallFactory"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACpNlZGAQIBHLAvFDBtLBQ4bBo4+LEYJpbZ8kI4JGZhPSB3MbsjvR3TuUw4XW+mTJTNcAkzGbmhADAAA=
+  </data>
+ </layer>
+ <layer name="crates" width="14" height="14">
+  <properties>
+   <property name="entity_factory" value="CrateFactory"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACmNgGHrgLAGMTx+lcuh2EKMPm3pa6oOxSXUnOXLkxMNgBgAKSlASEAMAAA==
+  </data>
+ </layer>
+ <objectgroup name="spawns">
+  <object id="178" x="87.6889" y="88.1965">
+   <properties>
+    <property name="spawnpoint" type="bool" value="true"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="181" x="136.889" y="89.0373">
+   <properties>
+    <property name="spawnpoint" type="bool" value="true"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="179" x="89.1889" y="137.562">
+   <properties>
+    <property name="spawnpoint" type="bool" value="true"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="180" x="137.214" y="138.411">
+   <properties>
+    <property name="spawnpoint" type="bool" value="true"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+</map>

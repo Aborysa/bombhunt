@@ -200,8 +200,8 @@ public class GameScreen extends BasicView {
     }
 
     private void setUpWorld() {
-        int r = NetworkManager.getInstance().getRandom().nextInt(3);
-        String[] maps = {"maps/map1.tmx", "maps/map2.tmx", "maps/map3.tmx"};
+        int r = NetworkManager.getInstance().getRandom().nextInt(4);
+        String[] maps = {"maps/map1.tmx", "maps/map2.tmx", "maps/map3.tmx", "maps/map4.tmx"};
         level = Assets.getInstance().get(maps[r], Level.class);
         this.spawnPoints = level.getSpawnPoints();
 
