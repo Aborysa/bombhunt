@@ -248,12 +248,12 @@ public class GameScreen extends BasicView {
 
 
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(physicsSystem)
                 .with(playerSystem)
+                .with(physicsSystem)
+                .with(gridSystem)
                 .with(bombSystem)
                 .with(explosionSystem)
                 .with(timerSystem)
-                .with(gridSystem)
                 .with(destroyableSystem)
                 .with(killableSystem)
                 .with(itemSystem)
