@@ -8,8 +8,10 @@ import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.NetworkComponent;
+import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.model.ecs.systems.DIRECTION_ENUM;
 
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
@@ -137,6 +139,16 @@ public class Message {
 
     public void putBomb(BombComponent bomb){
         buffer.putFloat(bomb.ttl_timer);
+    }
+
+    public void putPlayer(PlayerComponent component){
+        DIRECTION_ENUM dir = component.direction;
+        getBuffer().putInt(dir.ordinal());
+    }
+
+    public void getPlayer(PlayerComponent component){
+        int ordinal = getBuffer().getInt();
+        component.direction = DIRECTION_ENUM.values()[ordinal];
     }
 
     public BombComponent getBomb(BombComponent bomb){

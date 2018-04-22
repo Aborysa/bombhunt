@@ -12,9 +12,10 @@ public enum DIRECTION_ENUM {
     LEFT(4, true, new Vector3(-1, 0, 0)),
     RIGHT(4, false, new Vector3(1, 0, 0));
 
-    private final int frame;
-    private final boolean flip;
-    private final Vector3 vector;
+
+    private int frame;
+    private boolean flip;
+    private Vector3 vector;
 
     DIRECTION_ENUM(int frame, boolean flip, Vector3 vector) {
         this.frame = frame;

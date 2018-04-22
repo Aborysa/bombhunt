@@ -66,7 +66,8 @@ public class PlayerSystem extends IteratingSystem {
                 Box2dComponent.class,
                 PlayerComponent.class,
                 TimerComponent.class
-        ));
+            )
+        );
         this.bombFactory = bombFactory;
         this.deathFactory = deathFactory;
         this.box2d = box2d;
@@ -94,10 +95,10 @@ public class PlayerSystem extends IteratingSystem {
             last_position = transformComponent.position.cpy();
             updatePlantedBomb(playerComponent);
             updateCoolDownBomb(playerComponent);
-            updateDirection(e);
             updateStats(e);
             updateStilAlive(e);
         }
+        updateDirection(e);
     }
 
     private void updatePlantedBomb(PlayerComponent playerComponent) {
@@ -133,42 +134,45 @@ public class PlayerSystem extends IteratingSystem {
 
     private void updateDirection(int e) {
         PlayerComponent playerComponent = mapPlayer.get(e);
-        DIRECTION_ENUM previous_direction = playerComponent.direction;
-        if (last_orientation.x != 0 && last_orientation.y != 0) {
-            double hyp = sqrt(pow(last_orientation.x, 2) + pow(last_orientation.y, 2));
-            double theta = toDegrees(asin(last_orientation.y / hyp));
-            if (last_orientation.x > 0) {
-                if (last_orientation.y > 0) {
-                    if (theta > 45) {
-                        playerComponent.direction = DIRECTION_ENUM.UP;
+        if(mapInput.has(e)) {
+            DIRECTION_ENUM previous_direction = playerComponent.direction;
+            if (last_orientation.x != 0 && last_orientation.y != 0) {
+                double hyp = sqrt(pow(last_orientation.x, 2) + pow(last_orientation.y, 2));
+                double theta = toDegrees(asin(last_orientation.y / hyp));
+                if (last_orientation.x > 0) {
+                    if (last_orientation.y > 0) {
+                        if (theta > 45) {
+                            playerComponent.direction = DIRECTION_ENUM.UP;
+                        } else {
+                            playerComponent.direction = DIRECTION_ENUM.RIGHT;
+                        }
                     } else {
-                        playerComponent.direction = DIRECTION_ENUM.RIGHT;
+                        if (theta < -45) {
+                            playerComponent.direction = DIRECTION_ENUM.DOWN;
+                        } else {
+                            playerComponent.direction = DIRECTION_ENUM.RIGHT;
+                        }
                     }
                 } else {
-                    if (theta < -45) {
-                        playerComponent.direction = DIRECTION_ENUM.DOWN;
+                    if (last_orientation.y > 0) {
+                        if (theta > 45) {
+                            playerComponent.direction = DIRECTION_ENUM.UP;
+                        } else {
+                            playerComponent.direction = DIRECTION_ENUM.LEFT;
+                        }
                     } else {
-                        playerComponent.direction = DIRECTION_ENUM.RIGHT;
-                    }
-                }
-            } else {
-                if (last_orientation.y > 0) {
-                    if (theta > 45) {
-                        playerComponent.direction = DIRECTION_ENUM.UP;
-                    } else {
-                        playerComponent.direction = DIRECTION_ENUM.LEFT;
-                    }
-                } else {
-                    if (theta < -45) {
-                        playerComponent.direction = DIRECTION_ENUM.DOWN;
-                    } else {
-                        playerComponent.direction = DIRECTION_ENUM.LEFT;
+                        if (theta < -45) {
+                            playerComponent.direction = DIRECTION_ENUM.DOWN;
+                        } else {
+                            playerComponent.direction = DIRECTION_ENUM.LEFT;
+                        }
                     }
                 }
             }
         }
-        if (previous_direction != playerComponent.direction) {
+        if (playerComponent.prev_direction != playerComponent.direction) {
             updateSpriteDirection(e);
+            playerComponent.prev_direction = playerComponent.direction;
         }
     }
 
