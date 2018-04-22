@@ -279,10 +279,11 @@ public class GameScreen extends BasicView {
         int tilePixelHeight = mapProperties.get("tileheight", Integer.class);
 
 
-        int x_tile_desired = 10;
-        int y_tile_desired = 6;
-        currentCamera = new OrthographicCamera(x_tile_desired*tilePixelWidth,
-                y_tile_desired*tilePixelHeight);
+
+        float x_tile_desired = 16;
+        float y_tile_desired = 9;
+        currentCamera = new OrthographicCamera(x_tile_desired*tilePixelWidth*2/3,
+                y_tile_desired*tilePixelHeight*2/3);
         currentCamera.position.set(new Vector3(0, 0, 0f));
         currentCamera.far = 10000f;
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), currentCamera);
