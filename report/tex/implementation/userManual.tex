@@ -2,3 +2,77 @@
 
 Description of how to install, compile, and run the game
 Screenshots from the game explaining how to play it
+
+\unnumberedSection[requirements]{Requirements}
+
+\unnumberedSubsection[phone]{Run on your Personal Device}
+\begin{itemize}
+	\item Make sure you have \textit{Google Play} installed
+	\item Make sure you have the latest version of \textit{Google Play services} installed \newline
+  Updating this application may be more difficult than expected. If you are experiencing any trouble, just follow the next steps. Unless you can skip to the next point.
+	\begin{enumerate}
+    \item Open \textit{Google Play Store}
+    \item Search for \textit{Play Services \& Play Store Information} application
+    \item Install the application
+    \item Open the application
+    \item Click on \textit{Play Store} button
+    \item You should be redirected to the \textit{Google Play Store} installation page of the \textit{Google Play services}
+    \item Finally, simply click to update
+	\end{enumerate}
+\end{itemize}
+
+\unnumberedSubsection[emulator]{Run on an Emulator}
+\begin{itemize}
+	\item Download android studios %TODO: link
+	\item Go to \texttt{Tools -> Android -> SDK Manager}
+	\begin{itemize}
+		\item https://prnt.sc/itxj13
+		\item make sure the highlighted items are installed
+	\end{itemize}
+	\item install an emulator
+	\begin{itemize}
+		\item http://prntscr.com/j8hvji
+		\item Make sure the emulator has google play on it
+		\item Choose the latest API (27) for your device
+  \end{itemize}
+  \item Follow the same steps for “setup on your device”
+\end{itemize}
+
+\unnumberedSection[installation]{Installation}
+\begin{itemize}
+	\item Install the provided \gls{apk} from the delivery.
+	\item Upon application startup, you should be asked to log in to \textit{Google Play}. If you are already logged in on your device, this should be performed automatically for you.
+	\item When the game starts you should see a prompt saying \texttt{successfull login}.
+	\begin{itemize}
+		\item If you get something the \texttt{error displaying signin 0} message, it must be because you are facing one of the following problems:
+    \begin{itemize}
+      \item Your \textit{Google Play service} is out of date
+      \item You did not provide your email for the test version\footnote{The game is in closed alpha on the \textit{Google Play} console.}
+      \item The login attempt did not succeed. \item Your phone does not have access to a proper Internet connection.
+    \end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\unnumberedSection[play]{Play}
+\begin{itemize}
+	\item To start a game, simply press the “Play” button.
+  \item Then, an lobby creation activity should appear. During that time, \textit{Google Play services} \gls{api} will try to find opponents.\footnote{}
+  \item Once the room completed, you will be redirected to the game screen.
+	\item You will then instantly been able to start playing.
+\end{itemize}
+
+\unnumberedSection[building]{Building the Application from Source Code}
+\begin{itemize}
+	\item Open the gradle project in android studios
+	\item Go to tools -> android -> sdk manager
+	\begin{itemize}
+		\item https://prnt.sc/itxj13
+		\item make sure the highlighted items are installed
+	\end{itemize}
+	\item For you to be able to fully test the game, we need to make the keystore that signs the build to match the ones we have authorized in the google play console.
+	\begin{itemize}
+		\item This is on google’s end, as they need to make sure the apps requesting the API are to be authorized.
+		\item This can be done if you use the debug.keystore we provide in the handin to sign the builds you make
+	\end{itemize}
+	\item Build and run the app on a device that have followed the steps previously explained
+\end{itemize}
