@@ -144,7 +144,8 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
     public int createFromMessage(Message m){
         int seq = m.getBuffer().getInt();
         Vector3 pos = m.getVector3();
-        int e = createPlayer(pos, NetworkManager.getInstance().getPlayerInfo(m.getSender()).playerIndex);
+        int spriteIndex = m.getBuffer().getInt();
+        int e = createPlayer(pos, NetworkManager.getInstance().getPlayerInfo(m.getSender()).playerIndex, spriteIndex);
 
 
 
@@ -171,6 +172,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         netComp.owner = NetworkManager.getInstance().getPlayerService().getLocalID();
         m.getBuffer().putInt(netComp.sequenceNumber);
         m.putVector(mapTransform.get(e).position);
+        m.getBuffer().putInt(mapPlayer.get(e).index);
 
         return m;
 
