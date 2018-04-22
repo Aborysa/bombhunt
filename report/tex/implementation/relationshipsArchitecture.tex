@@ -2,3 +2,25 @@
 
 This should list the inconsistencies between your architecture and the implementation.
 Give the reasons for these inconsistencies. Discuss whether they could have been discovered at an earlier point, for instance during the ATAM evaluation.
+
+
+
+
+Inconsistency/consistency between chosen architecture/design patterns
+ECS
+We were able to fully implement the ECS architecture for our game world, using Artemis-odb
+P2P
+We were able to fully implement the peer-to-peer tactic for networking, using google play service to host the room creation and setup the connections between the devices.
+MVC
+We were able to fully implement the MVC to separate game logic, rendering of the view and the controls of the game. Some minor inconsistencies were made in the GameScreen, but these minor infractions were insignificant enough for us to be satisfied with the result.
+
+Singleton
+We were able to fully implement the singleton pattern in several classes in our project, being NetworkManager, Assets and AudioPlayer.
+
+
+Observer
+We were able to fully implement the Observer technique. This was mainly utilized in our PlayService, as the game had to listen to when different people connected and disconnected to rooms, so the views would be correct and make sure the game logic behaved as expected in multiplayer.
+
+
+Feedback from ATAM report of our architecture.
+During the feedback we recieved from the other group on our architecture, they were insisting that implement the ECS architecture would have a negative effect on the performance of our game. This didn’t make sence based on the research we had done for the project, and would prove to be false when we are now done implementing it. The performance and modifiability of our game is very high, due to the fact we utilized Artemis-odb as the framework for our ECS.
