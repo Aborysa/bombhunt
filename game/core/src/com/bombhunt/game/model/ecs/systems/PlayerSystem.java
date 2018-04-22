@@ -21,6 +21,7 @@ import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.model.ecs.components.InputComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.model.ecs.factories.DeathFactory;
 import com.bombhunt.game.services.assets.Assets;
@@ -46,6 +47,7 @@ public class PlayerSystem extends IteratingSystem {
     private ComponentMapper<SpriteComponent> mapSprite;
     private ComponentMapper<GridPositionComponent> mapGrid;
     private ComponentMapper<BombComponent> mapBomb;
+    private ComponentMapper<InputComponent> mapInput;
 
     private BombFactory bombFactory;
     private DeathFactory deathFactory;
@@ -63,7 +65,8 @@ public class PlayerSystem extends IteratingSystem {
                 TransformComponent.class,
                 Box2dComponent.class,
                 PlayerComponent.class,
-                TimerComponent.class));
+                TimerComponent.class,
+        ));
         this.bombFactory = bombFactory;
         this.deathFactory = deathFactory;
         this.box2d = box2d;
@@ -84,15 +87,17 @@ public class PlayerSystem extends IteratingSystem {
         TransformComponent transformComponent = mapTransform.get(e);
         PlayerComponent playerComponent = mapPlayer.get(e);
         Body body = box2dComponent.body;
-        Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
-        body.setLinearVelocity(velocity);
-        // body.applyLinearImpulse(velocity, new Vector2(0,0), true);
-        last_position = transformComponent.position.cpy();
-        updatePlantedBomb(playerComponent);
-        updateCoolDownBomb(playerComponent);
-        updateDirection(e);
-        updateStats(e);
-        updateStilAlive(e);
+        if(mapInput.has(e)){
+            Vector2 velocity = last_orientation.cpy().scl(playerComponent.movement_speed);
+            body.setLinearVelocity(velocity);
+            // body.applyLinearImpulse(velocity, new Vector2(0,0), true);
+            last_position = transformComponent.position.cpy();
+            updatePlantedBomb(playerComponent);
+            updateCoolDownBomb(playerComponent);
+            updateDirection(e);
+            updateStats(e);
+            updateStilAlive(e);
+        }
     }
 
     private void updatePlantedBomb(PlayerComponent playerComponent) {

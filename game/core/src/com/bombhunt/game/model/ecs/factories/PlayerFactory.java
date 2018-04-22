@@ -32,6 +32,8 @@ import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.model.ecs.components.InputComponent;
+
 
 /**
  * Created by erlin on 23.03.2018.
@@ -49,6 +51,8 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
     ComponentMapper<LabelComponent> mapLabel;
     ComponentMapper<PlayerComponent> mapPlayer;
     ComponentMapper<TimerComponent> mapTimer;
+    ComponentMapper<InputComponent> mapInput;
+    
 
     ComponentMapper<NetworkComponent> mapNetwork;
 
@@ -124,6 +128,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
                 .add(KillableComponent.class)
                 .add(PlayerComponent.class)
                 .add(TimerComponent.class)
+                .add(InputComponent.class)
                 .add(NetworkComponent.class)
                 .build(world);
     }
@@ -141,7 +146,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
 
 
 
-        mapPlayer.remove(e);
+        mapInput.remove(e);
 
         NetworkComponent netComp = mapNetwork.get(e);
         netComp.sequenceNumber = seq;

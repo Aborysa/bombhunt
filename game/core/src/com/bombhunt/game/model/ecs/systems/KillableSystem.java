@@ -32,45 +32,43 @@ public class KillableSystem extends IteratingSystem {
         NetworkComponent networkComponent = mapNetwork.getSafe(e, null);
         PlayerComponent playerComponent = mapPlayer.getSafe(e, null);
         SpriteComponent spriteComponent = mapSprite.get(e);
-        if(playerComponent != null){
-            float delta = world.getDelta();
-            int total_damage = playerComponent.malus;
-            killableComponent.ttl_timer -= delta;
-            if (killableComponent.ttl_timer <= 0) {
-                killableComponent.ttl_timer = killableComponent.timer_damage;
-                total_damage += killableComponent.damage_received;
-            }
-            killableComponent.health -= total_damage;
-            if (!killableComponent.is_colored) {
-                if (playerComponent.malus > 0) {
-                    // POISON
-                    killableComponent.is_colored = true;
-                    spriteComponent.sprite.setColor(0.5f, 0.5f, 1, 1);
-                } else if (total_damage > 0) {
-                    // NORMAL BOMB_DAMAGE
-                    killableComponent.is_colored = true;
-                    spriteComponent.sprite.setColor(1, 0.5f, 0.5f, 1);
-                } else if (total_damage < 0) {
-                    // HEAL
-                    killableComponent.is_colored = true;
-                    spriteComponent.sprite.setColor(0.5f, 1, 0.5f, 1);
-                }
-                if (killableComponent.is_colored) {
-                    killableComponent.ttl_color = killableComponent.color_persistence;
-                }
-            } else {
-                killableComponent.ttl_color -= delta;
-                if (killableComponent.ttl_color <= 0) {
-                    killableComponent.is_colored = false;
-                    spriteComponent.sprite.setColor(1, 1, 1, 1);
-                }
-            }
-            if (killableComponent.health <= 0 && (networkComponent != null && networkComponent.isLocal)) {
-                playerComponent.is_dead = true;
-                playerComponent.last_hit = killableComponent.last_hit;
-            }
-            playerComponent.malus = 0;
-            killableComponent.damage_received = 0;
+        float delta = world.getDelta();
+        int total_damage = playerComponent.malus;
+        killableComponent.ttl_timer -= delta;
+        if (killableComponent.ttl_timer <= 0) {
+            killableComponent.ttl_timer = killableComponent.timer_damage;
+            total_damage += killableComponent.damage_received;
         }
+        killableComponent.health -= total_damage;
+        if (!killableComponent.is_colored) {
+            if (playerComponent.malus > 0) {
+                // POISON
+                killableComponent.is_colored = true;
+                spriteComponent.sprite.setColor(0.5f, 0.5f, 1, 1);
+            } else if (total_damage > 0) {
+                // NORMAL BOMB_DAMAGE
+                killableComponent.is_colored = true;
+                spriteComponent.sprite.setColor(1, 0.5f, 0.5f, 1);
+            } else if (total_damage < 0) {
+                // HEAL
+                killableComponent.is_colored = true;
+                spriteComponent.sprite.setColor(0.5f, 1, 0.5f, 1);
+            }
+            if (killableComponent.is_colored) {
+                killableComponent.ttl_color = killableComponent.color_persistence;
+            }
+        } else {
+            killableComponent.ttl_color -= delta;
+            if (killableComponent.ttl_color <= 0) {
+                killableComponent.is_colored = false;
+                spriteComponent.sprite.setColor(1, 1, 1, 1);
+            }
+        }
+        if (killableComponent.health <= 0 && (networkComponent != null && networkComponent.isLocal)) {
+            playerComponent.is_dead = true;
+            playerComponent.last_hit = killableComponent.last_hit;
+        }
+        playerComponent.malus = 0;
+        killableComponent.damage_received = 0;
     }
 }
