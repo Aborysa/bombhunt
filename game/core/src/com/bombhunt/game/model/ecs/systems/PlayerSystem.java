@@ -91,7 +91,7 @@ public class PlayerSystem extends IteratingSystem {
         Sprite last_sprite = new Sprite(sprites.get(playerComponent.index).get(frame));
         boolean is_flipped = playerComponent.direction.isFlip();
         last_sprite.flip(is_flipped, false);
-        deathFactory.createDeath(position.cpy().sub(0, 0, -10f), last_sprite, playerComponent.last_hit);
+        deathFactory.createDeath(position.cpy().sub(0, 0, 10f), last_sprite, playerComponent.last_hit);
 
 
     }
