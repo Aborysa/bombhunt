@@ -45,13 +45,12 @@ public class PhysicsSystem extends IteratingSystem {
             // Update transform
             Box2dComponent box2dComponent = mapBox2d.get(e);
             Body body = box2dComponent.body;
-            if(box2dComponent.targetPos != null && mapNetwork.has(e)) {
+            if(box2dComponent.targetPos != null && box2dComponent.targetVeloc != null) {
                 Vector2 cpos = body.getPosition().cpy();
                 Vector2 cveloc = body.getLinearVelocity().cpy();
                 
                 cpos.lerp(box2dComponent.targetPos, box2dComponent.interpolationValue);
                 cveloc.lerp(box2dComponent.targetVeloc, box2dComponent.interpolationValue);
-
                 body.setTransform(cpos, body.getAngle());
                 body.setLinearVelocity(cveloc);
             }

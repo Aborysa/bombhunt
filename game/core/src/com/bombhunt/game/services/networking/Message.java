@@ -108,8 +108,10 @@ public class Message {
         if(!interpolate){
             component.body.setLinearVelocity(getVector2());
             component.body.setTransform(getVector2(), component.body.getTransform().getRotation());
+            component.targetVeloc = null;
+            component.targetPos = null;
         } else {
-            component.targetVeloc = getVector2(); 
+            component.targetVeloc = getVector2();
             component.targetPos = getVector2();
         }
         return component;
