@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../textures/bomb_party_v4.tsx"/>
  <layer name="base" width="12" height="12">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACjvKwMBwlER8jAR8FIlGZ+Mzf1T90FAPAIHy+XJAAgAA
+   H4sIAAAAAAAAAzvKwMBwlER8jAR8FIlGZ+Mzf1T90FAPAIHy+XJAAgAA
   </data>
  </layer>
  <layer name="walls" width="12" height="12">
@@ -11,7 +11,7 @@
    <property name="entity_factory" value="WallFactory"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACpNkZGDgIhJLQjGxAF09Nr3o8jA+zE50gCxOqXsGk3ouHHol8fgXV/hQ4h5i0wIMAwCVOshCQAIAAA==
+   H4sIAAAAAAAAA5NkZGDgIhJLQjGxAF09Nr3o8jA+zE50gCxOqXsGk3ouHHol8fgXV/hQ4h5i0wIMAwCVOshCQAIAAA==
   </data>
  </layer>
  <layer name="crates" width="12" height="12">
@@ -19,29 +19,29 @@
    <property name="entity_factory" value="CrateFactory"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACmNgIB+cRaLPoolRAogxA5easySqgfGxiZGrnlL3kKuGWDOoGV8Axo9xv0ACAAA=
+   H4sIAAAAAAAAA2NgIB+cRaLPoolRAogxA5easySqgfGxiZGrnlL3kKuGWDOoGV8Axo9xv0ACAAA=
   </data>
  </layer>
  <objectgroup name="spawns">
-  <object id="178" x="25.1889" y="26.1965">
-   <properties>
-    <property name="spawnpoint" type="bool" value="true"/>
-   </properties>
-   <point/>
-  </object>
   <object id="179" x="25.1889" y="170.229">
    <properties>
     <property name="spawnpoint" type="bool" value="true"/>
    </properties>
    <point/>
   </object>
-  <object id="180" x="165.214" y="168.244">
+  <object id="181" x="167.222" y="28.204">
    <properties>
     <property name="spawnpoint" type="bool" value="true"/>
    </properties>
    <point/>
   </object>
-  <object id="181" x="167.222" y="28.204">
+  <object id="178" x="25.1889" y="26.1965">
+   <properties>
+    <property name="spawnpoint" type="bool" value="true"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="180" x="165.214" y="168.244">
    <properties>
     <property name="spawnpoint" type="bool" value="true"/>
    </properties>
