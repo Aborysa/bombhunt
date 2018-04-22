@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Color;
  * reference: https://stackoverflow.com/questions/19857861/
  */
 
+
+// TODO: useless can be deleted
 public enum Colors {
     GREY(142, 142, 147, 1),
     RED(255, 59, 48, 1),

@@ -12,9 +12,9 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 }
 com.badlogic.gdx.graphics.Color: {
 	gray: {
-		r: 0.55
-		g: 0.55
-		b: 0.55
+		r: 0.3
+		g: 0.3
+		b: 0.3
 		a: 1
 	}
 	green: {
@@ -68,7 +68,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		font: font
 	}
 	dim: {
-		font: font
+		font: bold
 		fontColor: gray
 	}
 	bold: {

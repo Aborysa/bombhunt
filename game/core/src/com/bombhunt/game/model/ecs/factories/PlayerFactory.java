@@ -4,6 +4,7 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.bombhunt.game.model.Grid;
+import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.GridPositionComponent;
 import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.NetworkComponent;
@@ -25,6 +27,7 @@ import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.graphics.SpriteHelper;
 import com.bombhunt.game.services.networking.Message;
 import com.bombhunt.game.services.networking.NetworkManager;
+
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
@@ -36,32 +39,57 @@ import com.bombhunt.game.model.ecs.components.TransformComponent;
 
 
 public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFactory{
-    private World world;
-    public Archetype playerArchtype;
-    private Grid grid;
 
     ComponentMapper<TransformComponent> mapTransform;
-    ComponentMapper<SpriteComponent> mapSprite;
-    ComponentMapper<Box2dComponent> mapBox2d;
-    ComponentMapper<KillableComponent> mapKillable;
     ComponentMapper<GridPositionComponent> mapGrid;
+    ComponentMapper<Box2dComponent> mapBox2d;
+    ComponentMapper<SpriteComponent> mapSprite;
+    ComponentMapper<AnimationComponent> mapAnimation;
+    ComponentMapper<KillableComponent> mapKillable;
     ComponentMapper<LabelComponent> mapLabel;
-    ComponentMapper<PlayerComponent> mapPlayerInput;
+    ComponentMapper<PlayerComponent> mapPlayer;
     ComponentMapper<TimerComponent> mapTimer;
 
     ComponentMapper<NetworkComponent> mapNetwork;
 
+    private World world;
+    public Archetype playerArchtype;
+    private Grid grid;
+    private TextureRegion region;
 
-    private TextureRegion region = Assets.getInstance().get("textures/tilemap1.atlas", TextureAtlas.class).findRegion("bomb_party_v4");
+    public PlayerFactory() {
+        Assets asset_manager = Assets.getInstance();
+        region = asset_manager.get("textures/tilemap1.atlas",
+                TextureAtlas.class).findRegion("bomb_party_v4");
+    }
 
+    @Override
+    public int createFromTile(TiledMapTileLayer.Cell cell, TiledMapTileLayer layer, int x, int y, int depth) {
+        TiledMapTile tile = cell.getTile();
+        TextureRegion tex = tile.getTextureRegion();
+        float rotation = 90 * cell.getRotation();
+        Decal decal = Decal.newDecal(tex, true);
+        Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y,
+                depth).add(new Vector3(layer.getTileWidth() / 2f, layer.getTileHeight() / 2f, 0));
+        int e = createPlayer(pos, 0);
+        mapTransform.get(e).rotation = rotation;
+        return e;
+    }
+
+    
     public int createPlayer(Vector3 pos, int index) {
         int e = world.create(playerArchtype);
         mapTransform.get(e).position.set(pos);
         mapGrid.get(e).grid = grid;
-        mapSprite.get(e).sprite = Decal.newDecal(SpriteHelper.createSprites(region, 16, 1, 14 + index, 1).get(0), true);
+        // TODO: CLEAN UP duplicated code from player systems
+        int frame = mapPlayer.get(e).direction.getFrame();
+        mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
+                SpriteHelper.createSprites(region, 16, frame, 14 + index, 1),
+                60);
+        mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(mapPlayer.get(e).direction.getFrame(), true);
+        // TODO: Clean this and use circleShape
         Body body = Collision.createBody(Collision.dynamicDef, Collision.playerFixture);
         CircleShape shape = (CircleShape) body.getFixtureList().get(0).getShape();
-        // TODO: Clean this and use circleShape
         //shape.setAsBox((sprite.getWidth() / 2 - 0.3f) * Collision.worldTobox2d, (sprite.getHeight() / 2f - 0.3f) * Collision.worldTobox2d);
         body.setTransform(new Vector2(pos.x, pos.y).scl(Collision.worldTobox2d), 0);
         // prevents the player from rotating about when it collides with other objects.
@@ -72,19 +100,6 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         return e;
     }
 
-    @Override
-    public int createFromTile(TiledMapTileLayer.Cell cell, TiledMapTileLayer layer, int x, int y, int depth) {
-        TiledMapTile tile = cell.getTile();
-        TextureRegion tex = tile.getTextureRegion();
-        float rotation = 90 * cell.getRotation();
-        /*Decal decal = Decal.newDecal(tex, true);*/
-        Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y,
-                depth).add(new Vector3(layer.getTileWidth() / 2f, layer.getTileHeight() / 2f, 0));
-        int e = createPlayer(pos, 0);
-        mapTransform.get(e).rotation = rotation;
-        return e;
-    }
-
 
     public void setWorld(World world) {
         this.world = world;
@@ -92,9 +107,10 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         mapGrid = world.getMapper(GridPositionComponent.class);
         mapBox2d = world.getMapper(Box2dComponent.class);
         mapSprite = world.getMapper(SpriteComponent.class);
+        mapAnimation = world.getMapper(AnimationComponent.class);
         mapLabel = world.getMapper(LabelComponent.class);
         mapKillable = world.getMapper(KillableComponent.class);
-        mapPlayerInput = world.getMapper(PlayerComponent.class);
+        mapPlayer = world.getMapper(PlayerComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
         mapNetwork = world.getMapper(NetworkComponent.class);
 
@@ -103,6 +119,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
                 .add(GridPositionComponent.class)
                 .add(Box2dComponent.class)
                 .add(SpriteComponent.class)
+                .add(AnimationComponent.class)
                 .add(LabelComponent.class)
                 .add(KillableComponent.class)
                 .add(PlayerComponent.class)
@@ -124,7 +141,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
 
 
 
-        mapPlayerInput.remove(e);
+        mapPlayer.remove(e);
 
         NetworkComponent netComp = mapNetwork.get(e);
         netComp.sequenceNumber = seq;
