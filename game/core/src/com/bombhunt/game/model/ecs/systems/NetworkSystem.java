@@ -25,6 +25,7 @@ import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
 import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.NetworkComponent;
+import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
@@ -46,6 +47,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
     private ComponentMapper<Box2dComponent> mapBox2d;
     private ComponentMapper<BombComponent> mapBomb;
     private ComponentMapper<KillableComponent> mapKillable;
+    private ComponentMapper<PlayerComponent> mapPlayer;
 
     private NetworkManager netManager;
     private IPlayServices playServices;
@@ -112,7 +114,7 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
         TransformComponent transformComponent = mapTransform.getSafe(e, null);
         BombComponent bombComponent = mapBomb.getSafe(e, null);
         KillableComponent killableComponent = mapKillable.getSafe(e, null);
-
+        PlayerComponent playerComponent = mapPlayer.getSafe(e, null);
 
 
         if(networkComponent.isLocal && networkComponent.localTurn % networkComponent.updateRate == 0 && !networkComponent.owner.equals("NONE")){
@@ -133,6 +135,10 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
             if(killableComponent != null){
                 m.putKillable(killableComponent);
+            }
+
+            if(playerComponent != null){
+                m.putPlayer(playerComponent);
             }
 
             this.playServices.sendToAllReliably(m.getCompact());
@@ -177,9 +183,10 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
                     TransformComponent transformComponent = mapTransform.getSafe(e, null);
                     BombComponent bombComponent = mapBomb.getSafe(e, null);
                     KillableComponent killableComponent = mapKillable.getSafe(e, null);
+                    PlayerComponent playerComponent = mapPlayer.getSafe(e, null);
 
                     if (box2d != null) {
-                        message.getBox2d(box2d, Math.max(1, world.getDelta() * (localTurn-remoteTurn) ));
+                        message.getBox2d(box2d, true);
                     } else if (transformComponent != null) {
                         message.getTransform(transformComponent);
                     }
@@ -190,6 +197,10 @@ public class NetworkSystem extends BaseEntitySystem implements RealtimeListener 
 
                     if (killableComponent != null) {
                         message.getKillable(killableComponent);
+                    }
+
+                    if (playerComponent != null) {
+                        message.getPlayer(playerComponent);
                     }
                 }
             }

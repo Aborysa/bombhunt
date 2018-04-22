@@ -114,7 +114,6 @@ public class GameScreen extends BasicView {
     private OrthographicCamera currentCamera;
     private Viewport viewport;
 
-    // TODO: Temporary map for factories, may want to use injection in the future with @Wire
     private HashMap<String, IEntityFactory> factoryMap;
     
     private ComponentMapper<SpriteComponent> mapSprite;
@@ -145,10 +144,11 @@ public class GameScreen extends BasicView {
 
 
     public void spawnPlayer(int index){
+        int rindex = (index + randomSpawnOffset) % 4;
         Vector2 pos = spawnPoints.get( (index + randomSpawnOffset) % spawnPoints.size());
         PlayerFactory factory = (PlayerFactory)factoryMap.get(PlayerFactory.class.getSimpleName());
         // 1, 17
-        int player = factory.createPlayer(new Vector3(pos, -10), index);
+        int player = factory.createPlayer(new Vector3(pos, -10), index, rindex);
 
         Message m = new Message(new byte[512], "", 0);
         m.putString("CREATE_ENTITY");
@@ -199,8 +199,8 @@ public class GameScreen extends BasicView {
     }
 
     private void setUpWorld() {
-        int r = NetworkManager.getInstance().getRandom().nextInt(3);
-        String[] maps = {"maps/map1.tmx", "maps/map2.tmx", "maps/map3.tmx"};
+        int r = NetworkManager.getInstance().getRandom().nextInt(4);
+        String[] maps = {"maps/map1.tmx", "maps/map2.tmx", "maps/map3.tmx", "maps/map4.tmx"};
         level = Assets.getInstance().get(maps[r], Level.class);
         this.spawnPoints = level.getSpawnPoints();
 
@@ -216,8 +216,6 @@ public class GameScreen extends BasicView {
     private void setUpECS(BombHunt bombHunt) {
         SpriteSystem spriteSystem = new SpriteSystem();
         PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
-        // TODO: why is the bomb factory has to be passed in argument?
-        // TODO: cannot that be created into the constructor of each system respectively
         String bombFactoryName = BombFactory.class.getSimpleName();
         String explosionFactoryName = ExplosionFactory.class.getSimpleName();
         String itemFactoryName = ItemFactory.class.getSimpleName();
@@ -250,18 +248,18 @@ public class GameScreen extends BasicView {
 
 
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(spriteSystem)
                 .with(physicsSystem)
                 .with(playerSystem)
+                .with(gridSystem)
                 .with(bombSystem)
                 .with(explosionSystem)
                 .with(timerSystem)
-                .with(gridSystem)
                 .with(destroyableSystem)
                 .with(killableSystem)
                 .with(itemSystem)
                 .with(labelSystem)
                 .with(deathSystem)
+                .with(spriteSystem)
                 .with(netSystem)
                 .build();
         world = new World(config);
@@ -272,8 +270,6 @@ public class GameScreen extends BasicView {
         for(IEntityFactory factory : factoryMap.values()) {
             factory.setGrid(grid);
         }
-        // TODO: should be done in first place into the root constructor
-        // TODO: SET UP ECS should not be done in the interface
         controller = new GameController(bombHunt, playerSystem);
     }
 
@@ -453,7 +449,6 @@ public class GameScreen extends BasicView {
 
     private void updateCamera(float dt) {
         currentCamera.position.set(moveCameraWithPlayer());
-        //TODO: update zoom as the game time expire
         //currentCamera.zoom =4;
         currentCamera.update();
     }
@@ -484,7 +479,7 @@ public class GameScreen extends BasicView {
     public void render() {
         renderEntities();
         //box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
-        stage.setDebugAll(true);
+        //stage.setDebugAll(true);
         stage.draw();
         hud.render();
     }

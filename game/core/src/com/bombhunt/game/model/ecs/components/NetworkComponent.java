@@ -12,7 +12,7 @@ public class NetworkComponent extends Component {
   public int localTurn = 0;
   public int remoteTurn = 0;
   public int latestRemote = 0;
-  public int updateRate = 16;
+  public int updateRate = 32;
   public int sequenceNumber = 0;
 
   public boolean autoremove = false;

@@ -11,5 +11,5 @@ public class KillableComponent extends Component {
     public boolean is_colored = false;
     public float color_persistence = 0.4f;
     public float ttl_color = color_persistence;
-    public DIRECTION_ENUM last_hit = null;
+    public DIRECTION_ENUM last_hit = DIRECTION_ENUM.DOWN;
 }

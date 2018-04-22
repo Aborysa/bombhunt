@@ -229,7 +229,7 @@ public class HUD implements Disposable {
     }
 
     public void render() {
-        stage.setDebugAll(true);
+        //stage.setDebugAll(true);
         stage.draw();
     }
 }

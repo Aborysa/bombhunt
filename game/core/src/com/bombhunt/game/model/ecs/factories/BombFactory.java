@@ -77,14 +77,6 @@ public class BombFactory implements IEntityFactory, INetworkFactory {
     }
 
 
-// TODO: delete if not used
-//    private void playSoundDropBomb() {
-//        Assets asset_manager = Assets.getInstance();
-//        Sound sound = asset_manager.get("drop.wav", Sound.class);
-//        AudioPlayer audioPlayer = AudioPlayer.getInstance();
-//        audioPlayer.playSound(sound);
-//    }
-
     public int createBomb(Vector3 position, int damage, int range) {
         return createBomb(position, damage, range, false);
     }

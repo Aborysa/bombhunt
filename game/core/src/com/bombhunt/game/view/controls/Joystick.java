@@ -49,9 +49,7 @@ public class Joystick extends Controller {
     }
 
     public Touchpad getTouchpad() {
-        // TODO: TEMPORARY should be remove with addition of controller
         return touchpad;
     }
 
-    // TODO: make it move with finger position
 }

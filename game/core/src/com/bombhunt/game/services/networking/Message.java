@@ -8,8 +8,10 @@ import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.Box2dComponent;
 import com.bombhunt.game.model.ecs.components.KillableComponent;
 import com.bombhunt.game.model.ecs.components.NetworkComponent;
+import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.TimerComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
+import com.bombhunt.game.model.ecs.systems.DIRECTION_ENUM;
 
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
@@ -99,16 +101,21 @@ public class Message {
         putVector(component.body.getTransform().getPosition());
     }
 
+
     public Box2dComponent getBox2d(Box2dComponent component){
-        return getBox2d(component, 1);
+        return getBox2d(component, false);
     }
 
-    public Box2dComponent getBox2d(Box2dComponent component, float iv){
-        component.body.setLinearVelocity(getVector2());
-        Vector2 newPos = getVector2();
-        Vector2 oldPos = component.body.getTransform().getPosition();
-        oldPos.interpolate(newPos, iv, Interpolation.linear);
-        component.body.setTransform(oldPos, component.body.getTransform().getRotation());
+    public Box2dComponent getBox2d(Box2dComponent component, boolean interpolate){
+        if(!interpolate){
+            component.body.setLinearVelocity(getVector2());
+            component.body.setTransform(getVector2(), component.body.getTransform().getRotation());
+            component.targetVeloc = null;
+            component.targetPos = null;
+        } else {
+            component.targetVeloc = getVector2();
+            component.targetPos = getVector2();
+        }
         return component;
     }
 
@@ -134,6 +141,21 @@ public class Message {
         buffer.putFloat(bomb.ttl_timer);
     }
 
+    public void putPlayer(PlayerComponent component){
+        getBuffer().putInt(component.direction.ordinal());
+        getBuffer().putInt(component.last_hit != null ? component.last_hit.ordinal() : 0);
+        //getBuffer().put((byte)(component.is_dead ? 1 : 0));
+    }
+
+    public PlayerComponent getPlayer(PlayerComponent component){
+        int dir_ordinal = getBuffer().getInt();
+        int lhit_ordinal = getBuffer().getInt();
+        component.direction = DIRECTION_ENUM.values()[dir_ordinal];
+        component.last_hit = DIRECTION_ENUM.values()[lhit_ordinal];
+        //component.is_dead = getBuffer().get() == 1 ? true : false;
+        return component;
+    }
+
     public BombComponent getBomb(BombComponent bomb){
         bomb.timer = buffer.getFloat();
         return bomb;
@@ -141,10 +163,12 @@ public class Message {
 
     public void putKillable(KillableComponent killable){
         buffer.putInt(killable.health);
+        buffer.putInt(killable.last_hit != null ? killable.last_hit.ordinal() : 0);
     }
 
     public KillableComponent getKillable(KillableComponent killable){
         killable.health = buffer.getInt();
+        killable.last_hit = DIRECTION_ENUM.values()[buffer.getInt()];
         return killable;
     }
 

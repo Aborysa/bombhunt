@@ -58,7 +58,6 @@ public class BombHunt extends ApplicationAdapter {
     public void dispose() {
         currentView.dispose();
         audioPlayer.dispose();
-        //TODO: Assets.getInstance().dispose();
     }
 
     private void loadMainMenuScreen() {

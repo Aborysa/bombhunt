@@ -3,20 +3,16 @@ package com.bombhunt.game.model.ecs.systems;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.badlogic.gdx.math.Vector3;
 import com.bombhunt.game.model.ecs.components.LabelComponent;
-import com.bombhunt.game.model.ecs.components.PlayerComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
-import com.bombhunt.game.model.ecs.components.TransformComponent;
 
-import sun.security.provider.ConfigFile;
 
 public class LabelSystem extends IteratingSystem {
     private ComponentMapper<LabelComponent> mapLabel;
     private ComponentMapper<SpriteComponent> mapSprite;
 
     public LabelSystem() {
-        super(Aspect.all(TransformComponent.class, LabelComponent.class, SpriteComponent.class));
+        super(Aspect.all(LabelComponent.class, SpriteComponent.class));
     }
 
     @Override

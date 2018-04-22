@@ -5,6 +5,7 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -19,6 +20,7 @@ public class PhysicsSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> mapTransform;
     private ComponentMapper<Box2dComponent> mapBox2d;
     private ComponentMapper<VelocityComponent> mapVelocity;
+    private ComponentMapper<VelocityComponent> mapNetwork;
 
     private World box2d;
 
@@ -43,8 +45,17 @@ public class PhysicsSystem extends IteratingSystem {
             // Update transform
             Box2dComponent box2dComponent = mapBox2d.get(e);
             Body body = box2dComponent.body;
-
+            if(box2dComponent.targetPos != null && box2dComponent.targetVeloc != null) {
+                Vector2 cpos = body.getPosition().cpy();
+                Vector2 cveloc = body.getLinearVelocity().cpy();
+                
+                cpos.lerp(box2dComponent.targetPos, box2dComponent.interpolationValue);
+                cveloc.lerp(box2dComponent.targetVeloc, box2dComponent.interpolationValue);
+                body.setTransform(cpos, body.getAngle());
+                body.setLinearVelocity(cveloc);
+            }
             transformComponent.rotation = MathUtils.radiansToDegrees * body.getAngle();
+
 
             transformComponent.position.set(body.getPosition().scl(Collision.box2dToWorld), transformComponent.position.z);
 

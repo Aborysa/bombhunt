@@ -1,4 +1,5 @@
 -- Textures --
+Map tileset - Matt Hackett (richtaur)
 Application Icon - Pin Art (CrazyTryTeam)
 Colored Spinning Bomb - Code Inferno Games
 Features Skin - Raymond "Raeleus" Buckley
