@@ -1,0 +1,22 @@
+-- Textures --
+Application Icon - Pin Art (CrazyTryTeam)
+Colored Spinning Bomb - Code Inferno Games
+Features Skin - Raymond "Raeleus" Buckley
+Gameplay Assets - usr_share
+Items - thekingphoenix
+Medals - Buch
+
+-- Musics --
+Main Menu Song - Edward J. Blakeley
+Settings Song - Pugly
+Credits Song - DeltaBreaker
+
+-- Sound Effects --
+Button Sound -  Dusty Room
+Items Spawning Sound - p0ss
+Evil Laugh Sound - AntumDeluge
+Access Denied Sound - phatkatz4
+Pop Up Sound - Quistard
+Bomb Drop Sound - bertiehs
+In Game Button Click Sound - suntemple
+Explosion Sound - fridobeck

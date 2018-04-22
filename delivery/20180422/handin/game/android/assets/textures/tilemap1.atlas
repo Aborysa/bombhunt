@@ -1,0 +1,13 @@
+
+tilemap1.png
+size: 256,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bomb_party_v4
+  rotate: false
+  xy: 2, 2
+  size: 240, 304
+  orig: 240, 304
+  offset: 0, 0
+  index: -1
