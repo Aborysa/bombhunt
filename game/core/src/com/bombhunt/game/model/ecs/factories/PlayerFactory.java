@@ -76,20 +76,20 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         Decal decal = Decal.newDecal(tex, true);
         Vector3 pos = new Vector3(layer.getTileWidth() * x, layer.getTileHeight() * y,
                 depth).add(new Vector3(layer.getTileWidth() / 2f, layer.getTileHeight() / 2f, 0));
-        int e = createPlayer(pos, 0);
+        int e = createPlayer(pos, 0, 0);
         mapTransform.get(e).rotation = rotation;
         return e;
     }
 
     
-    public int createPlayer(Vector3 pos, int index) {
+    public int createPlayer(Vector3 pos, int index, int spriteIndex) {
         int e = world.create(playerArchtype);
         mapTransform.get(e).position.set(pos);
         mapGrid.get(e).grid = grid;
 
         int frame = mapPlayer.get(e).direction.getFrame();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
-                SpriteHelper.createSprites(region, 16, frame, 14 + index, 1),
+                SpriteHelper.createSprites(region, 16, frame, 14 + spriteIndex, 1),
                 60);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(mapPlayer.get(e).direction.getFrame(), true);
 
@@ -102,7 +102,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         mapBox2d.get(e).body = body;
         mapLabel.get(e).label = "Player " + (index+1);
         mapGrid.get(e).snapToGrid = false;
-        mapPlayer.get(e).index = index;
+        mapPlayer.get(e).index = spriteIndex;
         return e;
     }
 
