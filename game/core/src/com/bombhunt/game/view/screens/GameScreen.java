@@ -145,10 +145,11 @@ public class GameScreen extends BasicView {
 
 
     public void spawnPlayer(int index){
+        int rindex = (index + randomSpawnOffset) % 4;
         Vector2 pos = spawnPoints.get( (index + randomSpawnOffset) % spawnPoints.size());
         PlayerFactory factory = (PlayerFactory)factoryMap.get(PlayerFactory.class.getSimpleName());
         // 1, 17
-        int player = factory.createPlayer(new Vector3(pos, -10), index);
+        int player = factory.createPlayer(new Vector3(pos, -10), rindex);
 
         Message m = new Message(new byte[512], "", 0);
         m.putString("CREATE_ENTITY");

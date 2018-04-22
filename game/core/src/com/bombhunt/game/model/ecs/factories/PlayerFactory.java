@@ -86,13 +86,13 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         int e = world.create(playerArchtype);
         mapTransform.get(e).position.set(pos);
         mapGrid.get(e).grid = grid;
-        // TODO: CLEAN UP duplicated code from player systems
+
         int frame = mapPlayer.get(e).direction.getFrame();
         mapAnimation.get(e).animation = SpriteHelper.createDecalAnimation(
                 SpriteHelper.createSprites(region, 16, frame, 14 + index, 1),
                 60);
         mapSprite.get(e).sprite = mapAnimation.get(e).animation.getKeyFrame(mapPlayer.get(e).direction.getFrame(), true);
-        // TODO: Clean this and use circleShape
+
         Body body = Collision.createBody(Collision.dynamicDef, Collision.playerFixture);
         CircleShape shape = (CircleShape) body.getFixtureList().get(0).getShape();
         //shape.setAsBox((sprite.getWidth() / 2 - 0.3f) * Collision.worldTobox2d, (sprite.getHeight() / 2f - 0.3f) * Collision.worldTobox2d);
