@@ -372,3 +372,43 @@
 		\label{tab:ATAM#1}
 	\end{table}
 }
+
+
+\newcommand{\FUNCTEST}[6]{
+	% #1 ID: Caption
+	% #2 Executor
+	% #3 Date
+	% #4 Time Used
+	% #5 Evaluation
+	% #6 Comment
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{ccc}
+			\toprule
+			\multicolumn{3}{L{14cm}}{\textbf{#1}} \\
+			\midrule
+			\textbf{Executor:} #2 & \textbf{Date:} #3 & \textbf{Time Used:} #4 \\
+			\multicolumn{3}{L{14cm}}{\textbf{Evaluation:} #5} \\
+			\multicolumn{3}{L{14cm}}{\textbf{Comment:} \newline #6} \\
+			\bottomrule
+		\end{tabular}
+		\caption{FRT - #1}
+	\end{table}
+}
+
+
+\newcommand{\QATEST}[9]{
+	% #1 ID: Caption
+	% #2 Executor
+	% #3 Date
+	% #4 Environment
+	% #5 Stimuli
+	% #6 Expected
+	% #7 Observed
+	% #8 Evaluation
+	% #9 Comment
+	\begin{table}[ht]
+		\centering
+		\caption{Quality Requirement Testing - #1}
+	\end{table}
+}

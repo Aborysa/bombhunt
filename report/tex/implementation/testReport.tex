@@ -1,104 +1,101 @@
 \unnumberedChapter[testReport]{Test Report}
 
-This section should contain test reports for both functional- and quality requirements (quality scenarios)
-The reports must include requirement ID (e.g. F1, F2, A2, A3...), description of requirement, who performed the test, when it was performed, duration of the test, evaluation (failure/success), and comment (discussion/comment about the result).
-Quality requirement tests must additionally include stimuli, expected response measure, and observed response measure.
-See figures below for example for reporting functional and quality
-requirement tests.
+This chapter will reuse all the requirements (functional and quality) formulated in the requirement document and asses if the final product have achieved them.
 
+\FUNCTEST{F1: Pressing the settings buttons should change the view to the settings screen}
+{Samuel}
+{18.04.2018}
+{30 seconds}
+{success}
+{Responsive feedback when pressing the menu buttons and the screen change immediately.}
 
+\FUNCTEST{F2: Changing the audio settings should change the audio levels in game}
+{Erling}
+{12.04.2018}
+{40 seconds}
+{success}
+{The audio levels from sound effects and music match the expected values when changing them in the menu.}
 
+\FUNCTEST{F3: The credits screen should me scrollable}
+{Samuel}
+{27.03.2018}
+{20 seconds}
+{success}
+{The scrolling is responsive and smooth. Able to go back to the main menu using the button at the bottom.}
 
+\FUNCTEST{F4: When pressing “find room” the game should start the waiting room activity}
+{Erling}
+{01.04.2018}
+{50 seconds}
+{success}
+{The activity successfully launches and show what participants are in the waiting room. At times the service could become unavailable, due to new issues at Google play service’s end.}
 
+\FUNCTEST{F5: When using the joystick, the character should move accordingly}
+{Jarle}
+{03.04.2018}
+{1 minute}
+{success}
+{The direction is correct, and the speed of the movement is also based on how far you move the joystick.}
 
-F1 Pressing the settings buttons should change the view to the settings screen
-Executor: Samuel
-Date: 18.04.2018
-Time used: 30 seconds
-Evaluation: success
-Comment: Responsive feedback when pressing the menu buttons, and the screen change immediately
+\FUNCTEST{F6: when pressing the bomb button, there should spawn a bomb on the player location}
+{Bart}
+{07.04.2018}
+{40 seconds}
+{success}
+{The bomb entity spawn successfully.}
 
-F2 Changing the audio settings should change the audio levels in game
-Executor: Erling
-Date: 12.04.2018
-Time used: 40 seconds
-Evaluation: success
-Comment: The audio levels from sound effects and music match the expected values when changing them in the menu.
+\FUNCTEST{F7: when the timer component of a bomb runs out, it should spawn explosion entities around it}
+{Erling}
+{07.04.2018}
+{40 seconds}
+{success}
+{Explosion entities successfully spawn and spread in expected directions.}
 
-F3 The credits screen should me scrollable
-Executor: Samuel
-Date: 27.03.2018
-Time used: 20 seconds
-Evaluation: success
-Comment: The scrolling is responsive and smooth. Able to go back to the main menu using the button at the bottom.
+\FUNCTEST{F8: If an explosion entity hits a bomb entity, the bomb timer component should reach 0 and detonate}
+{Erling}
+{07.04.2018}
+{40 seconds}
+{success}
+{Explosions are able to immediately detonate other bomb entities.}
 
-F4 When pressing “find room” the game should start the waiting room activity
-Executor: Erling
-Date: 01.04.2018
-Time used: 50 seconds
-Evaluation: success
-Comment: The activity successfully launches and show what participants are in the waiting room. At times the service could become unavailable, due to new issues at Google play service’s end.
+\FUNCTEST{F9: If an explosion entity hits a crate entity, the crate should be destroyed}
+{Samuel}
+{16.04.2018}
+{40 seconds}
+{success}
+{Crates are destroyed.}
 
-F5 When using the joystick, the character should move accordingly
-Executor: Jarle
-Date: 03.04.2018
-Time used: 1 minute
-Evaluation: success
-Comment: The direction is correct, and the speed of the movement is also based on how far you move the joystick
+\FUNCTEST{F10: If a player gets hit by an explosion entity, it should lose health}
+{Bart}
+{18.04.2018}
+{40 seconds}
+{success}
+{Health bar is updated correctly.}
 
-F6 when pressing the bomb button, there should spawn a bomb on the player location
-Executor: Bart
-Date: 07.04.2018
-Time used: 40 seconds
-Evaluation: success
-Comment: The bomb entity spawn successfully
+\FUNCTEST{F11: If a player picks up an upgrade, the HUD and actual behavior of the game should match expected value}
+{Erling}
+{20.04.2018}
+{40 seconds}
+{success}
+{All the \gls{hud} elements update, and the behavior of the entities utilizing those values get their attributes updated correctly.}
 
-F7 when the timer component of a bomb runs out, it should spawn explosion entities around it
-Executor: Erling
-Date: 07.04.2018
-Time used: 40 seconds
-Evaluation: success
-Comment: Explosion entities successfully spawn and spread in expected directions
+\FUNCTEST{F12: If a remote player spawns a bomb, the local game for the local player should display that bomb}
+{Jarle and Erling}
+{19.04.2018}
+{40 seconds}
+{success}
+{All bombs are placed in the correct place and synced properly.}
 
-F8 if an explosion entity hits a bomb entity, the bomb timer component should reach 0 and detonate
-Executor: Erling
-Date: 07.04.2018
-Time used: 40 seconds
-Evaluation: success
-Comment: Explosions are able to immediately detonate other bomb entities,
+\FUNCTEST{F13: when you move around in your game, the other player should see your updated position and movement}
+{Jarle and Erling}
+{19.04.2018}
+{40 seconds}
+{success}
+{Movement and position matches correctly between the clients, and additional linear interpolation makes the movement of the remote player smooooooooth.}
 
-F9 if an explosion entity hits a crate entity, the crate should be destroyed
-Executor: Samuel
-Date: 16.04.2018
-Evaluation: success
-Comment: Crates are destroyed
-
-F10 if a player gets hit by an explosion entity, it should lose health
-Executor: Bart
-Date: 18.04.2018
-Evaluation: success
-Comment: health bar is updated correctly
-
-F11 if a player picks up an upgrade, the HUD and actual behaviour of the game should match expected value
-Executor: Erling
-Date: 20.04.2018
-Evaluation: success
-Comment: all the hud elements update, and the behaviour of the entities utilising those values get their attrbutes updated correctly.
-
-F12 if a remote player spawns a bomb, the local game for the local player should display that bomb
-Executor: Jarle and Erling
-Date: 19.04.2018
-Evaluation: success
-Comment: all bombs are placed in the correct place and synced properly.
-
-F13 when you move around in your game, the other player should see your updated position and movement
-Executor: Jarle and Erling
-Date: 19.04.2018
-Evaluation: success
-Comment: movement and position matches correctly between the clients, and additional linear interpolation makes the movement of the remote player smooooooooth.
-
-F14 when leaving a google play room, you get redirected to the main menu
-Executor: Bart
-Date: 13.04.2018
-Evaluation: success
-Comment: view is changed correctly, and remote players are notified of this event
+\FUNCTEST{F14 when leaving a google play room, you get redirected to the main menu}
+{Bart}
+{13.04.2018}
+{40 seconds}
+{success}
+{View is changed correctly, and remote players are notified of this event.}
