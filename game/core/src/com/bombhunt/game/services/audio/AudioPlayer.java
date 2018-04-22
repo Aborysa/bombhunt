@@ -133,7 +133,6 @@ public class AudioPlayer {
                         music.setVolume(current_volume);
                     }
                 }
-                //TODO: music.dispose();
             }
         };
         thread_fade_out = new Thread(runnable);

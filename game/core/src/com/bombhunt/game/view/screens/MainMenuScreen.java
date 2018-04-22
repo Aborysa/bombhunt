@@ -66,7 +66,6 @@ public class MainMenuScreen extends MovingBackgroundScreen {
         stage.dispose();
         //skin.dispose();
         batch.dispose();
-        //TODO: atlas.dispose();
     }
 
     private Table feedMainTable() {

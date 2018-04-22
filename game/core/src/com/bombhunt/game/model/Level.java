@@ -174,7 +174,6 @@ public class Level {
             verticies[i] *= Collision.worldTobox2d;
         }
         // Box2d does not support convex shapes so triangulate the polygon,
-        // TODO: add check to see if the shape is convex first
         short[] indecies = triangulator.computeTriangles(verticies).toArray();
 
         // The triangle count

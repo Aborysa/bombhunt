@@ -50,8 +50,6 @@ public class ItemSystem extends IteratingSystem {
                     itemComponent.type.applyItem(itemComponent, playerComponent);
                 }
                 world.delete(e);
-                // TODO: I THINK WE CAN REMOVE BREAK TEST IN MULTIPLAYER,
-                // TODO: because world.delete(e) will just apply over first player crossed
                 // break;
             }
         }

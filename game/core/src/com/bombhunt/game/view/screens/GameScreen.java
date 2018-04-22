@@ -114,7 +114,6 @@ public class GameScreen extends BasicView {
     private OrthographicCamera currentCamera;
     private Viewport viewport;
 
-    // TODO: Temporary map for factories, may want to use injection in the future with @Wire
     private HashMap<String, IEntityFactory> factoryMap;
     
     private ComponentMapper<SpriteComponent> mapSprite;
@@ -217,8 +216,6 @@ public class GameScreen extends BasicView {
     private void setUpECS(BombHunt bombHunt) {
         SpriteSystem spriteSystem = new SpriteSystem();
         PhysicsSystem physicsSystem = new PhysicsSystem(box2d);
-        // TODO: why is the bomb factory has to be passed in argument?
-        // TODO: cannot that be created into the constructor of each system respectively
         String bombFactoryName = BombFactory.class.getSimpleName();
         String explosionFactoryName = ExplosionFactory.class.getSimpleName();
         String itemFactoryName = ItemFactory.class.getSimpleName();
@@ -273,8 +270,6 @@ public class GameScreen extends BasicView {
         for(IEntityFactory factory : factoryMap.values()) {
             factory.setGrid(grid);
         }
-        // TODO: should be done in first place into the root constructor
-        // TODO: SET UP ECS should not be done in the interface
         controller = new GameController(bombHunt, playerSystem);
     }
 
@@ -454,7 +449,6 @@ public class GameScreen extends BasicView {
 
     private void updateCamera(float dt) {
         currentCamera.position.set(moveCameraWithPlayer());
-        //TODO: update zoom as the game time expire
         //currentCamera.zoom =4;
         currentCamera.update();
     }
