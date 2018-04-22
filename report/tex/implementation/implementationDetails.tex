@@ -1,1 +1,34 @@
 \unnumberedSection[implementationDetails]{Implementation Details}
+
+% TODO: ECS describe components, systems and factories
+% TODO: add graphic to show ecs implementation
+\unnumberedSubsection[ecsImplementation]{Entity-Component-System Pattern}
+To implement the \gls{ecs} pattern, we used the \texttt{Artemis-odb} framework.\cite{artemis-odb} This framework is generally recognized for its performance and maturity. Additionally, this framework is actively maintained and continuously upgraded.
+
+- make better use of aspect to filter entities instead of filtering as we did in the grid
+
+- world initialization ecs in gamescreen (INTERFACE OMFG)
+- annoying to add systems manually
+- should use dependency injection pattern
+
+
+\unnumberedSubsection[mvcImplementation]{Model-View-Controller Pattern}
+- one controller per view
+- mvc not fully respected in gamescreen
+
+
+\unnumberedSubsection[singletonImplementation]{Singleton Pattern}
+singleton (asset manager, audio player, network manager)
+- compare with grid single instance pattern used
+annoying to manually add factories to hashmap of factories
+
+\unnumberedSubsection[observerImplementation]{Observer Pattern}
+
+\unnumberedSubsection[strategyImplementation]{Strategy Pattern}
+In the context of the project, we did not use a complete strategy pattern, where specialized class have as attribute behavioral instanciation of the interfaces
+
+strategy pattern (factories)
+-strategy pattern for factories make its flexible to create new factories on the fly and adapt existing ones for new type of inputs (tile map, network, model) allows for horizontal dependencies that would normally not be possible in a traditional hierarchical inheritance tree.
+
+critics:
+- what could be done (object pool for explosions and bombs and crate explosion) easily combinable with ecs
