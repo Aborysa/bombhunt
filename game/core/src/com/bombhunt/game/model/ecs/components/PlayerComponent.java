@@ -16,6 +16,8 @@ public class PlayerComponent extends Component {
     public DIRECTION_ENUM direction = DIRECTION_ENUM.DOWN;
     public DIRECTION_ENUM prev_direction = DIRECTION_ENUM.DOWN;
 
+    public int index = 0;
+
     public boolean is_dead = false;
     public DIRECTION_ENUM last_hit = null;
 }

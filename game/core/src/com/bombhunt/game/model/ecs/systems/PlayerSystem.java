@@ -58,7 +58,7 @@ public class PlayerSystem extends IteratingSystem {
     private Vector2 last_orientation = new Vector2();
     private Map<STATS_ENUM, Number> stats = new HashMap<>();
     private boolean bombPlanted = false;
-    private Array<Sprite> sprites;
+    private Array<Array<Sprite>> sprites = new Array<Array<Sprite>>(4);
 
     public PlayerSystem(BombFactory bombFactory, DeathFactory deathFactory, World box2d) {
         super(Aspect.all(
@@ -75,9 +75,8 @@ public class PlayerSystem extends IteratingSystem {
         TextureRegion region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
             
-        NetworkManager networkManager = NetworkManager.getInstance();
-        int index = networkManager.getPlayerInfo(networkManager.getPlayerService().getLocalID()).playerIndex;
-        sprites = SpriteHelper.createSprites(region, 16, 0, 14 + index, 10);
+        for(int i = 0; i < 4; i++)
+            sprites.add(SpriteHelper.createSprites(region, 16, 0, 14 + i, 10));
         for (STATS_ENUM i: STATS_ENUM.values()) {
             stats.put(i, 0);
         }
@@ -179,7 +178,7 @@ public class PlayerSystem extends IteratingSystem {
     private void updateSpriteDirection(int e) {
         PlayerComponent playerComponent = mapPlayer.get(e);
         int frame = playerComponent.direction.getFrame();
-        Sprite new_sprite = new Sprite(sprites.get(frame));
+        Sprite new_sprite = new Sprite(sprites.get(playerComponent.index).get(frame));
         boolean is_flipped = playerComponent.direction.isFlip();
         new_sprite.flip(is_flipped, false);
         Array<Sprite> new_array_animation = new Array<>();
@@ -209,7 +208,7 @@ public class PlayerSystem extends IteratingSystem {
             Vector3 position = transformComponent.position.cpy();
             PlayerComponent playerComponent = mapPlayer.get(e);
             int frame = playerComponent.direction.getFrame();
-            Sprite last_sprite = new Sprite(sprites.get(frame));
+            Sprite last_sprite = new Sprite(sprites.get(playerComponent.index).get(frame));
             boolean is_flipped = playerComponent.direction.isFlip();
             last_sprite.flip(is_flipped, false);
             deathFactory.createDeath(position, last_sprite, playerComponent.last_hit);

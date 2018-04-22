@@ -102,6 +102,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         mapBox2d.get(e).body = body;
         mapLabel.get(e).label = "Player " + (index+1);
         mapGrid.get(e).snapToGrid = false;
+        mapPlayer.get(e).index = index;
         return e;
     }
 
