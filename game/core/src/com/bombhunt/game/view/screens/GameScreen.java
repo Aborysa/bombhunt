@@ -484,7 +484,7 @@ public class GameScreen extends BasicView {
     public void render() {
         renderEntities();
         //box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
-        stage.setDebugAll(true);
+        //stage.setDebugAll(true);
         stage.draw();
         hud.render();
     }
