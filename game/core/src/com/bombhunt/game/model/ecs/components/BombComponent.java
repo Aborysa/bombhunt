@@ -9,4 +9,6 @@ import com.artemis.Component;
 public class BombComponent extends Component {
     public float timer = 3f;
     public float ttl_timer = timer;
+    public int damage = 10;
+    public int range = 1;
 }

@@ -12,6 +12,10 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -23,6 +27,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -31,19 +36,25 @@ import com.bombhunt.game.BombHunt;
 import com.bombhunt.game.controller.GameController;
 import com.bombhunt.game.model.Grid;
 import com.bombhunt.game.model.Level;
+import com.bombhunt.game.model.ecs.components.LabelComponent;
 import com.bombhunt.game.model.ecs.components.SpriteComponent;
 import com.bombhunt.game.model.ecs.components.TransformComponent;
 import com.bombhunt.game.model.ecs.factories.BombFactory;
 import com.bombhunt.game.model.ecs.factories.CrateFactory;
+import com.bombhunt.game.model.ecs.factories.DeathFactory;
 import com.bombhunt.game.model.ecs.factories.ExplosionFactory;
 import com.bombhunt.game.model.ecs.factories.IEntityFactory;
+import com.bombhunt.game.model.ecs.factories.ItemFactory;
 import com.bombhunt.game.model.ecs.factories.PlayerFactory;
 import com.bombhunt.game.model.ecs.factories.WallFactory;
 import com.bombhunt.game.model.ecs.systems.BombSystem;
+import com.bombhunt.game.model.ecs.systems.DeathSystem;
 import com.bombhunt.game.model.ecs.systems.DestroyableSystem;
 import com.bombhunt.game.model.ecs.systems.ExplosionSystem;
 import com.bombhunt.game.model.ecs.systems.GridSystem;
+import com.bombhunt.game.model.ecs.systems.ItemSystem;
 import com.bombhunt.game.model.ecs.systems.KillableSystem;
+import com.bombhunt.game.model.ecs.systems.LabelSystem;
 import com.bombhunt.game.model.ecs.systems.PhysicsSystem;
 import com.bombhunt.game.model.ecs.systems.PlayerSystem;
 import com.bombhunt.game.model.ecs.systems.SpriteSystem;
@@ -51,6 +62,7 @@ import com.bombhunt.game.model.ecs.systems.TimerSystem;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.physic.Collision;
 import com.bombhunt.game.view.BasicView;
+import com.bombhunt.game.view.HUD;
 import com.bombhunt.game.view.InGameSettings;
 import com.bombhunt.game.view.controls.BombButton;
 import com.bombhunt.game.view.controls.Joystick;
@@ -79,6 +91,7 @@ public class GameScreen extends BasicView {
 
     EntitySubscription subscription;
     private DecalBatch batch;
+    private Batch spriteBatch;
     private InputMultiplexer inputMux;
 
 
@@ -89,6 +102,7 @@ public class GameScreen extends BasicView {
     private HashMap<String, IEntityFactory> factoryMap;
     
     private ComponentMapper<SpriteComponent> mapSprite;
+    private ComponentMapper<LabelComponent> mapLabel;
     private ComponentMapper<TransformComponent> mapTransform;
 
 
@@ -102,6 +116,9 @@ public class GameScreen extends BasicView {
     private BombButton bombButton;
     private SettingsButton settingsButton;
     private Stage stage;
+    private HUD hud;
+    private BitmapFont labelComponentFont;
+    private GlyphLayout labelComponentLayout;
 
     private Decal mapDecals[];
 
@@ -112,9 +129,11 @@ public class GameScreen extends BasicView {
         setUpCamera();
         setUpBatching();
         setUpControls();
+        setUpStats();
         setUpComponentMappers();
         setUpAspectSubscription();
         setUpInputProcessor();
+        setUpLabelComponentFont();
         createMapEntities();
         createCollisionBodies();
         createPlayerEntities();
@@ -127,12 +146,16 @@ public class GameScreen extends BasicView {
         final String wallFactoryName = WallFactory.class.getSimpleName();
         final String bombFactoryName = BombFactory.class.getSimpleName();
         final String explosionFactoryName = ExplosionFactory.class.getSimpleName();
+        final String itemFactoryName = ItemFactory.class.getSimpleName();
+        final String deathFactoryName = DeathFactory.class.getSimpleName();
         factoryMap = new HashMap<String, IEntityFactory>() {{
             put(crateFactoryName, new CrateFactory());
             put(playerFactoryName, new PlayerFactory());
             put(wallFactoryName, new WallFactory());
             put(bombFactoryName, new BombFactory());
             put(explosionFactoryName, new ExplosionFactory());
+            put(itemFactoryName, new ItemFactory());
+            put(deathFactoryName, new DeathFactory());
         }};
     }
 
@@ -153,15 +176,22 @@ public class GameScreen extends BasicView {
         // TODO: cannot that be created into the constructor of each system respectively
         String bombFactoryName = BombFactory.class.getSimpleName();
         String explosionFactoryName = ExplosionFactory.class.getSimpleName();
+        String itemFactoryName = ItemFactory.class.getSimpleName();
+        String deathFactoryName = DeathFactory.class.getSimpleName();
         BombFactory bombFactory = (BombFactory) factoryMap.get(bombFactoryName);
         ExplosionFactory explosionFactory = (ExplosionFactory) factoryMap.get(explosionFactoryName);
-        PlayerSystem playerSystem = new PlayerSystem(bombFactory);
+        ItemFactory itemFactory = (ItemFactory) factoryMap.get(itemFactoryName);
+        DeathFactory deathFactory = (DeathFactory) factoryMap.get(deathFactoryName);
+        PlayerSystem playerSystem = new PlayerSystem(bombFactory, deathFactory, box2d);
         BombSystem bombSystem = new BombSystem(explosionFactory);
         ExplosionSystem explosionSystem = new ExplosionSystem(explosionFactory);
         TimerSystem timerSystem = new TimerSystem();
         GridSystem gridSystem = new GridSystem();
-        DestroyableSystem destroyableSystem = new DestroyableSystem(box2d);
-        KillableSystem killableSystem = new KillableSystem(box2d);
+        DestroyableSystem destroyableSystem = new DestroyableSystem(box2d, itemFactory);
+        KillableSystem killableSystem = new KillableSystem();
+        ItemSystem itemSystem = new ItemSystem();
+        LabelSystem labelSystem = new LabelSystem();
+        DeathSystem deathSystem = new DeathSystem();
         WorldConfiguration config = new WorldConfigurationBuilder()
                 .with(spriteSystem)
                 .with(physicsSystem)
@@ -172,6 +202,9 @@ public class GameScreen extends BasicView {
                 .with(gridSystem)
                 .with(destroyableSystem)
                 .with(killableSystem)
+                .with(itemSystem)
+                .with(labelSystem)
+                .with(deathSystem)
                 .build();
         world = new World(config);
         for (IEntityFactory factory : factoryMap.values()) {
@@ -201,6 +234,7 @@ public class GameScreen extends BasicView {
 
     private void setUpBatching() {
         batch = new DecalBatch(4096, new CameraGroupStrategy(currentCamera));
+        spriteBatch = new SpriteBatch();
     }
 
     private void setUpControls() {
@@ -263,12 +297,21 @@ public class GameScreen extends BasicView {
         table.add(settingsButton.getImageButton()).colspan(2).expand().right().top().row();
         table.bottom();
         table.add(joystick.getTouchpad()).left().expandX();
-        table.add(bombButton.getImageButton()).right();
+        table.add(bombButton.getImageButton()).right().expandX();
         return table;
+    }
+
+    private void setUpStats() {
+        hud = new HUD(controller);
+        Vector3 position = stage.getCamera().position.cpy();
+        position.x -= Gdx.graphics.getWidth()/2 - PADDING_TABLE_CONTROLS;
+        position.y += Gdx.graphics.getHeight()/2 - PADDING_TABLE_CONTROLS - hud.getTotalHeight();
+        hud.setPosition(position);
     }
 
     private void setUpComponentMappers() {
         mapSprite = world.getMapper(SpriteComponent.class);
+        mapLabel = world.getMapper(LabelComponent.class);
         mapTransform = world.getMapper(TransformComponent.class);
     }
 
@@ -278,6 +321,17 @@ public class GameScreen extends BasicView {
 
     private void setUpInputProcessor() {
         inputMux = new InputMultiplexer(stage, this);
+    }
+
+    private void setUpLabelComponentFont() {
+        Assets asset_manager = Assets.getInstance();
+        Skin skin = asset_manager.get("skin/craftacular-ui.json", Skin.class);
+        labelComponentFont = skin.getFont("title");
+        labelComponentFont.getData().setScale(0.05f);
+        //IMPORTANT: avoid irregular spacing between letters
+        labelComponentFont.setUseIntegerPositions(false);
+        labelComponentLayout = new GlyphLayout();
+
     }
 
     private void createMapEntities() {
@@ -309,6 +363,7 @@ public class GameScreen extends BasicView {
         updateClock(dt);
         processTicks(dt);
         updateCamera(dt);
+        hud.update(dt);
         stage.act(dt);
     }
 
@@ -334,7 +389,7 @@ public class GameScreen extends BasicView {
     private void updateCamera(float dt) {
         currentCamera.position.set(moveCameraWithPlayer());
         //TODO: update zoom as the game time expire
-        // currentCamera.zoom += dt/100;
+        //currentCamera.zoom =4;
         currentCamera.update();
     }
 
@@ -363,9 +418,10 @@ public class GameScreen extends BasicView {
     @Override
     public void render() {
         renderEntities();
-        flushAllSprites();
         //box2DDebugRenderer.render(box2d, currentCamera.combined.cpy().scl(Collision.box2dToWorld));
+        stage.setDebugAll(true);
         stage.draw();
+        hud.render();
     }
 
     private void renderEntities() {
@@ -384,13 +440,23 @@ public class GameScreen extends BasicView {
         for(Decal d : mapDecals){
             batch.add(d);
         }
-
         ecsDebugRenderer.end();
-
-    }
-
-    private void flushAllSprites() {
         batch.flush();
+
+        spriteBatch.setProjectionMatrix(currentCamera.combined);
+        spriteBatch.begin();
+        for (int i = 0; i < entities.size(); i++) {
+            int e = entities.get(i);
+            if(mapLabel.has(e)) {
+                LabelComponent labelComponent = mapLabel.get(e);
+                Vector3 position = controller.getPlayerPosition();
+                labelComponentLayout.setText(labelComponentFont, labelComponent.label);
+                position.x -= labelComponentLayout.width/2f;
+                position.y -= labelComponent.offset_y;
+                labelComponentFont.draw(spriteBatch, labelComponent.label, position.x, position.y);
+            }
+        }
+        spriteBatch.end();
     }
 
     @Override
@@ -399,6 +465,11 @@ public class GameScreen extends BasicView {
         box2DDebugRenderer.dispose();
         box2d.dispose();
         batch.dispose();
+        spriteBatch.dispose();
+        stage.dispose();
+        hud.dispose();
+        // IMPORTANT: to scale back title font...
+        labelComponentFont.getData().setScale(1f);
     }
 
     @Override
