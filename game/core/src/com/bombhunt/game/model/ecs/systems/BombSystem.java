@@ -4,8 +4,6 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.bombhunt.game.model.ecs.components.AnimationComponent;
 import com.bombhunt.game.model.ecs.components.BombComponent;
 import com.bombhunt.game.model.ecs.components.ExplosionComponent;
@@ -25,15 +23,11 @@ public class BombSystem extends IteratingSystem {
     private ComponentMapper<GridPositionComponent> mapGrid;
 
     private ExplosionFactory explosionFactory;
-    private TextureRegion region;
 
     public BombSystem(ExplosionFactory explosionFactory) {
         super(Aspect.all(TransformComponent.class,
                 BombComponent.class,
                 GridPositionComponent.class));
-        Assets asset_manager = Assets.getInstance();
-        region = asset_manager.get("textures/tilemap1.atlas",
-                TextureAtlas.class).findRegion("bomb_party_v4");
         this.explosionFactory = explosionFactory;
     }
 
@@ -41,7 +35,6 @@ public class BombSystem extends IteratingSystem {
     protected void process(int e) {
         float delta = world.getDelta();
         BombComponent bombComponent = mapBomb.get(e);
-        GridPositionComponent gridPositionComponent = mapGrid.get(e);
         bombComponent.ttl_timer -= delta;
         if (bombComponent.ttl_timer <= 0) {
             bombComponent.ttl_timer = bombComponent.timer;

@@ -5,24 +5,25 @@ import com.bombhunt.game.model.ecs.components.PlayerComponent;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.lang.Math.round;
 
 public enum ITEM_TYPE_ENUM {
-    HEALTH(25f, 0, 200f, 1, 2) {
+    HEAL(25f, 0, 200, 1, 2) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.max_health =
                     (int) max(min(playerComponent.max_health + getAmount(), getMaxAmount()), getMinAmount());
-            playerComponent.health = (int) min(playerComponent.health + getAmount(), playerComponent.max_health);
+            playerComponent.malus = (int) -getAmount();
         }
     },
-    POISON(-50f, 0, 200f, 0, 2) {
+
+    POISON(-50f, 0, 0, 0, 2) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
-            playerComponent.health =
-                    (int) min(playerComponent.health + getAmount(), playerComponent.max_health);
+            playerComponent.malus = (int) -getAmount();
         }
     },
-    DAMAGE(50f, 0, 200f, 0, 0) {
+    BOMB_DAMAGE(50f, 0, 200f, 0, 3) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.bomb_damage =
@@ -37,17 +38,18 @@ public enum ITEM_TYPE_ENUM {
         }
     },
     SPEED(0.5f, 1f, 4f, 3, 3) {
+
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
             playerComponent.movement_speed =
                     max(min(playerComponent.movement_speed + getAmount(), getMaxAmount()), getMinAmount());
         }
     },
-    BOMB_COOLDOWN(-0.1f, 0.5f, 1f, 2, 4) {
+    BOMB_COOLDOWN(-0.1f, 0.5f, 1f, 0, 4) {
         @Override
         public void applyItem(ItemComponent itemComponent, PlayerComponent playerComponent) {
-            playerComponent.cooldown_bomb =
-                    max(min(playerComponent.cooldown_bomb + getAmount(), getMaxAmount()), getMinAmount());
+            playerComponent.bomb_cooldown =
+                    round(max(min(playerComponent.bomb_cooldown + getAmount(), getMaxAmount()), getMinAmount())*10f)/10f;
         }
     };
 
