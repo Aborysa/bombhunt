@@ -143,7 +143,7 @@ public class Message {
 
     public void putPlayer(PlayerComponent component){
         getBuffer().putInt(component.direction.ordinal());
-        getBuffer().putInt(component.last_hit.ordinal());
+        getBuffer().putInt(component.last_hit != null ? component.last_hit.ordinal() : 0);
         //getBuffer().put((byte)(component.is_dead ? 1 : 0));
     }
 
@@ -163,7 +163,7 @@ public class Message {
 
     public void putKillable(KillableComponent killable){
         buffer.putInt(killable.health);
-        buffer.putInt(killable.last_hit.ordinal());
+        buffer.putInt(killable.last_hit != null ? killable.last_hit.ordinal() : 0);
     }
 
     public KillableComponent getKillable(KillableComponent killable){
