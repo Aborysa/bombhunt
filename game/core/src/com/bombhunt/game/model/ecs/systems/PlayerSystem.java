@@ -65,7 +65,7 @@ public class PlayerSystem extends IteratingSystem {
                 TransformComponent.class,
                 Box2dComponent.class,
                 PlayerComponent.class,
-                TimerComponent.class,
+                TimerComponent.class
         ));
         this.bombFactory = bombFactory;
         this.deathFactory = deathFactory;

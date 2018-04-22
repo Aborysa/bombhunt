@@ -4,6 +4,7 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -117,7 +118,7 @@ public class PlayerFactory implements IEntityFactory, ITileFactory, INetworkFact
         mapPlayer = world.getMapper(PlayerComponent.class);
         mapTimer = world.getMapper(TimerComponent.class);
         mapNetwork = world.getMapper(NetworkComponent.class);
-
+        mapInput = world.getMapper(InputComponent.class);
         playerArchtype = new ArchetypeBuilder()
                 .add(TransformComponent.class)
                 .add(GridPositionComponent.class)
