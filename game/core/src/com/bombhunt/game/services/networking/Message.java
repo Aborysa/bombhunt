@@ -163,10 +163,12 @@ public class Message {
 
     public void putKillable(KillableComponent killable){
         buffer.putInt(killable.health);
+        buffer.putInt(killable.last_hit.ordinal());
     }
 
     public KillableComponent getKillable(KillableComponent killable){
         killable.health = buffer.getInt();
+        killable.last_hit = DIRECTION_ENUM.values[buffer.getInt()];
         return killable;
     }
 
