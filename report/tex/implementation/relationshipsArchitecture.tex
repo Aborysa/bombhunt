@@ -1,10 +1,66 @@
 \unnumberedChapter[relationshipsArchitecture]{Relationships with Architecture}
 
-This should list the inconsistencies between your architecture and the implementation.
-Give the reasons for these inconsistencies. Discuss whether they could have been discovered at an earlier point, for instance during the ATAM evaluation.
+This should list the inconsistencies between your architecture and the implementation. Give the reasons for these inconsistencies. Discuss whether they could have been discovered at an earlier point, for instance during the ATAM evaluation.\\
+
+%Bart
+
+\unnumberedSection[patterns]{Architectural and Design Patterns}
+
+In our architecture we decided on several patterns to be used for the implementation. We chose three architectural patterns: 
+\begin{itemize}
+	\item Entity Component System
+	\item Peer to Peer
+	\item Model View Controller
+\end{itemize}
+
+In addition we chose two design patterns:
+
+\begin{itemize}
+	\item Singleton
+	\item Observer
+\end{itemize} .
+
+During the implementation phase we stayed consistent and followed the choices we made in the architectural phase. All the chosen patterns are implemented in the final game and we are satisfied with how we originally drafted the patterns for the implementation.
+
+\unnumberedSection[views]{Views}
+Next we will go over the views from the architecture and discuss if there are any inconsistencies with the final implementation of the game.
+
+\unnumberedSubsection[logical]{Logical View}
+\AddPicture[logicalView]{1}{0.35}{logicalView}{The logical view of the \textit{Bomb Hunt} game}
+
+\AddPictureLandscape[domainModel]{1}{1}{domain}{The domain model of the \textit{Bomb Hunt} game}
+
+The domain model is largely inconsistent with the final implementation. This is mainly because of an incomplete understanding of the ECS pattern during the drafting of the architecture. The domain model shown here follows the standard object oriented paradigm, which is replaced by the ECS pattern in the game logic for our project.
+
+\unnumberedSubsection[process]{Process View}
+
+\AddPicture[processView]{1}{0.4}{fsmScreens}{The process view of the \textit{Bomb Hunt} game}
+
+The process view has been reduced in scope in the final implementation. We had insufficient time to implement all features. In the final version the tutorial, achievements and highscores are missing. There is also no singleplayer, the game plays in multiplayer by default. Choosing a character is not possible. The game also does not show results after the match.
+
+\AddPicture[fsmCharacter]{1}{0.3}{fsmCharacter}{The \gls{fsm} for character entities}
 
 
+The FSM for character entities is largely consistent with the final game. However in the final version we have not implemented a revive function. If you die the game is over...
+\AddPicture[fsmWalls]{1}{0.3}{fsmWalls}{The \gls{fsm} for wall entities}
 
+The wall FSM is correct for the final version of the game.
+
+\unnumberedSubsection[development]{Development View}
+\AddPicture[developementView]{1}{0.35}{developmentModel}{The development view of the \textit{Bomb Hunt} game}
+
+The development view mostly reflects the implementation of the final game. However the screens for character selection, results, highscores and achievements are not included. The Lobby screen was also not necessary because this was provided by the Google Play Game Services API. The corresponding controllers for the missing screens are also absent from the final game.
+
+\unnumberedSubsection[physical]{Physical View}
+\AddPicture[deploymentView]{1}{0.35}{deployment}{The physical view of the \textit{Bomb Hunt} game}
+
+The physical view is consistent with the final game except for the database with the achievements. We did not implement achievements and thus also did not need any database for achievements.
+
+\unnumberedSubsection[conclusion]{Conclusions}
+
+In general we can say that most of our inconsistencies are a result of underestimating the amount of work required to implement all features. We did not have to change any decisions we made in the architectural phase but we had to leave out a lot of features and thus parts of the architecture because of time constraints. We learned a good lesson in realizing how much work it takes to implement extra features.
+
+%Erling
 
 Inconsistency/consistency between chosen architecture/design patterns
 ECS
@@ -24,3 +80,4 @@ We were able to fully implement the Observer technique. This was mainly utilized
 
 Feedback from ATAM report of our architecture.
 During the feedback we recieved from the other group on our architecture, they were insisting that implement the ECS architecture would have a negative effect on the performance of our game. This didn’t make sence based on the research we had done for the project, and would prove to be false when we are now done implementing it. The performance and modifiability of our game is very high, due to the fact we utilized Artemis-odb as the framework for our ECS.
+
