@@ -383,7 +383,7 @@
 	% #6 Comment
 	\begin{table}[ht]
 		\centering
-		\begin{tabular}{ccc}
+		\begin{tabular}{lcr}
 			\toprule
 			\multicolumn{3}{L{14cm}}{\textbf{#1}} \\
 			\midrule
@@ -409,6 +409,17 @@
 	% #9 Comment
 	\begin{table}[ht]
 		\centering
-		\caption{Quality Requirement Testing - #1}
+		\begin{tabular}{lcr}
+			\toprule
+			\multicolumn{3}{L{14cm}}{\textbf{#1}} \\
+			\midrule
+			\textbf{Executor:} #2 & \textbf{Date:} #3 & \textbf{Environment:} #4 \\
+			\multicolumn{3}{L{14cm}}{\textbf{Stimuli:} #5} \\
+			\textbf{Expected:} #6 & --- & \textbf{Observed:} #7 \\
+			\multicolumn{3}{L{14cm}}{\textbf{Evaluation:} #8} \\
+			\multicolumn{3}{L{14cm}}{\textbf{Comment:} \newline #9} \\
+			\bottomrule
+		\end{tabular}
+		\caption{QRT - #1}
 	\end{table}
 }

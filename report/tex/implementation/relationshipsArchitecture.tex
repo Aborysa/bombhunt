@@ -10,7 +10,7 @@ During the feedback we recieved from the other group on our architecture, they w
 
 \unnumberedSection[arch_patterns]{Architectural Patterns}
 
-In our architecture we decided on several patterns to be used for the implementation. We chose three architectural patterns: 
+In our architecture we decided on several patterns to be used for the implementation. We chose three architectural patterns:
 
 
 \begin{description}
@@ -34,13 +34,13 @@ During the implementation phase we stayed consistent and followed the choices we
 Next we will go over the views from the architecture and discuss if there are any inconsistencies with the final implementation of the game.
 
 \begin{description}
-	\item[logical view] The logical view shown in \autoref{fig:logical} matches our final implementation almost perfectly
+	\item[logical view] The logical view shown in \autoref{fig:logicalView} matches our final implementation almost perfectly
 	\item[domain model] The domain model shown in \autoref{fig:domainModel} is largely inconsistent with the final implementation. This is mainly because of an incomplete understanding of the ECS pattern during the drafting of the architecture. The domain model shown here follows the standard object oriented paradigm, which is replaced by the ECS pattern in the game logic for our project.
 	\item[process view] The process view shown in \autoref{fig:processView} has been reduced in scope in the final implementation. We had insufficient time to implement all features. In the final version the tutorial, achievements and highscores are missing. There is also no singleplayer, the game plays in multiplayer by default. Choosing a character is not possible. The game also does not show results after the match.
 	\item[character FSM] The FSM for character entities shown in \autoref{fig:fsmCharacter} is largely consistent with the final game. However in the final version we have not implemented a revive function. If you die the game is over...
 	\item[wall FSM] The wall FSM  shown in \autoref{fig:fsmWalls} is correct for the final version of the game.
 	\item[development view] The development view shown in \autoref{fig:developmentView} mostly reflects the implementation of the final game. However the screens for character selection, results, highscores and achievements are not included. The Lobby screen was also not necessary because this was provided by the Google Play Game Services API. The corresponding controllers for the missing screens are also absent from the final game.
-	\item[physical view] The physical view shown in \autoref{fig:physicalView} is consistent with the final game except for the database with the achievements. We did not implement achievements and thus also did not need any database for achievements.	
+	\item[physical view] The physical view shown in \autoref{fig:physicalView} is consistent with the final game except for the database with the achievements. We did not implement achievements and thus also did not need any database for achievements.
 \end{description}
 
 \AddPicture[logicalView]{1}{0.35}{logicalView}{The logical view of the \textit{Bomb Hunt} game}
@@ -60,4 +60,3 @@ Next we will go over the views from the architecture and discuss if there are an
 \unnumberedSubsection[conclusion]{Conclusion on consistency}
 
 In general we can say that most of our inconsistencies are a result of underestimating the amount of work required to implement all features. We did not have to change any decisions we made in the architectural phase but we had to leave out a lot of features and thus parts of the architecture because of time constraints. We learned a good lesson in realizing how much work it takes to implement extra features.
-
