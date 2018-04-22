@@ -30,7 +30,7 @@ public class KillableSystem extends IteratingSystem {
     protected void process(int e) {
         KillableComponent killableComponent = mapKillable.get(e);
         NetworkComponent networkComponent = mapNetwork.getSafe(e, null);
-        PlayerComponent playerComponent = mapPlayer.getSafe(e);
+        PlayerComponent playerComponent = mapPlayer.getSafe(e, null);
         SpriteComponent spriteComponent = mapSprite.get(e);
         if(playerComponent != null){
             float delta = world.getDelta();
