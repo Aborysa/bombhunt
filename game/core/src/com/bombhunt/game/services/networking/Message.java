@@ -168,7 +168,7 @@ public class Message {
 
     public KillableComponent getKillable(KillableComponent killable){
         killable.health = buffer.getInt();
-        killable.last_hit = DIRECTION_ENUM.values[buffer.getInt()];
+        killable.last_hit = DIRECTION_ENUM.values()[buffer.getInt()];
         return killable;
     }
 
