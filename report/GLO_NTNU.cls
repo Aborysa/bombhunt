@@ -216,7 +216,7 @@
 			\normalfont\small\textit{\theAuthor}\normalfont\scshape \\
 			\vfill
 			\textbf{Primary Quality Attribute:} \\ \thePQA \\
-			\textbf{Seconday Quality Attribute(s):} \\ \theSQA \\
+			\textbf{Secondary Quality Attribute(s):} \\ \theSQA \\
 			\vfill
 			Presented to \\
 			\theTeacher
