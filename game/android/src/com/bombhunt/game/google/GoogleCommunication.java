@@ -209,10 +209,6 @@ public class GoogleCommunication implements IPlayServices {
 
     // Returns whether the room is in a state where the game should be canceled.
     boolean shouldCancelGame(Room room) {
-        // TODO: Your game-specific cancellation logic here. For example, you might decide to
-        // cancel the game if enough people have declined the invitation or left the room.
-        // You can check a participant's status with Participant.getStatus().
-        // (Also, your UI should have a Cancel button that cancels the game too)
         return false;
     }
 

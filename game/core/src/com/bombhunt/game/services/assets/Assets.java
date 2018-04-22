@@ -77,7 +77,6 @@ public class Assets {
 
     public void dispose() {
         assetManager.clear();
-        // TODO: solve the problem of disposal
         // assetManager.dispose();
     }
 }
