@@ -250,7 +250,6 @@ public class GameScreen extends BasicView {
 
 
         WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(spriteSystem)
                 .with(physicsSystem)
                 .with(playerSystem)
                 .with(bombSystem)
@@ -262,6 +261,7 @@ public class GameScreen extends BasicView {
                 .with(itemSystem)
                 .with(labelSystem)
                 .with(deathSystem)
+                .with(spriteSystem)
                 .with(netSystem)
                 .build();
         world = new World(config);
