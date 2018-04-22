@@ -142,15 +142,18 @@ public class Message {
     }
 
     public void putPlayer(PlayerComponent component){
-        DIRECTION_ENUM dir = component.direction;
-        getBuffer().putInt(dir.ordinal());
-        getBuffer().put((byte)(component.is_dead ? 1 : 0));
+        getBuffer().putInt(component.direction.ordinal());
+        getBuffer().putInt(component.last_hit.ordinal());
+        //getBuffer().put((byte)(component.is_dead ? 1 : 0));
     }
 
-    public void getPlayer(PlayerComponent component){
-        int ordinal = getBuffer().getInt();
-        component.direction = DIRECTION_ENUM.values()[ordinal];
-        component.is_dead = getBuffer().get() == 1 ? true : false;
+    public PlayerComponent getPlayer(PlayerComponent component){
+        int dir_ordinal = getBuffer().getInt();
+        int lhit_ordinal = getBuffer().getInt();
+        component.direction = DIRECTION_ENUM.values()[dir_ordinal];
+        component.last_hit = DIRECTION_ENUM.values()[lhit_ordinal];
+        //component.is_dead = getBuffer().get() == 1 ? true : false;
+        return component;
     }
 
     public BombComponent getBomb(BombComponent bomb){

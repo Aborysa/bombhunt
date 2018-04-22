@@ -82,6 +82,19 @@ public class PlayerSystem extends IteratingSystem {
         }
     }
 
+    @Override
+    protected void removed(int e){
+        TransformComponent transformComponent = mapTransform.get(e);
+        Vector3 position = transformComponent.position.cpy();
+        PlayerComponent playerComponent = mapPlayer.get(e);
+        int frame = playerComponent.direction.getFrame();
+        Sprite last_sprite = new Sprite(sprites.get(playerComponent.index).get(frame));
+        boolean is_flipped = playerComponent.direction.isFlip();
+        last_sprite.flip(is_flipped, false);
+        deathFactory.createDeath(position.cpy().sub(0, 0, -10f), last_sprite, playerComponent.last_hit);
+
+
+    }
     protected void process(int e) {
         Box2dComponent box2dComponent = mapBox2D.get(e);
         TransformComponent transformComponent = mapTransform.get(e);
@@ -204,15 +217,7 @@ public class PlayerSystem extends IteratingSystem {
 
     private void updateStilAlive(int e) {
         if(mapPlayer.get(e).is_dead) {
-            TransformComponent transformComponent = mapTransform.get(e);
-            Vector3 position = transformComponent.position.cpy();
-            PlayerComponent playerComponent = mapPlayer.get(e);
-            int frame = playerComponent.direction.getFrame();
-            Sprite last_sprite = new Sprite(sprites.get(playerComponent.index).get(frame));
-            boolean is_flipped = playerComponent.direction.isFlip();
-            last_sprite.flip(is_flipped, false);
-            deathFactory.createDeath(position, last_sprite, playerComponent.last_hit);
-            box2d.destroyBody(mapBox2D.get(e).body);
+            //box2d.destroyBody(mapBox2D.get(e).body);
             world.delete(e);
         }
     }
