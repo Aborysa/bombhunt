@@ -11,7 +11,7 @@
    <property name="entity_factory" value="WallFactory"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAAzvHwMAgzUg6vgvU94CBPPBgGOi9B8T3cahFl6OmvfTU+5uBvLTxBqgPAHIR5lBYAgAA
+   H4sIAAAAAAAAAzvHwMAgzUg6vgvU94ABO+BiRKXRwQMkvSA1uNQxYFGDrJdUQEivJB53oOu9B8T3kfjIfkCXI2QvPoCsl5phRUwc/WYgL228AeoDALPUuxxYAgAA
   </data>
  </layer>
  <layer name="crates" width="15" height="10">
@@ -19,7 +19,7 @@
    <property name="entity_factory" value="CrateFactory"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA2NgoA44jkRzMaLSyPLoAKQGpg4XhqlBtw/ZzLNYMC612ABIvSQjqj5iwVmoGwnppdTN5IYVspkMDKTHETkAAH2whktYAgAA
+   H4sIAAAAAAAAA2NgoA44TiSNTz8ujE89DJzFgnGpxQbOotGkAGL1UsvNpIYVsj5iaGoAALx12wdYAgAA
   </data>
  </layer>
  <objectgroup name="spawns">
@@ -49,6 +49,9 @@
   </object>
  </objectgroup>
  <layer name="decor" width="15" height="10">
+  <properties>
+   <property name="depth" type="float" value="1"/>
+  </properties>
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAA2NgGLngPBBfIENuFBAGAADC0hJYAgAA
   </data>
