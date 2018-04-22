@@ -26,6 +26,7 @@ import com.bombhunt.game.model.ecs.factories.DeathFactory;
 import com.bombhunt.game.services.assets.Assets;
 import com.bombhunt.game.services.audio.AudioPlayer;
 import com.bombhunt.game.services.graphics.SpriteHelper;
+import com.bombhunt.game.services.networking.NetworkManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +70,10 @@ public class PlayerSystem extends IteratingSystem {
         Assets asset_manager = Assets.getInstance();
         TextureRegion region = asset_manager.get("textures/tilemap1.atlas",
                 TextureAtlas.class).findRegion("bomb_party_v4");
-        sprites = SpriteHelper.createSprites(region, 16, 0, 17, 10);
+            
+        NetworkManager networkManager = NetworkManager.getInstance();
+        int index = networkManager.getPlayerInfo(networkManager.getPlayerService().getLocalID()).playerIndex;
+        sprites = SpriteHelper.createSprites(region, 16, 0, 14 + index, 10);
         for (STATS_ENUM i: STATS_ENUM.values()) {
             stats.put(i, 0);
         }
