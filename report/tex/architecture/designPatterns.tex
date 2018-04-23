@@ -1,7 +1,0 @@
-\unnumberedSection[designPatterns]{Design Patterns}
-
-\unnumberedSubsection[singleton]{Singleton}
-One of the design patterns we plan to use for the game, is the singleton pattern \cite{wiki:singleton}. This pattern will help us when we want to create a class that we want to guarantee at most one instance off is running at a time. It will also help us with classes where we keep a lot of game-wide configuration and information that might want to be accessed. Using it we won't have to pass references to objects around, creating a lot of redundant coding and software that is harder to write tests for.
-
-\unnumberedSubsection[observer]{Observer}
-This pattern is used when we want some to observe changes in our application using Observers\cite{wiki:observer} which streams events that we can subscribe to. Whenever an observer notices a change happening it will notify all it's subscribers of this change. This can be used to keep track of changes to certain data that is important for game's and application's life cycle like the player's health and lives. When the player runs out of life we can transition the application to a new state like a game over screen. This will be the primary way we get notifications from the ECS, directly tapping into the ECS and looping through a set of entities and checking their values one by one, instead of just being notified when a value has been achieved\\changed, would be quite heavy on the resource side of the game, and in general create very messy code.
